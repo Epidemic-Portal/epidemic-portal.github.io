@@ -1,0 +1,20 @@
+body {
+    background: black;
+}
+
+#main-inner-box {
+    border: 1px solid hsl(0,0%,2%); 
+    background: var(--generalBackground); 
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        background: hsla(0,0%,79%,1);
+    }
+
+    #main-inner-box {
+        border: 1px solid hsl(0,0%,98%); 
+        background: var(--generalBackground); 
+    }
+    
+}
