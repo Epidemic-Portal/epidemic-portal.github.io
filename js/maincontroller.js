@@ -1,8 +1,73 @@
 var app = angular.module('myApp', ['ngRoute'])
 
+app.config(['$routeProvider','$sceProvider', '$locationProvider', function($routeProvider, $sceProvider, $locationProvider) {
+    $routeProvider.
+        when('/:param1', {
+            templateUrl: function(urlParams) {
+                if (urlParams.param1 == 'main') {
+                    return 'views/main.html';
+                }
+            }
+        }).
+        when('/:param1/:param2', {
+            templateUrl: function(urlParams) {
+                if (urlParams.param1 == 'main') {
+                    return 'views/main.html';
+                }
+                else {
+                    return 'views/main.html';
+                }
+            }
+        }).
+        when('/', {
+            templateUrl: function(urlParams) {
+                return 'views/main.html';
+            }
+        }).
+        otherwise({
+            redirectTo: '/'
+        });
+        // $sceProvider.enabled(false);
+        // $locationProvider.html5Mode(true);
+    }]);
+    
+
 
 app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$interval', function($scope, $routeParams, $timeout, $interval) {
     $scope.appName = "Epidemic Portal";
+
+    $scope.urlParameters = {}
+
+
+    $scope.view = function() {
+        $scope.urlParameters[1] = $routeParams.param1
+        $scope.urlParameters[2] = $routeParams.param2
+
+        // if ($routeParams.param1 == 'task' && $routeParams.param2 !== undefined) {
+        //     $scope.loadApp();
+        // }
+        // else if ($routeParams.param1 == 'chat-settings' && $routeParams.param2 === undefined) {
+        //     $scope.loadSettings();
+        //     $scope.loadApp();
+        // }
+        // else {
+        //     $scope.loadApp();
+        // }
+
+        console.log($scope.urlParameters)
+    }
+
+
+
+
+
+
+
+
+
+
+
+    // A lot of interesting and useful functions 
 
     $scope.isNaN = function(value) {
         return isNaN(value);
@@ -222,16 +287,6 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         arr.splice(to, 0, cutOut);
     }
 
-    $scope.setView = function () {
-        if ($scope.user.state == 'logged-out') {
-            $scope.initApp();
-        }
-        else {
-            $scope.view();
-        }
-        
-    }
-
     $scope.visit = function (url) {
         window.open(url,'_self')
     }
@@ -243,45 +298,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.visitInternally = function(url) {
         $location.path(url);
     }
+
+
     
-    $scope.urlParameters = {}
 
-
-    $scope.view = function() {
-        $scope.urlParameters[1] = $routeParams.param1
-        $scope.urlParameters[2] = $routeParams.param2
-
-        if ($routeParams.param1 == 'task' && $routeParams.param2 !== undefined) {
-            $scope.loadApp();
-        }
-        else if ($routeParams.param1 == 'chat-settings' && $routeParams.param2 === undefined) {
-            $scope.loadSettings();
-            $scope.loadApp();
-        }
-        else {
-            $scope.loadApp();
-        }
-
-        
-
-         // $scope.displaySplash = false;
-
-        // if ($routeParams.param1 == 'participant-window') {
-        //     $scope.participantMoniter.load();
-        // } else if ($routeParams.param1 == 'editor' && $routeParams.param2 !== undefined) {
-        //     // $scope.editor.load();
-        // } else if ($routeParams.param1 == 'cyberhunt' && $routeParams.param2 !== undefined) {
-        //     // $scope.playCyberhunt.load();
-        // } else if ($routeParams.param1 == 'results' && $routeParams.param2 !== undefined) {
-        //     // $scope.results.load();
-        // }
-        // else {
-        //     // $scope.visitInternally('/cyberhunts')
-            
-        //     $scope.loadApp();
-        // }
-
-    }
 
 
     
