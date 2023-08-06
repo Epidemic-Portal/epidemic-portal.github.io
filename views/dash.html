@@ -1,4 +1,4 @@
-<div style="font-family: Nunito;">
+<div style="font-family: Nunito;" ng-init="view()">
     <div class="w-100 text-ignus pt-4">
         <div class="pl-4 pr-4 text-md-left d-inline-flex">
             <div class="pr-3">
@@ -12,12 +12,43 @@
     </div>
 
     <div class="w-100 text-ignus pt-4">
-        <div id="main-graph-holder" style="min-height: 100vh;">
+        <div id="main-graph-holder" style="min-height: calc(100vh - 200px); position: relative;">
+        </div>
     </div>
 
     
     <div class="w-100 pl-4 pr-4 pl-sm-5 pr-sm-5 d-flex justify-content-center">
-        <div style="min-height: 1200px"></div>
+        <div style="min-height: 100px;"></div>
         
+    </div>
+
+    <div>
+        <div style="position: fixed; bottom: 0px; right: 0px;">
+            <div style="position: relative;">
+                <div class="pr-md-5 pb-md-5 pr-4 pb-4">
+                    <div class="hs-container-outer-ignus">
+                        <div class="d-none d-sm-flex hs-container-left-button-ignus" onclick="ignusTheme.hsMoveLeft('#additionButtons-HS', 70)">
+                            <i class="fa fa-angle-left"></i>
+                        </div>
+                        <div class="d-none d-sm-flex hs-container-right-button-ignus" onclick="ignusTheme.hsMoveRight('#additionButtons-HS', 70)">
+                            <i class="fa fa-angle-right"></i>
+                        </div>
+                        <div id="additionButtons-HS" class="hs-container-inner-ignus" style="background: transparent;">
+                            <div class="hs-container-element-ignus">
+                                <button class="btn-ignus interface-button pt-2 pb-2 pl-4 pr-4 text-center">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="hs-container-element-ignus">
+                                <button class="btn-ignus interface-button pt-2 pb-2 pl-4 pr-4">
+                                    <i class="fa fa-play pr-2" style="color: hsla(var(--themeColorHue), 100%, 70%, 1)"></i> Run
+                                </button>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

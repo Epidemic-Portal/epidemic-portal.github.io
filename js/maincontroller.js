@@ -34,31 +34,6 @@ app.config(['$routeProvider','$sceProvider', '$locationProvider', function($rout
 
 
 app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$interval', function($scope, $routeParams, $timeout, $interval) {
-    $scope.appName = "Epidemic Portal";
-
-    $scope.urlParameters = {}
-
-
-    $scope.view = function() {
-        $scope.urlParameters[1] = $routeParams.param1
-        $scope.urlParameters[2] = $routeParams.param2
-
-        // if ($routeParams.param1 == 'task' && $routeParams.param2 !== undefined) {
-        //     $scope.loadApp();
-        // }
-        // else if ($routeParams.param1 == 'chat-settings' && $routeParams.param2 === undefined) {
-        //     $scope.loadSettings();
-        //     $scope.loadApp();
-        // }
-        // else {
-        //     $scope.loadApp();
-        // }
-
-        console.log($scope.urlParameters)
-    }
-
-
-
 
 
 
@@ -305,6 +280,41 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     
+    $scope.appName = "Epidemic Portal";
+
+    $scope.urlParameters = {}
+
+
+    $scope.view = function() {
+        $scope.urlParameters[1] = $routeParams.param1
+        $scope.urlParameters[2] = $routeParams.param2
+
+        // if ($routeParams.param1 == 'task' && $routeParams.param2 !== undefined) {
+        //     $scope.loadApp();
+        // }
+
+        $scope.loadApp();
+        // console.log($scope.urlParameters)
+    }
+
+
+    $scope.loadApp = function() {
+        $scope.networkGraph.addGraph()
+    }
+
+    $scope.networkGraph = {}
+    $scope.networkGraph.addGraph = function() {
+        graphH = document.getElementById('main-graph-holder')
+        viewX.addGraph(graphH, "main-graph", epidemicApp.defaultGraphOptions)
+    }
+
+
+    $scope.networkGraph.removeGraph = function() {
+        viewX.removeGraph("main-graph")
+    }
+
+
+
 
 
 
