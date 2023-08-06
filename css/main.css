@@ -48,6 +48,11 @@ main {
 
 .interface-button {
     background-color: hsla(0,0%,10%, 1);
+    color: white;
+}
+
+.interface-button-icon {
+    color: hsla(var(--themeColorHue), 100%, 70%, 1)
 }
 
 .interface-button:hover {
@@ -77,7 +82,24 @@ main {
     #dots-background-gradient {
         background: linear-gradient(75deg, hsla(0,0%,100%,1) 0%, hsla(0,0%,100%,0.9) 50%, hsla(0,0%,100%,0.9) 70%,  hsla(0,0%,100%,0.6) 100%);
     }
-    
+
+            
+    .interface-button {
+        background-color: hsla(0,0%,80%, 1);
+        color: black;
+    }
+
+    .interface-button:hover {
+        background-color: hsla(0,0%,20%, 1);
+        color: white;
+    }
+
+    .interface-button-icon {
+        color: hsla(var(--themeColorHue), 100%, 70%, 1)
+    }
+
+
+            
 }
 
 
