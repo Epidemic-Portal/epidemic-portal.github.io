@@ -51,7 +51,7 @@
                             <div class="hs-container-element-ignus">
                                 <button class="btn-ignus interface-button pt-2 pb-2 pl-4 pr-4 text-center">
                                     <span class="pr-3" ng-show="networkGraph.additionMenu.available">
-                                        <i ng-repeat="(additionMenuKey, additionMenu) in networkGraph.additionMenu.options" class="fa fa-{{additionMenu.icon}} pr-4 sub-addition-button" ng-mouseover="networkGraph.additionMenu.hoveringMenu = additionMenuKey" ng-mouseleave="networkGraph.additionMenu.hoveringMenu = ''" ng-click="additionMenu.menuFunction()"></i>
+                                        <i ng-repeat="(additionMenuKey, additionMenu) in networkGraph.additionMenu.options" class="fa fa-{{additionMenu.icon}} pr-4 sub-addition-button" ng-mouseover="networkGraph.additionMenu.hoveringMenu = additionMenuKey" ng-mouseleave="networkGraph.additionMenu.hoveringMenu = ''" ng-click="additionMenu.menuFunction()" ng-hide="(additionMenuKey == 'addEdge' && length(networkGraph.nodes) == 0)"></i>
                                     </span>
                                     <i id="sub-addition-button-plus" class="fa fa-plus sub-addition-button" style="transform: rotate({{networkGraph.additionMenu.available ? 45: 0}}deg);" ng-click="networkGraph.toggleAddMenu()"></i>
 
