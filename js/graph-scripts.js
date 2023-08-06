@@ -37,16 +37,20 @@ epidemicApp.defaultGraphOptions = {
     scrollZoom: "no"
 }
 
-
+epidemicApp.dots = {}
 epidemicApp.addDotsGraph = function() {
     graphH = document.getElementById('dots-background-graph-holder')
     viewX.addGraph(graphH, "dots-background-graph", epidemicApp.defaultGraphOptions)
     
 
     dotSpacing = window.innerWidth > 400 ? 1/20 : 1/25
-    for (i = 0; i < 30; i++) {
-        for (j = 0; j < 30; j++) {
-            dotOptions = {x: 0.5 + i*dotSpacing, y: -0.2 + j*dotSpacing, pointcolor: (epidemicApp.darkmode ? "hsla(0, 0%, 20%, 1)" : "hsla(0, 0%, 60%, 1)"), pointsize: 0.4}
+    yStart = window.innerWidth > 400 ? -0.2 : -0.3
+
+    epidemicApp.dots.xDots = window.innerWidth > 400 ? 30 : 15
+    epidemicApp.dots.yDots = window.innerWidth > 400 ? 30 : 40
+    for (i = 0; i < epidemicApp.dots.xDots; i++) {
+        for (j = 0; j < epidemicApp.dots.yDots; j++) {
+            dotOptions = {x: 0.5 + i*dotSpacing, y: yStart + j*dotSpacing, pointcolor: (epidemicApp.darkmode ? "hsla(0, 0%, 20%, 1)" : "hsla(0, 0%, 60%, 1)"), pointsize: 0.4}
             viewX.addPoint("dots-background-graph", "background-dot-" + i + "-" + j, dotOptions)
         }
     }
@@ -60,8 +64,8 @@ epidemicApp.updateDotsGraph = function() {
     epidemicApp.dotAnimationParameter =  (epidemicApp.dotAnimationParameter + 0.1) % 30
 
     
-    for (i = 0; i < 30; i++) {
-        for (j = 0; j < 30; j++) {
+    for (i = 0; i < epidemicApp.dots.xDots; i++) {
+        for (j = 0; j < epidemicApp.dots.yDots; j++) {
             dotColor = viewX.linearValue(-1, 1, 0, 100, Math.sin(epidemicApp.dotAnimationParameter*3 - (0.2*i*(i - 2)+0.3*j)))
             darkness = viewX.linearValue(-1, 1, 20, 70, Math.sin(epidemicApp.dotAnimationParameter*3 - (0.2*i*(i - 2)+0.3*j)))
             pointSize = viewX.linearValue(-1, 1, 0.4, 0.5, Math.sin(epidemicApp.dotAnimationParameter*3 - (0.2*i*(i - 2)+0.3*j)))
