@@ -751,6 +751,7 @@ viewX.addGraph = function (parentdiv, name, graphData) {
 		gdata.ymax = 0
 	}
 
+
 	gdata.unitAspectRatio = gdata.unitAspectRatio || 'no'
 	gdata.fixAxis = gdata.fixAxis || 'yaxis'
 	gdata.fixAxisStretchCentrally = gdata.fixAxisStretchCentrally || 'no'
@@ -791,6 +792,7 @@ viewX.addGraph = function (parentdiv, name, graphData) {
 	gdata.parentH = parentdiv.offsetHeight
 
 	aratio = parentdiv.offsetWidth/parentdiv.offsetHeight
+	
 
 	if (gdata.unitAspectRatio == 'yes') {
 		if (gdata.fixAxis == 'yaxis') {
@@ -798,6 +800,7 @@ viewX.addGraph = function (parentdiv, name, graphData) {
 				centre = (gdata.xmax + gdata.xmin)/2
 				gdata.xmin = centre - ((gdata.ymax - gdata.ymin)*aratio/2)
 				gdata.xmax = centre + ((gdata.ymax - gdata.ymin)*aratio/2)
+				
 			}
 			else {
 				gdata.xmax = gdata.xmin + (gdata.ymax - gdata.ymin)*aratio
@@ -816,6 +819,8 @@ viewX.addGraph = function (parentdiv, name, graphData) {
 			
 		}
 	}
+
+	
 
 
 
@@ -1190,6 +1195,8 @@ viewX.addGraph = function (parentdiv, name, graphData) {
 	gdata.arrowData = {}
 
 	gdata.aspectratio = aratio
+
+	
 
 
 	viewX.graphData[name] =  Object.assign({}, gdata);
