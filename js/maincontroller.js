@@ -352,6 +352,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.networkGraph.addEdge = function() {
 
     }
+    
 
 
 
