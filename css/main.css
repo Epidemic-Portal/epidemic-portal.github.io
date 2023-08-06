@@ -79,3 +79,10 @@ main {
     }
     
 }
+
+
+@media (max-width: 400px) {
+    #dots-background-gradient {
+        background: linear-gradient(75deg, hsla(0,0%,4%,1) 0%, hsla(0,0%,4%,1) 50%, hsla(0,0%,4%,0.5) 70%,  hsla(0,0%,4%,0.2) 100%);
+    }
+}
