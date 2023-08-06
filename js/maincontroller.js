@@ -299,7 +299,28 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     $scope.loadApp = function() {
+        
         $scope.networkGraph.addGraph()
+        $scope.networkGraph.additionMenu = {};
+        $scope.networkGraph.additionMenu.available = false;
+        $scope.networkGraph.additionMenu.options = {
+            "addNode": {
+                "name": "Add Node",
+                "menuFunction": function() {
+                    $scope.networkGraph.addNode();
+                },
+                "icon": "circle"
+            },
+            "addEdge": {
+                "name": "Add an Edge",
+                "menuFunction": function() {
+                    $scope.networkGraph.addEdge();
+                },
+                "icon": "arrow-up"
+            }
+        }
+
+        $scope.networkGraph.additionMenu.hoveringMenu = ""
     }
 
     $scope.networkGraph = {}
@@ -311,6 +332,25 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.removeGraph = function() {
         viewX.removeGraph("main-graph")
+    }
+
+
+    $scope.networkGraph.toggleAddMenu = function() {
+        if ($scope.networkGraph.additionMenu.available) {
+            $scope.networkGraph.additionMenu.available = false;
+        }
+        else {
+            $scope.networkGraph.additionMenu.available = true;
+
+        }
+    }
+
+    $scope.networkGraph.addNode = function() {
+
+    }
+
+    $scope.networkGraph.addEdge = function() {
+
     }
 
 

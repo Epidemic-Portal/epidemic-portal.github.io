@@ -55,6 +55,14 @@ main {
 }
 
 
+.sub-addition-button:hover {
+    color: hsla(var(--themeColorHue),100%,70%, 1);
+}
+
+#sub-addition-button-plus {
+    transition: transform 0.2s ease-in-out;
+}
+
 @media (prefers-color-scheme: light) {
     body {
         background: hsla(0,0%,79%,1);
