@@ -332,6 +332,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.networkGraph.additionMenu.hoveringMenu = ""
 
         $scope.networkGraph.nodes = {}
+
+        $scope.networkGraph.addNode()
+        $scope.networkGraph.addNode()
+        $scope.networkGraph.addNode()
+        $scope.networkGraph.addNode()
+        $scope.networkGraph.addNode()
+        $scope.networkGraph.addNode()
     }
 
     $scope.networkGraph = {}
@@ -361,10 +368,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         node.id = $scope.uniqueCodeGen()
         node.x =Math.random()
         node.y = Math.random()
-        nodeOptions = {x: node.x, y: node.y, radius: 0.044, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 70%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")}
+        nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 70%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")}
         viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
 
-        knobOptions = {x: node.x, y:node.y, pointcolor: 'transparent', pointsize: 3, draggability: "yes", dragFunction: 'handleDrag'}
+        knobOptions = {x: node.x, y:node.y, pointcolor: 'transparent', pointsize: 2, draggability: "yes", dragFunction: 'handleDrag'}
         viewX.addPoint("main-graph", "node-moving-knob-" + node.id, knobOptions)
 
         $scope.networkGraph.nodes[node.id] = node
@@ -378,6 +385,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.networkGraph.addEdge = function() {
 
     }
+
+
+    
     
 
 
