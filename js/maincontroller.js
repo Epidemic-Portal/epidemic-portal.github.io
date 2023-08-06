@@ -4,24 +4,24 @@ app.config(['$routeProvider','$sceProvider', '$locationProvider', function($rout
     $routeProvider.
         when('/:param1', {
             templateUrl: function(urlParams) {
-                if (urlParams.param1 == 'main') {
-                    return 'views/main.html';
+                if (urlParams.param1 == 'dash') {
+                    return 'views/dash.html';
                 }
             }
         }).
         when('/:param1/:param2', {
             templateUrl: function(urlParams) {
-                if (urlParams.param1 == 'main') {
-                    return 'views/main.html';
+                if (urlParams.param1 == 'dash') {
+                    return 'views/dash.html';
                 }
                 else {
-                    return 'views/main.html';
+                    return 'views/dash.html';
                 }
             }
         }).
         when('/', {
             templateUrl: function(urlParams) {
-                return 'views/main.html';
+                return 'views/dash.html';
             }
         }).
         otherwise({

@@ -25,9 +25,9 @@ body {
 }
 
 #dots-background-graph-holder {
-    background: url('https://images.pexels.com/photos/1429395/pexels-photo-1429395.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
-    background-size: cover;
-    background-position: 170% 50%;
+    /* background: url('https://images.pexels.com/photos/1429395/pexels-photo-1429395.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'); */
+    /* background-size: cover; */
+    /* background-position: 170% 50%; */
     width: 100%;
     height: 100%;
 }
