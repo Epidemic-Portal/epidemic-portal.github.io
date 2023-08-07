@@ -607,6 +607,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         $scope.networkGraph.clear()
 
+        for (edgeID in $scope.networkGraph.edge.edges) {
+            if ($scope.networkGraph.edge.edges[edgeID].from == nodeID || $scope.networkGraph.edge.edges[edgeID].to == nodeID) {
+                $scope.networkGraph.edge.removeEdge(edgeID)
+            }
+        }
+
+
         if (typeof $scope.networkGraph.nodes[nodeID] == 'object' && $scope.networkGraph.nodes[nodeID] !== null) {
             delete $scope.networkGraph.nodes[nodeID]
             viewX.removePoint("main-graph", "node-moving-knob-" + nodeID)
@@ -799,6 +806,24 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
 
         return reverseVector
+    }
+
+
+    $scope.networkGraph.edge.removeEdge = function(edgeID) {
+
+        $scope.networkGraph.clear()
+
+        if (typeof $scope.networkGraph.edge.edges[edgeID] == 'object' && $scope.networkGraph.edge.edges[edgeID] !== null) {
+            
+            fromNode = $scope.networkGraph.edge.edges[edgeID].from
+            toNode = $scope.networkGraph.edge.edges[edgeID].to
+
+            delete $scope.networkGraph.nodes[fromNode].edges.leaving[toNode]
+            delete $scope.networkGraph.nodes[toNode].edges.arriving[fromNode]
+
+            delete $scope.networkGraph.edge.edges[edgeID]
+
+        }
     }
 
 
