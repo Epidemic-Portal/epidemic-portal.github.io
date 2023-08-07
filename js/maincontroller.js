@@ -385,6 +385,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
     }
 
+    $scope.networkGraph.parameterDisplayedOnNode = "recoveryRate"
+
 
     
 
@@ -437,11 +439,24 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         for (nodeID in $scope.networkGraph.nodes) {
             node = $scope.networkGraph.nodes[nodeID]
-            nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 70%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")}
+            saturationForNode = $scope.networkGraph.nodeColoring()
+            nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), " + saturationForNode + "%, 70%, 1)" : "hsla(var(--themeColorHue), " + saturationForNode + "%, 45%, 1)")}
             viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
         }
 
 
+    }
+
+
+    $scope.networkGraph.nodeColoring = function() {
+        saturationForNode = 100
+
+        if ($scope.networkGraph.parameterDisplayedOnNode != null) {
+            saturationForNode = viewX.linearValue($scope.networkGraph.nodeParameters[$scope.networkGraph.parameterDisplayedOnNode].min , $scope.networkGraph.nodeParameters[$scope.networkGraph.parameterDisplayedOnNode].max, 10, 100, node.parameters[$scope.networkGraph.parameterDisplayedOnNode].value)
+
+        }
+
+        return saturationForNode
     }
 
     $scope.networkGraph.selectNode = function(nodeID) {
@@ -477,7 +492,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.networkGraph.unselectNode = function(nodeID) {
         node = $scope.networkGraph.nodes[nodeID]
         $scope.networkGraph.selectedNode = ""
-        viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 70%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")})
+
+        saturationForNode = $scope.networkGraph.nodeColoring()
+        viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), " + saturationForNode + "%, 70%, 1)" : "hsla(var(--themeColorHue), " + saturationForNode + "%, 45%, 1)")})
 
         viewX.updateCircle("main-graph", "highlightNodeRing1", {x: -5, y: -5})
         viewX.updateCircle("main-graph", "highlightNodeRing2", {x: -5, y: -5})
@@ -505,6 +522,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             $scope.networkGraph.addNode()
         }
     }
+
+
+
     
 
     $scope.networkGraph.addEdge = function() {
@@ -532,6 +552,19 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     //     }
 
     // }
+
+    $scope.networkGraph.fullGraphKeyEvents = function($event) {
+        if ($event.keyCode == 27) {
+            $scope.networkGraph.escapeEvent()
+        }
+
+        // Delete a node
+        if ($event.keyCode == 46) {
+            if ($scope.networkGraph.selectedNode != "") {
+                $scope.networkGraph.removeNode($scope.networkGraph.selectedNode)
+            }
+        } 
+    }
 
     $scope.networkGraph.escapeEvent = function() {
         if ($scope.networkGraph.selectedNode != "") {
