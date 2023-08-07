@@ -356,7 +356,6 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.networkGraph.additionMenu.hoveringMenu = ""
 
         $scope.networkGraph.nodes = {}
-
         $scope.networkGraph.edge.edges = {}
 
         $scope.networkGraph.configurations.random()
@@ -617,14 +616,6 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     }
 
-    $scope.networkGraph.configurations = {}
-
-    $scope.networkGraph.configurations.random = function() {
-        for (k = 0; k < 7; k++) {
-            $scope.networkGraph.addNode()
-        }
-    }
-
 
 
     
@@ -708,7 +699,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.edge.addEdge = function(fromNode, toNode) {
         edgeID = "from#" + fromNode + "to#" + toNode
-        if ($scope.networkGraph.edge.edges[edgeID] == undefined) {
+        reverseEdgeID = "from#" + toNode  + "to#" + fromNode
+        if ($scope.networkGraph.edge.edges[edgeID] == undefined && $scope.networkGraph.edge.edges[reverseEdgeID] == undefined) {
             $scope.networkGraph.edge.edges[edgeID] = {
                 from: fromNode,
                 to: toNode
@@ -716,8 +708,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
             $scope.networkGraph.nodes[fromNode].edges.leaving[toNode] = edgeID
             $scope.networkGraph.nodes[toNode].edges.arriving[fromNode] = edgeID
-
+            $scope.networkGraph.render()
         }
+
+        
     }
 
 
@@ -764,6 +758,31 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
     }
 
+
+
+
+
+
+
+
+
+
+    
+    $scope.networkGraph.configurations = {}
+
+    $scope.networkGraph.configurations.random = function() {
+        for (k = 0; k < 7; k++) {
+            $scope.networkGraph.addNode()
+        }
+
+        nodeIDList = Object.keys($scope.networkGraph.nodes)
+
+        for (k = 0; k < 7; k++) {
+            fromNode = nodeIDList[Math.floor(Math.random() * nodeIDList.length)]
+            toNode = nodeIDList[Math.floor(Math.random() * nodeIDList.length)]
+            $scope.networkGraph.edge.addEdge(fromNode, toNode);
+        }
+    }
 
 
 
