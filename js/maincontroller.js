@@ -507,7 +507,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             else {
                 nodeFromTo = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
 
-                constructionValues = $scope.networkGraph.edge.loopCreation([nodeFromTo.x, nodeFromTo.y], [1,1])
+                loopDirection = $scope.networkGraph.edge.loopCreationDirection($scope.networkGraph.edge.edges[edgeID].from)
+                constructionValues = $scope.networkGraph.edge.loopCreation([nodeFromTo.x, nodeFromTo.y], loopDirection)
 
                 edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), 30%, 40%, 1)", circlecolor: "transparent", strokewidth: 3}
                 
@@ -756,6 +757,46 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             arrowLocation: arrowLocation,
             arrowTo: arrowTo
         }
+    }
+
+    $scope.networkGraph.edge.loopCreationDirection = function(fromNode) {
+
+        nodeDistances = []
+
+        for (nodeID in $scope.networkGraph.nodes) {
+            if (nodeID != fromNode) {
+                distance = viewX.distF([$scope.networkGraph.nodes[nodeID].x, $scope.networkGraph.nodes[nodeID].y], [$scope.networkGraph.nodes[fromNode].x, $scope.networkGraph.nodes[fromNode].y])
+                nodeDistances.push([nodeID, distance])
+            }
+        }
+
+        // Top 3 closest nodes
+        nodeDistances.sort(function(a, b) {
+            return a[1] - b[1];
+        });
+
+        nodeDistances = nodeDistances.slice(0, 3)
+
+        resultantVector = [0, 0]
+
+        for (nk = 0; nk < nodeDistances.length; nk++) {
+            nodeID = nodeDistances[nk][0]
+            node = $scope.networkGraph.nodes[nodeID]
+            nodeVector = viewX.subtractVec([$scope.networkGraph.nodes[nodeID].x, $scope.networkGraph.nodes[nodeID].y], [$scope.networkGraph.nodes[fromNode].x, $scope.networkGraph.nodes[fromNode].y])
+
+            resultantVector = viewX.addVec(resultantVector, nodeVector)
+        }
+
+
+        if (resultantVector != [0, 0]) {
+            resultantUnitVector = viewX.unitVec(resultantVector)
+            reverseVector = viewX.scalarMultiplyVec(-1, resultantUnitVector)
+        }
+        else {
+            reverseVector = [1, 1]
+        }
+
+        return reverseVector
     }
 
 
