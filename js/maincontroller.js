@@ -784,6 +784,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             node = $scope.networkGraph.nodes[nodeID]
             nodeVector = viewX.subtractVec([$scope.networkGraph.nodes[nodeID].x, $scope.networkGraph.nodes[nodeID].y], [$scope.networkGraph.nodes[fromNode].x, $scope.networkGraph.nodes[fromNode].y])
 
+            nodeVector = viewX.scalarMultiplyVec(1/nodeDistances[nk][1], nodeVector)
+
             resultantVector = viewX.addVec(resultantVector, nodeVector)
         }
 
