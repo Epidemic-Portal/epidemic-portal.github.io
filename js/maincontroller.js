@@ -309,6 +309,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.loadApp = function() {
         
+        $scope.networkGraph.nodesAdded = 0
+        $scope.networkGraph.nodeOptionsMenu = {}
+        $scope.networkGraph.nodeOptionsMenu.top = -100
+        $scope.networkGraph.nodeOptionsMenu.left = -100
+
+
         $scope.networkGraph.addGraph()
         $scope.networkGraph.additionMenu = {};
         $scope.networkGraph.additionMenu.available = false;
@@ -333,18 +339,22 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         $scope.networkGraph.nodes = {}
 
-        $scope.networkGraph.addNode()
-        $scope.networkGraph.addNode()
-        $scope.networkGraph.addNode()
-        $scope.networkGraph.addNode()
-        $scope.networkGraph.addNode()
-        $scope.networkGraph.addNode()
+        $scope.networkGraph.configurations.random()
+
+        // $scope.networkGraph.selectedNode = ""
+
+        // $scope.networkGraph.selectNode(recentNode)
     }
 
     $scope.networkGraph = {}
+
     $scope.networkGraph.addGraph = function() {
         graphH = document.getElementById('main-graph-holder')
         viewX.addGraph(graphH, "main-graph", epidemicApp.defaultGraphOptions)
+
+
+        viewX.addCircle("main-graph", "highlightNodeRing1", {x: 1, y: 1, radius: 0.042, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 0.1)" : "hsla(var(--themeColorHue), 100%, 45%, 0.1)")})
+        viewX.addCircle("main-graph", "highlightNodeRing2", {x: 1, y: 1, radius: 0.055, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 0.1)" : "hsla(var(--themeColorHue), 100%, 45%, 0.1)")})
     }
 
 
@@ -363,27 +373,172 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
     }
 
+    $scope.networkGraph.nodeParameters = {
+        "recoveryRate": {
+            default: 0.25,
+            min: 0,
+            max: 1,
+            step: 0.01,
+            name: "Recovery Rate",
+            description: "The rate at which the node recovers from the disease",
+            internalName: "Gamma"
+        }
+    }
+
+
+    
+
     $scope.networkGraph.addNode = function() {
         node = {}
         node.id = $scope.uniqueCodeGen()
         node.x =Math.random()
         node.y = Math.random()
-        nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 70%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")}
-        viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
 
-        knobOptions = {x: node.x, y:node.y, pointcolor: 'transparent', pointsize: 2, draggability: "yes", dragFunction: 'handleDrag'}
+        node.name = "Node " + $scope.networkGraph.nodesAdded
+        node.editableName = "Gotham City"
+        node.displayInfo = "A Node in the graph"
+        node.editing = {}
+        node.editing.name = false
+
+        node.parameters = {}
+
+        for (parameter in $scope.networkGraph.nodeParameters) {
+            node.parameters[parameter] = {}
+            node.parameters[parameter].value = $scope.networkGraph.nodeParameters[parameter].default
+            node.parameters[parameter].editing = false
+        }
+
+        knobOptions = {x: node.x, y:node.y, pointcolor: 'transparent', pointsize: 2, draggability: "yes", runFunctionDuringDrag: 'epidemicApp.networkGraph.nodeMove()'}
         viewX.addPoint("main-graph", "node-moving-knob-" + node.id, knobOptions)
 
         $scope.networkGraph.nodes[node.id] = node
 
+        $scope.networkGraph.nodesAdded = $scope.networkGraph.nodesAdded + 1
+
+        $scope.networkGraph.render()
+
+        $scope.networkGraph.selectNode(node.id)
+
+        
+        return node.id
+
     }
 
-    $scope.networkGraph.removeNode = function(node) {
+
+    $scope.networkGraph.clear = function() {
+        for (nodeID in $scope.networkGraph.nodes) {
+            node = $scope.networkGraph.nodes[nodeID]
+            viewX.removeCircle("main-graph", "node-" + node.id)
+        }
+    }
+
+    $scope.networkGraph.render = function() {
+        $scope.networkGraph.clear()
+
+        for (nodeID in $scope.networkGraph.nodes) {
+            node = $scope.networkGraph.nodes[nodeID]
+            nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 70%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")}
+            viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
+        }
+
+
+    }
+
+    $scope.networkGraph.selectNode = function(nodeID) {
+        $scope.networkGraph.selectedNode = nodeID
+        node = $scope.networkGraph.nodes[nodeID]
+        viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")})
+
+        viewX.updateCircle("main-graph", "highlightNodeRing1", {x: node.x, y: node.y})
+        viewX.updateCircle("main-graph", "highlightNodeRing2", {x: node.x, y: node.y})
+        
+        circleBoundingRect = viewX.graphData["main-graph"].circleData["highlightNodeRing2"][0].getBoundingClientRect()
+        if (circleBoundingRect.left + circleBoundingRect.width + 20 < window.innerWidth - 350) {
+            $scope.networkGraph.nodeOptionsMenu.left = circleBoundingRect.left + circleBoundingRect.width + 20
+        }
+        else {
+            $scope.networkGraph.nodeOptionsMenu.left = circleBoundingRect.left - 300 - 40
+        }
+
+        if (document.getElementById("node-property-menu") != null) {
+            if (circleBoundingRect.top + document.getElementById("node-property-menu").getBoundingClientRect().height + 20 < window.innerHeight) {
+                $scope.networkGraph.nodeOptionsMenu.top = circleBoundingRect.top
+            }
+            else {
+                $scope.networkGraph.nodeOptionsMenu.top = window.innerHeight - document.getElementById("node-property-menu").getBoundingClientRect().height - 20
+            }
+        }
+        else {
+            $scope.networkGraph.nodeOptionsMenu.top = circleBoundingRect.top 
+        }
         
     }
 
+    $scope.networkGraph.unselectNode = function(nodeID) {
+        node = $scope.networkGraph.nodes[nodeID]
+        $scope.networkGraph.selectedNode = ""
+        viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 70%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")})
+
+        viewX.updateCircle("main-graph", "highlightNodeRing1", {x: -5, y: -5})
+        viewX.updateCircle("main-graph", "highlightNodeRing2", {x: -5, y: -5})
+    }
+
+    $scope.networkGraph.removeNode = function(nodeID) {
+        $scope.networkGraph.unselectNode(nodeID)
+
+        $scope.networkGraph.clear()
+
+        if (typeof $scope.networkGraph.nodes[nodeID] == 'object' && $scope.networkGraph.nodes[nodeID] !== null) {
+            delete $scope.networkGraph.nodes[nodeID]
+            viewX.removePoint("main-graph", "node-moving-knob-" + nodeID)
+        }
+
+        $scope.networkGraph.render()
+        
+
+    }
+
+    $scope.networkGraph.configurations = {}
+
+    $scope.networkGraph.configurations.random = function() {
+        for (k = 0; k < 7; k++) {
+            $scope.networkGraph.addNode()
+        }
+    }
+    
+
     $scope.networkGraph.addEdge = function() {
 
+    }
+
+
+
+
+
+    $scope.networkGraph.fullGraphClickEvents = function($event) {
+        if ($event.target.id.search('knob') == -1) {
+            $scope.networkGraph.escapeEvent()
+        }
+
+        if ($event.target.id.search('knob') != -1) {
+            $scope.networkGraph.escapeEvent()
+            $scope.networkGraph.selectNode($event.target.id.split("knob-")[1])
+        }
+    }
+
+    // $scope.networkGraph.fullGraphMouseDownEvents = function($event) {
+    //     if ($event.target.id.search('knob') != -1) {
+    //         console.log("Hi")
+    //     }
+
+    // }
+
+    $scope.networkGraph.escapeEvent = function() {
+        if ($scope.networkGraph.selectedNode != "") {
+            $scope.networkGraph.unselectNode($scope.networkGraph.selectedNode)
+        }
+
+        $scope.networkGraph.additionMenu.available = false;
     }
 
 
