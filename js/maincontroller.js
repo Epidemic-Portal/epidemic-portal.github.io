@@ -329,11 +329,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             "addEdge": {
                 "name": "Add an Edge",
                 "menuFunction": function() {
-                    $scope.networkGraph.addEdge();
+                    $scope.networkGraph.edge.addEdge();
                 },
                 "icon": "arrow-up"
             }
         }
+
+        $scope.networkGraph.generateStylesForNodeSliders()
 
         $scope.networkGraph.additionMenu.hoveringMenu = ""
 
@@ -387,7 +389,24 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.parameterDisplayedOnNode = "recoveryRate"
 
+    $scope.networkGraph.generateStylesForNodeSliders = function() {
+        for (var key in $scope.networkGraph.nodeParameters) {
+            var sliderProperties = {
+                minwidth: '200px',
+                width: '50%',
+                height: 5,
+                trackColor: "hsla(280, 0%, 20%, 0.7)",
+                trackFillColor: "hsla(var(--themeColorHue), 100%, 70%, 1)",
+                thumbWidth: 15,
+                thumbHeight: 15,
+                thumbColor: "hsla(var(--themeColorHue), 100%, 70%, 1)",
+                opacity: 0.7
+            };
 
+            viewX.generateSliderStyles(sliderProperties, "node-slider-" + key);
+        }
+
+    }
     
 
     $scope.networkGraph.addNode = function() {
@@ -452,8 +471,14 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         saturationForNode = 100
 
         if ($scope.networkGraph.parameterDisplayedOnNode != null) {
-            saturationForNode = viewX.linearValue($scope.networkGraph.nodeParameters[$scope.networkGraph.parameterDisplayedOnNode].min , $scope.networkGraph.nodeParameters[$scope.networkGraph.parameterDisplayedOnNode].max, 10, 100, node.parameters[$scope.networkGraph.parameterDisplayedOnNode].value)
+            variation = viewX.linearValue($scope.networkGraph.nodeParameters[$scope.networkGraph.parameterDisplayedOnNode].min , $scope.networkGraph.nodeParameters[$scope.networkGraph.parameterDisplayedOnNode].max, 0, 1, node.parameters[$scope.networkGraph.parameterDisplayedOnNode].value)
 
+            if (variation > 0.7) {
+                saturationForNode = 100
+            }
+            else {
+                saturationForNode = viewX.linearValue(0, 0.7, 10, 100, variation)
+            }
         }
 
         return saturationForNode
@@ -500,6 +525,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         viewX.updateCircle("main-graph", "highlightNodeRing2", {x: -5, y: -5})
     }
 
+    $scope.networkGraph.changingNodeParameter = function() {
+        node = $scope.networkGraph.nodes[$scope.networkGraph.selectedNode]
+
+        $scope.networkGraph.render()
+    }
+
     $scope.networkGraph.removeNode = function(nodeID) {
         $scope.networkGraph.unselectNode(nodeID)
 
@@ -526,8 +557,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     
-
-    $scope.networkGraph.addEdge = function() {
+    $scope.networkGraph.edge = {}
+    $scope.networkGraph.edge.addEdge = function() {
 
     }
 

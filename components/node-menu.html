@@ -17,7 +17,7 @@
                     <span class="parameter-display-text"  ng-click="nodeParameter.editing = !nodeParameter.editing">{{nodeParameter.value}}</span>
                     <i class="ml-2 fa fa-pencil sub-addition-button" ng-click="nodeParameter.editing = !nodeParameter.editing"></i>
                     <div class="pb-2" ng-show="nodeParameter.editing">
-                        <input type="range" id="node-slider" min="{{networkGraph.nodeParameters[nodeParameterKey].min}}" max="{{networkGraph.nodeParameters[nodeParameterKey].max}}" step="{{networkGraph.nodeParameters[nodeParameterKey].step}}" ng-model="nodeParameter.value">
+                        <input type="range" id="node-slider-{{nodeParameterKey}}" min="{{networkGraph.nodeParameters[nodeParameterKey].min}}" max="{{networkGraph.nodeParameters[nodeParameterKey].max}}" step="{{networkGraph.nodeParameters[nodeParameterKey].step}}" ng-model="nodeParameter.value" ng-change="networkGraph.changingNodeParameter()">
                     </div>
                     <div class="text-ignus" style="font-size: normal;">
                         {{networkGraph.nodeParameters[nodeParameterKey].name}}
@@ -31,22 +31,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    
-    var sliderProperties = {
-        minwidth: '200px',
-        width: '50%',
-        height: 5,
-        trackColor: "hsla(280, 0%, 20%, 0.7)",
-        trackFillColor: "hsla(var(--themeColorHue), 100%, 70%, 1)",
-        thumbWidth: 15,
-        thumbHeight: 15,
-        thumbColor: "hsla(var(--themeColorHue), 100%, 70%, 1)",
-        opacity: 0.7
-    };
-
-    viewX.generateSliderStyles(sliderProperties, "node-slider");
-
-
-</script>
