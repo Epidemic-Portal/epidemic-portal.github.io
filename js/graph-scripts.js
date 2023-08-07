@@ -1,4 +1,15 @@
 
+// Create a style tag
+var style = document.createElement("style");
+style.id = "root-styles"
+
+themeColors = [270, 198, 40]
+themeColor = themeColors[Math.floor(Math.random()*themeColors.length)]
+style.innerHTML = ":root {--themeColorHue: "+  themeColor + ";"
+document.head.appendChild(style);
+
+
+
 epidemicApp = {}
 
 epidemicApp.darkmode = true
