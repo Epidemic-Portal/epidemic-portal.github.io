@@ -483,6 +483,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             }
             else {
                 viewX.removeCircle("main-graph", "edgeLine-" + edgeID)
+                viewX.removeArrow("main-graph", "edgeArrow-" + edgeID)
             }
         }
     }
@@ -512,7 +513,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), 30%, 40%, 1)", circlecolor: "transparent", strokewidth: 3}
                 
                 viewX.addCircle("main-graph", "edgeLine-" + edgeID, edgeCircleOptions)
+                
 
+                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5}
+                viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
                 
                 // viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
             }
@@ -735,7 +739,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 else {
                     viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20]})
 
-                    constructionValues = $scope.networkGraph.edge.loopCreation([$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], [1,1])
+                    loopCreationDirection = [1, 1]
+                    constructionValues = $scope.networkGraph.edge.loopCreation([$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], loopCreationDirection)
 
                     viewX.updateCircle("main-graph", "addingEdgeLoop", {x: constructionValues.center[0], y: constructionValues.center[1], radius: 0.1})
                 }
@@ -750,10 +755,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         
         arrowLocation = viewX.addVec(loopAt, viewX.scalarMultiplyVec(2*$scope.networkGraph.edge.loopRadius, unitDirectionVector))
         circleCenter = viewX.addVec(loopAt, viewX.scalarMultiplyVec($scope.networkGraph.edge.loopRadius, unitDirectionVector))
+        arrowTo = viewX.addVec(arrowLocation, viewX.scalarMultiplyVec(0.01, viewX.rotatedVec( unitDirectionVector, 90)))
 
         return {
             center: circleCenter,
-            arrowLocation: arrowLocation
+            arrowLocation: arrowLocation,
+            arrowTo: arrowTo
         }
     }
 
