@@ -82,6 +82,13 @@ main {
 }
 
 
+
+@media (max-width: 400px) {
+    #dots-background-gradient {
+        background: linear-gradient(75deg, hsla(0,0%,4%,1) 0%, hsla(0,0%,4%,1) 50%, hsla(0,0%,4%,0.9) 90%,  hsla(0,0%,4%,0.6) 100%);
+    }
+}
+
 @media (prefers-color-scheme: light) {
     body {
         background: hsla(0,0%,79%,1);
@@ -112,13 +119,11 @@ main {
         color: hsla(var(--themeColorHue), 100%, 70%, 1)
     }
 
+    #node-property-menu {
+        border: 2px solid hsla(var(--themeColorHue), 40%, 70%, 0.1); background-color: hsla(0, 0%, 78%, 0.6);
+    }
+
 
             
 }
 
-
-@media (max-width: 400px) {
-    #dots-background-gradient {
-        background: linear-gradient(75deg, hsla(0,0%,4%,1) 0%, hsla(0,0%,4%,1) 50%, hsla(0,0%,4%,0.9) 90%,  hsla(0,0%,4%,0.6) 100%);
-    }
-}

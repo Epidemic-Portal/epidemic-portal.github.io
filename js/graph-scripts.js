@@ -99,3 +99,21 @@ epidemicApp.networkGraph.nodeMove = function() {
     // viewX.graphData["main-graph"]
     angularScope.$apply()
 }
+
+
+epidemicApp.networkGraph.handleAllTouchStarts = function(event) {
+    angularScope = angular.element(document.getElementById('main-graph-holder')).scope()
+
+    if (event.target.id.search('knob') == -1) {
+        angularScope.networkGraph.escapeEvent()
+    }
+
+    if (event.target.id.search('knob') != -1) {
+        angularScope.networkGraph.escapeEvent()
+        angularScope.networkGraph.selectNode(event.target.id.split("knob-")[1])
+    }
+
+    angularScope.$apply()
+
+
+}
