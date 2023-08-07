@@ -330,6 +330,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         $scope.networkGraph.edge.editContext()
 
+        $scope.networkGraph.edge.loopRadius = 0.1
+
         $scope.networkGraph.additionMenu = {};
         $scope.networkGraph.additionMenu.available = false;
         $scope.networkGraph.additionMenu.options = {
@@ -437,6 +439,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         node.editing = {}
         node.editing.name = false
 
+
+        node.edges = {}
+        node.edges.leaving = {}
+        node.edges.arriving = {}
+
         node.parameters = {}
 
         for (parameter in $scope.networkGraph.nodeParameters) {
@@ -467,22 +474,48 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             node = $scope.networkGraph.nodes[nodeID]
             viewX.removeCircle("main-graph", "node-" + node.id)
         }
+
+        for (edgeID in $scope.networkGraph.edge.edges) {
+            if ($scope.networkGraph.edge.edges[edgeID].from != $scope.networkGraph.edge.edges[edgeID].to) {
+                viewX.removeArrow("main-graph", "edgeArrow-" + edgeID)
+                viewX.removeLine("main-graph", "edgeLine-" + edgeID)
+                
+            }
+            else {
+                viewX.removeCircle("main-graph", "edgeLine-" + edgeID)
+            }
+        }
     }
 
     $scope.networkGraph.render = function() {
         $scope.networkGraph.clear()
 
         for (edgeID in $scope.networkGraph.edge.edges) {
-            firstNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
-            secondNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].to]
+
+            if ($scope.networkGraph.edge.edges[edgeID].from != $scope.networkGraph.edge.edges[edgeID].to) {
+                firstNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
+                secondNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].to]
 
 
-            midPoint = viewX.scalarMultiplyVec(0.5, viewX.addVec([firstNode.x, firstNode.y], [secondNode.x, secondNode.y]))
-            edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 100%, 60%, 1)", strokewidth: 0.5}
-            viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
+                midPoint = viewX.scalarMultiplyVec(0.5, viewX.addVec([firstNode.x, firstNode.y], [secondNode.x, secondNode.y]))
+                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5}
+                viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
 
-            edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), 100%, 60%, 1)", strokewidth: 3}
-            viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
+                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 3}
+                viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
+            }
+            else {
+                nodeFromTo = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
+
+                constructionValues = $scope.networkGraph.edge.loopCreation([nodeFromTo.x, nodeFromTo.y], [1,1])
+
+                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), 30%, 40%, 1)", circlecolor: "transparent", strokewidth: 3}
+                
+                viewX.addCircle("main-graph", "edgeLine-" + edgeID, edgeCircleOptions)
+
+                
+                // viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
+            }
         }
 
 
@@ -601,7 +634,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         viewX.addCircle("main-graph", "edgeFirstPointSelected", {x: -1, y: -1, radius: 0.05, stroke: "white", circlecolor: "transparent", strokedasharray: [5, 5], strokewidth: 2})
 
         viewX.addArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20], stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 100%, 80%, 0.4)", strokewidth: 1})
-        
+
+        edgeCircleOptions = {x: -10, y: -10, radius: 0.1, stroke: "hsla(var(--themeColorHue), 30%, 60%, 1)", circlecolor: "transparent", strokewidth: 3}
+        viewX.addCircle("main-graph", "addingEdgeLoop", edgeCircleOptions)
     }
 
     $scope.networkGraph.edge.startEditContext = function() {
@@ -621,7 +656,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.networkGraph.edge.editContextStarted = false
         viewX.updateCircle("main-graph", "edgeFirstPointSelected", {x: -5, y: -5})
         viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20]})
-
+        viewX.updateCircle("main-graph", "addingEdgeLoop", {x: -10, y: -10, radius: 0.1})
         $scope.networkGraph.render()
     }
 
@@ -633,6 +668,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
             viewX.updateCircle("main-graph", "edgeFirstPointSelected", {x: -5, y: -5})
             viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20]})
+            viewX.updateCircle("main-graph", "addingEdgeLoop", {x: -10, y: -10, radius: 0.1})
         }
         else if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected == "") {
             $scope.text.heading = "Select the second node"
@@ -645,7 +681,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
         else if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected != "") {
             
-
+            // console.log("g")
             $scope.networkGraph.escapeEvent()
         }
 
@@ -659,12 +695,24 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
         else {
             $scope.networkGraph.edge.edgeSecondPointSelected = nodeID
-            $scope.networkGraph.edge.edges["from#" + $scope.networkGraph.edge.edgeFirstPointSelected + "to#" + $scope.networkGraph.edge.edgeSecondPointSelected] = {
-                from: $scope.networkGraph.edge.edgeFirstPointSelected,
-                to: $scope.networkGraph.edge.edgeSecondPointSelected
-            }
+            $scope.networkGraph.edge.addEdge($scope.networkGraph.edge.edgeFirstPointSelected, $scope.networkGraph.edge.edgeSecondPointSelected)
 
             $scope.networkGraph.edge.updateEditContext()
+        }
+    }
+
+
+    $scope.networkGraph.edge.addEdge = function(fromNode, toNode) {
+        edgeID = "from#" + fromNode + "to#" + toNode
+        if ($scope.networkGraph.edge.edges[edgeID] == undefined) {
+            $scope.networkGraph.edge.edges[edgeID] = {
+                from: fromNode,
+                to: toNode
+            }
+
+            $scope.networkGraph.nodes[fromNode].edges.leaving[toNode] = edgeID
+            $scope.networkGraph.nodes[toNode].edges.arriving[fromNode] = edgeID
+
         }
     }
 
@@ -678,8 +726,34 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected == "") {
 
                 currentlyAt = viewX.cursorToGraph($event.clientX, $event.clientY, "main-graph")
-                viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], to: currentlyAt})
+
+                if (viewX.distF([$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], currentlyAt) > 0.04) {
+                    viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], to: currentlyAt})
+
+                    viewX.updateCircle("main-graph", "addingEdgeLoop", {x: -10, y: -10, radius: 0.1})
+                }
+                else {
+                    viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20]})
+
+                    constructionValues = $scope.networkGraph.edge.loopCreation([$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], [1,1])
+
+                    viewX.updateCircle("main-graph", "addingEdgeLoop", {x: constructionValues.center[0], y: constructionValues.center[1], radius: 0.1})
+                }
+                
             }
+        }
+    }
+
+
+    $scope.networkGraph.edge.loopCreation = function(loopAt, vectorPointingDirection) {
+        unitDirectionVector = viewX.unitVec(vectorPointingDirection)
+        
+        arrowLocation = viewX.addVec(loopAt, viewX.scalarMultiplyVec(2*$scope.networkGraph.edge.loopRadius, unitDirectionVector))
+        circleCenter = viewX.addVec(loopAt, viewX.scalarMultiplyVec($scope.networkGraph.edge.loopRadius, unitDirectionVector))
+
+        return {
+            center: circleCenter,
+            arrowLocation: arrowLocation
         }
     }
 
