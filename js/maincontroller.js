@@ -291,6 +291,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     
     $scope.appName = "Epidemic Portal";
 
+
+
     $scope.urlParameters = {}
 
 
@@ -308,14 +310,26 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     $scope.loadApp = function() {
+
+        $scope.text = {
+            heading: "Epidemic Simulation",
+            subheading: "By IITK and Purdue University, and some more information that good if it's two lines.",
+    
+        }
         
         $scope.networkGraph.nodesAdded = 0
         $scope.networkGraph.nodeOptionsMenu = {}
         $scope.networkGraph.nodeOptionsMenu.top = -100
         $scope.networkGraph.nodeOptionsMenu.left = -100
 
+        
+
 
         $scope.networkGraph.addGraph()
+
+
+        $scope.networkGraph.edge.editContext()
+
         $scope.networkGraph.additionMenu = {};
         $scope.networkGraph.additionMenu.available = false;
         $scope.networkGraph.additionMenu.options = {
@@ -329,7 +343,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             "addEdge": {
                 "name": "Add an Edge",
                 "menuFunction": function() {
-                    $scope.networkGraph.edge.addEdge();
+                    $scope.networkGraph.edge.startEditContext();
                 },
                 "icon": "arrow-up"
             }
@@ -341,11 +355,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         $scope.networkGraph.nodes = {}
 
+        $scope.networkGraph.edge.edges = {}
+
         $scope.networkGraph.configurations.random()
 
         // $scope.networkGraph.selectedNode = ""
-
         // $scope.networkGraph.selectNode(recentNode)
+
     }
 
     $scope.networkGraph = {}
@@ -456,6 +472,20 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.networkGraph.render = function() {
         $scope.networkGraph.clear()
 
+        for (edgeID in $scope.networkGraph.edge.edges) {
+            firstNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
+            secondNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].to]
+
+
+            midPoint = viewX.scalarMultiplyVec(0.5, viewX.addVec([firstNode.x, firstNode.y], [secondNode.x, secondNode.y]))
+            edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 100%, 60%, 1)", strokewidth: 0.5}
+            viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
+
+            edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), 100%, 60%, 1)", strokewidth: 3}
+            viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
+        }
+
+
         for (nodeID in $scope.networkGraph.nodes) {
             node = $scope.networkGraph.nodes[nodeID]
             saturationForNode = $scope.networkGraph.nodeColoring()
@@ -485,32 +515,36 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
 
     $scope.networkGraph.selectNode = function(nodeID) {
-        $scope.networkGraph.selectedNode = nodeID
-        node = $scope.networkGraph.nodes[nodeID]
-        viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")})
+        if ($scope.networkGraph.edge.editContextStarted == false) {
+            $scope.networkGraph.selectedNode = nodeID
+            node = $scope.networkGraph.nodes[nodeID]
+            viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")})
 
-        viewX.updateCircle("main-graph", "highlightNodeRing1", {x: node.x, y: node.y})
-        viewX.updateCircle("main-graph", "highlightNodeRing2", {x: node.x, y: node.y})
-        
-        circleBoundingRect = viewX.graphData["main-graph"].circleData["highlightNodeRing2"][0].getBoundingClientRect()
-        if (circleBoundingRect.left + circleBoundingRect.width + 20 < window.innerWidth - 350) {
-            $scope.networkGraph.nodeOptionsMenu.left = circleBoundingRect.left + circleBoundingRect.width + 20
-        }
-        else {
-            $scope.networkGraph.nodeOptionsMenu.left = circleBoundingRect.left - 300 - 40
-        }
-
-        if (document.getElementById("node-property-menu") != null) {
-            if (circleBoundingRect.top + document.getElementById("node-property-menu").getBoundingClientRect().height + 20 < window.innerHeight) {
-                $scope.networkGraph.nodeOptionsMenu.top = circleBoundingRect.top
+            viewX.updateCircle("main-graph", "highlightNodeRing1", {x: node.x, y: node.y})
+            viewX.updateCircle("main-graph", "highlightNodeRing2", {x: node.x, y: node.y})
+            
+            circleBoundingRect = viewX.graphData["main-graph"].circleData["highlightNodeRing2"][0].getBoundingClientRect()
+            if (circleBoundingRect.left + circleBoundingRect.width + 20 < window.innerWidth - 350) {
+                $scope.networkGraph.nodeOptionsMenu.left = circleBoundingRect.left + circleBoundingRect.width + 20
             }
             else {
-                $scope.networkGraph.nodeOptionsMenu.top = window.innerHeight - document.getElementById("node-property-menu").getBoundingClientRect().height - 20
+                $scope.networkGraph.nodeOptionsMenu.left = circleBoundingRect.left - 300 - 40
+            }
+
+            if (document.getElementById("node-property-menu") != null) {
+                if (circleBoundingRect.top + document.getElementById("node-property-menu").getBoundingClientRect().height + 20 < window.innerHeight) {
+                    $scope.networkGraph.nodeOptionsMenu.top = circleBoundingRect.top
+                }
+                else {
+                    $scope.networkGraph.nodeOptionsMenu.top = window.innerHeight - document.getElementById("node-property-menu").getBoundingClientRect().height - 20
+                }
+            }
+            else {
+                $scope.networkGraph.nodeOptionsMenu.top = circleBoundingRect.top 
             }
         }
-        else {
-            $scope.networkGraph.nodeOptionsMenu.top = circleBoundingRect.top 
-        }
+
+        
         
     }
 
@@ -558,8 +592,95 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     
     $scope.networkGraph.edge = {}
-    $scope.networkGraph.edge.addEdge = function() {
 
+    
+
+    $scope.networkGraph.edge.editContext = function() {
+        $scope.networkGraph.edge.editContextStarted = false
+        $scope.networkGraph.edge.edgeFirstPointSelected = ""
+        viewX.addCircle("main-graph", "edgeFirstPointSelected", {x: -1, y: -1, radius: 0.05, stroke: "white", circlecolor: "transparent", strokedasharray: [5, 5], strokewidth: 2})
+
+        viewX.addArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20], stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 100%, 80%, 0.4)", strokewidth: 1})
+        
+    }
+
+    $scope.networkGraph.edge.startEditContext = function() {
+        $scope.networkGraph.escapeEvent()
+
+        $scope.text.heading = "Select the first node"
+        $scope.text.subheading = "The node you select is where the edge will begin from"
+        $scope.networkGraph.edge.edgeFirstPointSelected = ""
+        $scope.networkGraph.edge.edgeSecondPointSelected = ""
+        $scope.networkGraph.edge.editContextStarted = true
+        
+    }
+
+
+    $scope.networkGraph.edge.endEditContext = function() {
+        
+        $scope.networkGraph.edge.editContextStarted = false
+        viewX.updateCircle("main-graph", "edgeFirstPointSelected", {x: -5, y: -5})
+        viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20]})
+
+        $scope.networkGraph.render()
+    }
+
+    $scope.networkGraph.edge.updateEditContext = function() {
+        
+        if ($scope.networkGraph.edge.edgeFirstPointSelected == "" && $scope.networkGraph.edge.edgeSecondPointSelected == "") {
+            $scope.text.heading = "Select the first node"
+            $scope.text.subheading = "The node you select is where the edge will begin from"
+
+            viewX.updateCircle("main-graph", "edgeFirstPointSelected", {x: -5, y: -5})
+            viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20]})
+        }
+        else if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected == "") {
+            $scope.text.heading = "Select the second node"
+            $scope.text.subheading = "The node you select is where the edge will end"
+
+            viewX.updateCircle("main-graph", "edgeFirstPointSelected", {x: $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, y: $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y})
+
+            viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], to: [$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x + 0.2, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y + 0.2]})
+
+        }
+        else if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected != "") {
+            
+
+            $scope.networkGraph.escapeEvent()
+        }
+
+        
+    }
+
+    $scope.networkGraph.edge.selectNodeForEdgeCreation = function(nodeID) {
+        if ($scope.networkGraph.edge.edgeFirstPointSelected == "") {
+            $scope.networkGraph.edge.edgeFirstPointSelected = nodeID
+            $scope.networkGraph.edge.updateEditContext()
+        }
+        else {
+            $scope.networkGraph.edge.edgeSecondPointSelected = nodeID
+            $scope.networkGraph.edge.edges["from#" + $scope.networkGraph.edge.edgeFirstPointSelected + "to#" + $scope.networkGraph.edge.edgeSecondPointSelected] = {
+                from: $scope.networkGraph.edge.edgeFirstPointSelected,
+                to: $scope.networkGraph.edge.edgeSecondPointSelected
+            }
+
+            $scope.networkGraph.edge.updateEditContext()
+        }
+    }
+
+
+    // $scope.networkGraph.edge.editContentAnimation = function() {
+    //     viewX.updateCircle("main-graph", "edgeFirstPointSelected", {strokedasharray: []})
+    // }
+
+    $scope.networkGraph.edge.mouseMoveForEdgeCreation = function($event) {
+        if ($scope.networkGraph.edge.editContextStarted) {
+            if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected == "") {
+
+                currentlyAt = viewX.cursorToGraph($event.clientX, $event.clientY, "main-graph")
+                viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], to: currentlyAt})
+            }
+        }
     }
 
 
@@ -572,8 +693,15 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
 
         if ($event.target.id.search('knob') != -1) {
-            $scope.networkGraph.escapeEvent()
-            $scope.networkGraph.selectNode($event.target.id.split("knob-")[1])
+            if ($scope.networkGraph.edge.editContextStarted == false) {
+                $scope.networkGraph.escapeEvent()
+                $scope.networkGraph.selectNode($event.target.id.split("knob-")[1])
+            }
+            else {
+                $scope.networkGraph.edge.selectNodeForEdgeCreation($event.target.id.split("knob-")[1])
+            }
+            
+            
         }
     }
 
@@ -603,6 +731,14 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
 
         $scope.networkGraph.additionMenu.available = false;
+
+        $scope.text = {
+            heading: "Epidemic Simulation",
+            subheading: "By IITK and Purdue University, and some more information that good if it's two lines.",
+    
+        }
+
+        $scope.networkGraph.edge.endEditContext()
     }
 
 

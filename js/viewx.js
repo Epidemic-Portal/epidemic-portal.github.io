@@ -3507,6 +3507,24 @@ viewX.libraryFunctions.closestIntersectionBetweenRayAndPolygon =  function(ray, 
 	}
 }
 
+viewX.cursorToGraph = function(cursorX, cursorY, graphName) {
+	viewX.svgPTVariable[gphname].x = cursorX
+	viewX.svgPTVariable[gphname].y = cursorY
+
+	// if (event.clientX == undefined) {
+	// 	posx = event.changedTouches[0].clientX - rect.left;
+	// 	posy = event.changedTouches[0].clientY - rect.top;
+	// 	viewX.svgPTVariable[gphname].x = event.changedTouches[0].clientX;
+	// 	viewX.svgPTVariable[gphname].y = event.changedTouches[0].clientY;
+	// }
+
+	var cursorpt =  viewX.svgPTVariable[gphname].matrixTransform(document.getElementById(graphName).getScreenCTM().inverse());
+
+	returnX = viewX.svgToGraphX(cursorpt.x, viewX.graphData[graphName].xmin,viewX.graphData[graphName].xmax, viewX.graphData[graphName].aspectratio)
+	returnY = viewX.svgToGraphY(cursorpt.y, viewX.graphData[graphName].ymin,viewX.graphData[graphName].ymax, viewX.graphData[graphName].aspectratio)
+
+	return [returnX, returnY]
+}
 
 
 

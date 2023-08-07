@@ -5,14 +5,14 @@
                 <img src="/assets/images/logo/logo.svg" style="width: 50px;">
             </div>
             <div>
-                <b style="font-size: large; font-family: Raleway;">Epidemic Simulation </b><br/>
-                <p style="font-size: normal; color: hsl(0,0%,30%)">By IITK and Purdue University, and some more information that good if it's two lines.</p>
+                <b style="font-size: large; font-family: Raleway;">{{text.heading}} </b><br/>
+                <p style="font-size: normal; color: hsl(0,0%,30%)">{{text.subheading}} </p>
             </div>
         </div>
     </div>
 
     <div class="w-100 text-ignus pt-4">
-        <div id="main-graph-holder" style="min-height: calc(100vh - 200px); position: relative;" ng-click="networkGraph.fullGraphClickEvents($event)" ng-keyup="networkGraph.fullGraphKeyEvents($event)" tabindex="0" ontouchstart="epidemicApp.networkGraph.handleAllTouchStarts(event)">
+        <div id="main-graph-holder" style="min-height: calc(100vh - 200px); position: relative;" ng-click="networkGraph.fullGraphClickEvents($event)" ng-keyup="networkGraph.fullGraphKeyEvents($event)" tabindex="0" ontouchstart="epidemicApp.networkGraph.handleAllTouchStarts(event)" ng-mousemove="networkGraph.edge.mouseMoveForEdgeCreation($event)">
         </div>
     </div>
 
