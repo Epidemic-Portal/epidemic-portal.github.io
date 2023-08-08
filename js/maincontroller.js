@@ -1267,6 +1267,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $timeout(function() {
             $scope.simulation.firebaseResponseHandler(requestID)
         }, 1000)
+
+        document.getElementById('responseHolder').scrollIntoView()
     }
 
     $scope.simulation.firebaseResponseHandler = function(requestID) {
