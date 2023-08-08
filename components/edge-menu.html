@@ -1,0 +1,28 @@
+<div style="position: absolute; top: 0px; left: 0px;" ng-hide="networkGraph.edge.selected == ''">
+    <div id="edge-property-menu" style="top: {{networkGraph.edge.optionMenu.top}}px; left: {{networkGraph.edge.optionMenu.left}}px;">
+        <div class="p-4">
+            <div class="text-ignus" style="color: grey;">
+                An Edge going from <b style="color: hsla(var(--themeColorHue), 100%, 80%, 1);">{{networkGraph.nodes[networkGraph.edge.edges[networkGraph.edge.selected].from].editableName}}</b> to <b style="color: hsla(var(--themeColorHue), 100%, 80%, 1);">{{networkGraph.nodes[networkGraph.edge.edges[networkGraph.edge.selected].to].editableName}}</b>.
+                <i class="ml-2 fa fa-trash sub-addition-button" ng-click="networkGraph.edge.removeEdge(networkGraph.edge.selected)" style="font-size: small;"></i>
+            </div>
+            <div class="text-ignus" style="color: hsla(var(--themeColorHue), 40%, 70%, 1); font-size: small;" ng-show="networkGraph.nodes[networkGraph.selectedNode].displayInfo != ''">{{networkGraph.edge.edges[networkGraph.edge.selected].displayInfo}}</div>
+            <div class="pt-3 pb-5">
+                <div class="pt-3" ng-repeat="(edgeParameterKey, edgeParameter) in networkGraph.edge.edges[networkGraph.edge.selected].parameters">
+                    
+                    <span class="parameter-display-text"  ng-click="edgeParameter.editing = !edgeParameter.editing">{{edgeParameter.value}}</span>
+                    <i class="ml-2 fa fa-pencil sub-addition-button" ng-click="edgeParameter.editing = !edgeParameter.editing"></i>
+                    <div class="pb-2" ng-show="edgeParameter.editing">
+                        <input type="range" id="edge-slider-{{edgeParameterKey}}" min="{{networkGraph.edgeParameters[edgeParameterKey].min}}" max="{{networkGraph.edgeParameters[edgeParameterKey].max}}" step="{{networkGraph.edgeParameters[edgeParameterKey].step}}" ng-model="nodeParameter.value" ng-change="networkGraph.changingNodeParameter()">
+                    </div>
+                    <div class="text-ignus" style="font-size: normal;">
+                        {{networkGraph.edgeParameters[edgeParameterKey].name}}
+                    </div>
+                    <div class="text-ignus" style="font-size: x-small; color: gray;">
+                        {{networkGraph.edgeParameters[edgeParameterKey].description}}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
