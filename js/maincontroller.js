@@ -369,7 +369,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.networkGraph.configurations.random()
 
         // $scope.networkGraph.selectedNode = ""
-        // $scope.networkGraph.selectNode(recentNode)
+
+        recentNode = $scope.networkGraph.selectedNode
+        $scope.networkGraph.unselectNode($scope.networkGraph.selectedNode)
+        $scope.networkGraph.selectNode(recentNode)
 
     }
 
@@ -408,7 +411,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             step: 0.01,
             name: "Recovery Rate",
             description: "The rate at which the node recovers from the disease",
-            internalName: "Gamma"
+            internalName: "gamma"
         }
     }
 
@@ -420,7 +423,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             step: 0.01,
             name: "Infection Rate",
             description: "Infection rate in the node where the edge begins, due to the infected population in the node where the edge ends (arrow points to)",
-            internalName: "Beta"
+            internalName: "beta"
         }
     }
 
@@ -1185,11 +1188,76 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.simulation.endingTime = 50
     $scope.simulation.percentageSusceptibleInStartingNode = 40
     
+    $scope.simulation.sendData = {}
     
 
     $scope.simulation.getParametersFromGraph = function() {
         
+        nodeArray = Object.keys($scope.networkGraph.nodes)
+        $scope.simulation.sendData.nodeArray = nodeArray
+        $scope.simulation.sendData.nodeParameters = {}
+
+        for (var nodeKey in nodeArray) {
+            nodeID = nodeArray[nodeKey]
+            node = $scope.networkGraph.nodes[nodeID]
+
+            for (parameter in $scope.networkGraph.nodeParameters) {
+                parameterInfo = $scope.networkGraph.nodeParameters[parameter]
+                parameterName = parameterInfo.internalName
+                if ($scope.simulation.sendData.nodeParameters[parameterName] == undefined) {
+                    $scope.simulation.sendData.nodeParameters[parameterName] = []
+                }
+
+                $scope.simulation.sendData.nodeParameters[parameterName].push(node.parameters[parameter].value)
+            }
+        }
+
+        $scope.simulation.sendData.edgeParameters = {}
+        
+
+        for (nodeIndex = 0; nodeIndex < nodeArray.length; nodeIndex++) {
+            node1 = nodeArray[nodeIndex]
+            for (otherNodeIndex = 0; otherNodeIndex < nodeArray.length; otherNodeIndex++) {
+                node2 = nodeArray[otherNodeIndex]
+                
+                for (parameter in $scope.networkGraph.edgeParameters) {
+                    parameterInfo = $scope.networkGraph.edgeParameters[parameter]
+                    parameterName = parameterInfo.internalName
+
+                    if ($scope.simulation.sendData.edgeParameters[parameterName] == undefined) {
+                        $scope.simulation.sendData.edgeParameters[parameterName] = {}
+                    }
+
+                    edgeID = "from#" + node1 + "to#" + node2
+                    edge = $scope.networkGraph.edge.edges[edgeID]
+                    if (edge != undefined) {
+                        $scope.simulation.sendData.edgeParameters[parameterName][nodeIndex + "-" + otherNodeIndex] = edge.parameters[parameter].value
+                    }
+                    else {
+                        $scope.simulation.sendData.edgeParameters[parameterName][nodeIndex + "-" + otherNodeIndex] = 0
+                    }
+                    
+                }
+                
+            }
+        }
+
     }
+
+
+    $scope.simulation.run = function() {
+        $scope.simulation.getParametersFromGraph()
+
+        $scope.simulation.sendData.model = $scope.simulation.model
+        $scope.simulation.sendData.startingTime = $scope.simulation.startingTime
+        $scope.simulation.sendData.endingTime = $scope.simulation.endingTime
+        $scope.simulation.sendData.percentageSusceptibleInStartingNode = $scope.simulation.percentageSusceptibleInStartingNode
+
+        console.log($scope.simulation.sendData)
+    }
+
+
+    // $interval($scope.simulation.run, 1000)
 
 
 
