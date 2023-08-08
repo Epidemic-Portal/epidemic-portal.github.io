@@ -374,6 +374,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.networkGraph.unselectNode($scope.networkGraph.selectedNode)
         $scope.networkGraph.selectNode(recentNode)
 
+
+        $scope.simulation.startingNode = recentNode
+
     }
 
     $scope.networkGraph = {}
@@ -405,10 +408,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.nodeParameters = {
         "recoveryRate": {
-            default: 0.25,
+            default: 0.04,
             min: 0,
-            max: 1,
-            step: 0.01,
+            max: 0.1,
+            step: 0.001,
             name: "Recovery Rate",
             description: "The rate at which the node recovers from the disease",
             internalName: "gamma"
@@ -417,9 +420,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.edgeParameters = {
         "betaParameter": {
-            default: 0.75,
+            default: 0.01,
             min: 0,
-            max: 1,
+            max: 0.2,
             step: 0.01,
             name: "Infection Rate",
             description: "Infection rate in the node where the edge begins, due to the infected population in the node where the edge ends (arrow points to)",
@@ -1059,7 +1062,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.networkGraph.configurations = {}
 
     $scope.networkGraph.configurations.random = function() {
-        for (k = 0; k < 5; k++) {
+        for (k = 0; k < 9; k++) {
             details = {
                 x: Math.random(),
                 y: Math.random(),
@@ -1074,7 +1077,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         nodeIDList = Object.keys($scope.networkGraph.nodes)
 
-        for (k = 0; k < 5; k++) {
+        for (k = 0; k < 10; k++) {
             fromNode = nodeIDList[Math.floor(Math.random() * nodeIDList.length)]
             toNode = nodeIDList[Math.floor(Math.random() * nodeIDList.length)]
             $scope.networkGraph.edge.addEdge(fromNode, toNode);
@@ -1187,6 +1190,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.simulation.startingTime = 1
     $scope.simulation.endingTime = 50
     $scope.simulation.percentageSusceptibleInStartingNode = 40
+
+    $scope.simulation.startingNode = ""
     
     $scope.simulation.sendData = {}
     
@@ -1252,13 +1257,25 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.simulation.sendData.startingTime = $scope.simulation.startingTime
         $scope.simulation.sendData.endingTime = $scope.simulation.endingTime
         $scope.simulation.sendData.percentageSusceptibleInStartingNode = $scope.simulation.percentageSusceptibleInStartingNode
+        $scope.simulation.sendData.startingNode = $scope.simulation.startingNode
 
-        requestID = $scope.uniqueCodeGen()
+
+        requestID = "r-" + $scope.uniqueCodeGen()
 
         writeRequestToFirebase(requestID, $scope.simulation.sendData)
 
-        
-        
+        $timeout(function() {
+            $scope.simulation.firebaseResponseHandler(requestID)
+        }, 1000)
+    }
+
+    $scope.simulation.firebaseResponseHandler = function(requestID) {
+        var ref = firebase.database().ref("requests/"+ requestID + '/response');
+        ref.on('value', function(snapshot) {
+            // console.log(snapshot.val());
+
+            document.getElementById('responseHolder').innerHTML = JSON.stringify(snapshot.val(), null, 2)
+        });
     }
 
 
