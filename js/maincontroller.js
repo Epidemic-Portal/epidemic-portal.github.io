@@ -930,8 +930,19 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             $scope.networkGraph.edge.highlight(edgeID)
 
             edge = $scope.networkGraph.edge.edges[edgeID]
-            $scope.networkGraph.edge.optionMenu.left = 500
-            $scope.networkGraph.edge.optionMenu.top = 500
+
+            fromNode = $scope.networkGraph.nodes[edge.from]
+            toNode = $scope.networkGraph.nodes[edge.to]
+
+            fromCircleBoundingRect = viewX.graphData["main-graph"].circleData["node-" + fromNode.id][0].getBoundingClientRect()
+
+            toCircleBoundingRect = viewX.graphData["main-graph"].circleData["node-" + toNode.id][0].getBoundingClientRect()
+
+            $scope.networkGraph.edge.optionMenu.left = (fromCircleBoundingRect.left + toCircleBoundingRect.left)/2
+            $scope.networkGraph.edge.optionMenu.top = (fromCircleBoundingRect.top + toCircleBoundingRect.top)/2
+            
+
+
         }
     }
 
