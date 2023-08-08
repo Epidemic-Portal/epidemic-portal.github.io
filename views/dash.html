@@ -32,6 +32,22 @@
                 <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="model in simulation.models" style="background-color: {{ simulation.model == model ? 'hsla(var(--themeColorHue), 70%, 40%, 1)' : ''}};" ng-click="simulation.model = model">
                     {{model}}</button>
             </div>
+
+            <div class="mt-4">
+                <!-- <b class="text-ignus" style="color: grey;">Starting Node</b> -->
+                <span class="form-label-ignus mr-4">Starting Node</span>
+                <select class="select-underlined-ignus mr-3">
+                    <option ng-repeat="(nodeKey, node) in networkGraph.nodes" value="{{nodeKey}}">{{node.editableName}}</option>
+                </select>
+                <span class="text-ignus" style="color: grey;">
+                    The node at which the infection begins.
+                </span>
+                
+            </div>
+
+            <div>
+                
+            </div>
             
         </div>
         

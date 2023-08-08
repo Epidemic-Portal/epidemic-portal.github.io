@@ -8,6 +8,10 @@ themeColor = themeColors[Math.floor(Math.random()*themeColors.length)]
 style.innerHTML = ":root {--themeColorHue: "+  themeColor + ";"
 document.head.appendChild(style);
 
+ignusTheme.baseHue = themeColor;
+ignusTheme.baseLightness = 50;
+ignusTheme.setUp();
+
 
 
 epidemicApp = {}
