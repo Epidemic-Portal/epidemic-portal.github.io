@@ -74,6 +74,38 @@
         <script src="js/graph-scripts.js"></script>
         <script src="js/maincontroller.js"></script>
 
+        <script src = "https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+        <script src = "https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-database.js"></script>
+
+        <script>
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyAudnnIFSirNAUHfbC5dUf5ePXiWkNyCYQ",
+                authDomain: "epidemic-portal.firebaseapp.com",
+                databaseURL: "https://epidemic-portal-default-rtdb.firebaseio.com",
+                projectId: "epidemic-portal",
+                storageBucket: "epidemic-portal.appspot.com",
+                messagingSenderId: "705412822310",
+                appId: "1:705412822310:web:fa00bc537afaa7b2fe7de7"
+            };
+          
+            // Initialize Firebase
+            const firebaseApp = firebase.initializeApp(firebaseConfig);
+
+            var database = firebase.database();
+
+
+            function writeRequestToFirebase(requestID, dataToSend) {
+                database.ref('requests/' + requestID).set({
+                    data: dataToSend
+                });
+
+                console.log("Data sent")
+            }
+
+        </script>
         
 
     </body>

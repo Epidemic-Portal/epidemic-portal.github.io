@@ -1253,7 +1253,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.simulation.sendData.endingTime = $scope.simulation.endingTime
         $scope.simulation.sendData.percentageSusceptibleInStartingNode = $scope.simulation.percentageSusceptibleInStartingNode
 
-        console.log($scope.simulation.sendData)
+        requestID = $scope.uniqueCodeGen()
+
+        writeRequestToFirebase(requestID, $scope.simulation.sendData)
+
+        
+        
     }
 
 
