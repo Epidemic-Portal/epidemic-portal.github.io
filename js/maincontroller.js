@@ -663,6 +663,34 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             else {
                 $scope.networkGraph.nodeOptionsMenu.top = circleBoundingRect.top 
             }
+
+            // Count Edges Leaving, Arriving and Loops
+
+            counts = {
+                leaving: 0,
+                arriving: 0,
+                loops: 0
+            }
+
+            for (nodeID in node.edges.leaving) {
+                edgeID = node.edges.leaving[nodeID]
+                edgeInfo = $scope.networkGraph.edge.edges[edgeID]
+                if (edgeInfo.from == edgeInfo.to && edgeInfo.from == nodeID) {
+                    counts.loops = counts.loops + 1
+                }
+                else {
+                    counts.leaving = counts.leaving + 1
+                }
+            }
+
+            for (edgeID in node.edges.arriving) {
+                counts.arriving = counts.arriving + 1
+            }
+
+            counts.arriving = counts.arriving - counts.loops
+
+
+            $scope.networkGraph.nodes[nodeID].displayInfo = "It has " + counts.leaving + " edge" + (counts.leaving == 1 ? "": "s") + " leaving, " + counts.arriving + " edge" + (counts.arriving == 1 ? "": "s") + " arriving and " + counts.loops + " loop" + (counts.loops == 1 ? "": "s") + "."
         }
 
         
@@ -888,8 +916,18 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         if ($scope.networkGraph.edge.highlighted != "") {
 
             if ($scope.networkGraph.edge.highlighted != $scope.networkGraph.edge.selected && $scope.networkGraph.edge.edges[$scope.networkGraph.edge.highlighted] != null) {
-                viewX.updateArrow("main-graph", "edgeArrow-" + $scope.networkGraph.edge.highlighted, {arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5})
-                viewX.updateLine("main-graph", "edgeLine-" + $scope.networkGraph.edge.highlighted, {linecolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 3})
+
+                edgeID = $scope.networkGraph.edge.highlighted
+
+                if ($scope.networkGraph.edge.edges[edgeID].from != $scope.networkGraph.edge.edges[edgeID].to) {
+                    viewX.updateArrow("main-graph", "edgeArrow-" + edgeID, {arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5})
+                    viewX.updateLine("main-graph", "edgeLine-" + edgeID, {linecolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 3})
+                }
+                else {
+                    viewX.updateCircle("main-graph", "edgeLine-" + edgeID, {stroke: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 3})
+                    viewX.updateArrow("main-graph", "edgeArrow-" + edgeID, {arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5})
+                }
+                
     
                 $scope.networkGraph.edge.highlighted = ""
             }
@@ -914,15 +952,20 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             viewX.updateLine("main-graph", "edgeLine-" + edgeID, {linecolor: "hsla(var(--themeColorHue), 100%, 80%, 0.9)", strokewidth: 3})
 
             $scope.networkGraph.edge.highlighted = edgeID
+        }
+        else {
 
-
+            viewX.updateArrow("main-graph", "edgeArrow-" + edgeID, {arrowcolor: "hsla(var(--themeColorHue), 100%, 80%, 0.9)", strokewidth: 0.5})
+            viewX.updateCircle("main-graph", "edgeLine-" + edgeID, {stroke: "hsla(var(--themeColorHue), 100%, 80%, 0.9)", strokewidth: 3})
+            
+            $scope.networkGraph.edge.highlighted = edgeID
         }
     }
 
 
     $scope.networkGraph.edge.selectEdge = function(edgeID) {
         if ($scope.networkGraph.edge.editContextStarted == false) {
-            
+            $scope.networkGraph.escapeEvent()
             // $scope.networkGraph.edge.unselectEdge()
             // $scope.networkGraph.edge.unhighlight()
 
@@ -940,7 +983,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
             $scope.networkGraph.edge.optionMenu.left = (fromCircleBoundingRect.left + toCircleBoundingRect.left)/2
             $scope.networkGraph.edge.optionMenu.top = (fromCircleBoundingRect.top + toCircleBoundingRect.top)/2
-            
+
 
 
         }
