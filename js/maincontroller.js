@@ -418,8 +418,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             min: 0,
             max: 1,
             step: 0.01,
-            name: "Beta Parameter",
-            description: "An edge specific parameter that determines the rate of infection",
+            name: "Infection Rate",
+            description: "Infection rate in the node where the edge begins, due to the infected population in the node where the edge ends (arrow points to)",
             internalName: "Beta"
         }
     }
@@ -1183,11 +1183,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.simulation.models = ["SIR Model", "SIS Model", "SEIR Model", "Agent Based Model"]
     $scope.simulation.startingTime = 1
     $scope.simulation.endingTime = 50
-
+    $scope.simulation.percentageSusceptibleInStartingNode = 40
     
     
 
-
+    $scope.simulation.getParametersFromGraph = function() {
+        
+    }
 
 
 
