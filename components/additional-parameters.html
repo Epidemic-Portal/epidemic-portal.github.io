@@ -1,0 +1,56 @@
+<div style="min-height: 400px;">
+    <div>
+        <b class="text-ignus" style="font-family: Raleway; font-size: medium; color: grey;">Model and Additional Parameters</b>
+    </div>
+    <div class="mt-4">
+        <b class="text-ignus" style="font-family: Raleway; font-size: large; color: hsl(var(--themeColorHue), 100%, 70%);">MODEL</b><br/>
+        <span class="text-ignus" style="color: grey;">
+            This is the model used to run the simulation, and some more information on what the current selection means.
+        </span>
+    </div>
+    <div class="mt-2">
+        <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="model in simulation.models" style="background-color: {{ simulation.model == model ? 'hsla(var(--themeColorHue), 70%, 40%, 1)' : ''}};" ng-click="simulation.model = model">
+            {{model}}</button>
+    </div>
+
+    <div class="mt-4">
+        <!-- <b class="text-ignus" style="color: grey;">Starting Node</b> -->
+        <span class="form-label-ignus mr-4">Starting Node</span>
+        <select class="select-underlined-ignus mr-3">
+            <option ng-repeat="(nodeKey, node) in networkGraph.nodes" value="{{nodeKey}}">{{node.editableName}}</option>
+        </select>
+        <span class="text-ignus" style="color: grey;">
+            The node at which the infection begins.
+        </span>
+    </div>
+
+    <div class="mt-3">
+        <!-- <b class="text-ignus" style="color: grey;">Starting Node</b> -->
+        <span class="form-label-ignus mr-4">Starting Time</span>
+        <span class="text-ignus mr-4">{{simulation.startingTime}}</span>
+        <input type="range" id="startingTimeSlider" class="mr-3" min="0" max="98" step="1" ng-model="simulation.startingTime"><br/>
+        <div class="mt-2"></div>
+        <span class="form-label-ignus mr-4">Ending Time</span>
+        <span class="text-ignus mr-4">{{simulation.endingTime}}</span>
+        <input type="range" id="endingTimeSlider" class="mr-3" min="{{simulation.startingTime + 1}}" max="100" step="1" ng-model="simulation.endingTime"><br/>
+    </div>
+    
+</div>
+
+<script>
+    var sliderProperties = {
+        minwidth: '200px',
+        width: '50%',
+        height: 5,
+        trackColor: "hsla(280, 0%, 20%, 0.7)",
+        trackFillColor: "hsla(var(--themeColorHue), 100%, 70%, 1)",
+        thumbWidth: 15,
+        thumbHeight: 15,
+        thumbColor: "hsla(var(--themeColorHue), 100%, 70%, 1)",
+        opacity: 0.7
+    };
+
+    viewX.generateSliderStyles(sliderProperties, "startingTimeSlider");
+    viewX.generateSliderStyles(sliderProperties, "endingTimeSlider");
+
+</script>

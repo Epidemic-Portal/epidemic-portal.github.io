@@ -1181,7 +1181,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.simulation = {}
     $scope.simulation.model = "SIR Model"
     $scope.simulation.models = ["SIR Model", "SIS Model", "SEIR Model", "Agent Based Model"]
-
+    $scope.simulation.startingTime = 1
+    $scope.simulation.endingTime = 50
 
     
     
