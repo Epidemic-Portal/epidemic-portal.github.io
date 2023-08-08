@@ -17,8 +17,23 @@
     </div>
 
     
-    <div class="w-100 pl-4 pr-4 pl-sm-5 pr-sm-5 d-flex justify-content-center">
-        <div style="min-height: 100px;"></div>
+    <div class="w-100 pl-4 pr-4 pl-sm-5 pr-sm-5">
+        <div style="min-height: 400px;">
+            <div>
+                <b class="text-ignus" style="font-family: Raleway; font-size: medium; color: grey;">Model and Additional Parameters</b>
+            </div>
+            <div class="mt-4">
+                <b class="text-ignus" style="font-family: Raleway; font-size: large; color: hsl(var(--themeColorHue), 100%, 70%);">MODEL</b><br/>
+                <span class="text-ignus" style="color: grey;">
+                    This is the model used to run the simulation, and some more information on what the current selection means.
+                </span>
+            </div>
+            <div class="mt-2">
+                <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="model in simulation.models" style="background-color: {{ simulation.model == model ? 'hsla(var(--themeColorHue), 70%, 40%, 1)' : ''}};" ng-click="simulation.model = model">
+                    {{model}}</button>
+            </div>
+            
+        </div>
         
     </div>
 
