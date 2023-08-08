@@ -408,9 +408,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.nodeParameters = {
         "recoveryRate": {
-            default: 0.04,
+            default: 0.09,
             min: 0,
-            max: 0.1,
+            max: 0.3,
             step: 0.001,
             name: "Recovery Rate",
             description: "The rate at which the node recovers from the disease",
@@ -420,9 +420,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.edgeParameters = {
         "betaParameter": {
-            default: 0.01,
+            default: 0.8,
             min: 0,
-            max: 0.2,
+            max: 1,
             step: 0.01,
             name: "Infection Rate",
             description: "Infection rate in the node where the edge begins, due to the infected population in the node where the edge ends (arrow points to)",
@@ -1062,7 +1062,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.networkGraph.configurations = {}
 
     $scope.networkGraph.configurations.random = function() {
-        for (k = 0; k < 9; k++) {
+        for (k = 0; k < 5; k++) {
             details = {
                 x: Math.random(),
                 y: Math.random(),
@@ -1077,7 +1077,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         nodeIDList = Object.keys($scope.networkGraph.nodes)
 
-        for (k = 0; k < 10; k++) {
+        for (k = 0; k < 16; k++) {
             fromNode = nodeIDList[Math.floor(Math.random() * nodeIDList.length)]
             toNode = nodeIDList[Math.floor(Math.random() * nodeIDList.length)]
             $scope.networkGraph.edge.addEdge(fromNode, toNode);
