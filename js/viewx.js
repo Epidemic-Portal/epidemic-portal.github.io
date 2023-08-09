@@ -3527,6 +3527,15 @@ viewX.cursorToGraph = function(cursorX, cursorY, graphName) {
 }
 
 
+viewX.moveToTop = function(graphname, elementname) {
+	elementType = viewX.graphData.objectType[elementname]
+	element = viewX.graphData[graphname][elementType + 'Data'][elementname][0]
+    let svgContainer = element.parentElement;
+    svgContainer.removeChild(element);
+    svgContainer.appendChild(element);
+}
+
+
 
 viewX.uid = 0
 viewX.graphData = {}

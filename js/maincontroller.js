@@ -552,6 +552,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             saturationForNode = $scope.networkGraph.nodeColoring()
             nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), " + saturationForNode + "%, 70%, 1)" : "hsla(var(--themeColorHue), " + saturationForNode + "%, 45%, 1)")}
             viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
+
+
+            viewX.moveToTop("main-graph", "node-moving-knob-" + node.id)
         }
 
 
