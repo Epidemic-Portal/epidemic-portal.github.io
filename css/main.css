@@ -90,6 +90,11 @@ main {
     background: var(--generalBackground);
 }
 
+.blurryBack {
+    backdrop-filter: blur(10px);
+    background-color: hsla(0,0%,6%, 0.2);
+}
+
 
 
 @media (max-width: 400px) {
@@ -136,6 +141,10 @@ main {
 
     #node-property-menu {
         border: 2px solid hsla(var(--themeColorHue), 40%, 70%, 0.1); background-color: hsla(0, 0%, 78%, 0.6);
+    }
+
+    .blurryBack {
+        background-color: hsla(0,0%,98%, 0.2);
     }
 
 

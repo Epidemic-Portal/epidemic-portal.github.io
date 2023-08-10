@@ -700,7 +700,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             for (nodeID in node.edges.leaving) {
                 edgeID = node.edges.leaving[nodeID]
                 edgeInfo = $scope.networkGraph.edge.edges[edgeID]
-                if (edgeInfo.from == edgeInfo.to && edgeInfo.from == nodeID) {
+
+                if (edgeInfo.from == nodeID) {
                     counts.loops = counts.loops + 1
                 }
                 else {
@@ -715,7 +716,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             counts.arriving = counts.arriving - counts.loops
 
 
-            $scope.networkGraph.nodes[nodeID].displayInfo = "It has " + counts.leaving + " edge" + (counts.leaving == 1 ? "": "s") + " leaving, " + counts.arriving + " edge" + (counts.arriving == 1 ? "": "s") + " arriving and " + counts.loops + " loop" + (counts.loops == 1 ? "": "s") + "."
+
+            $scope.networkGraph.nodes[$scope.networkGraph.selectedNode].displayInfo = "It has " + counts.leaving + " edge" + (counts.leaving == 1 ? "": "s") + " leaving, " + counts.arriving + " edge" + (counts.arriving == 1 ? "": "s") + " arriving and " + counts.loops + " loop" + (counts.loops == 1 ? "": "s") + "."
+
+            
+            // console.log($scope.networkGraph.nodes[nodeID].displayInfo)
         }
 
         
