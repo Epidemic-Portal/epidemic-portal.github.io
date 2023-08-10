@@ -1,6 +1,6 @@
 :root {
     --themeColorHue: 270;
-    --infectionRed: hsla(0, 100%, 70%, 1);
+    --infectionRed: hsla(0, 100%, 80%, 1);
 }
 
 
@@ -101,7 +101,7 @@ main {
 @media (prefers-color-scheme: light) {
 
     :root {
-        --infectionRed: hsla(0, 80%, 30%, 1);
+        --infectionRed: hsla(0, 80%, 40%, 1);
     }
 
 

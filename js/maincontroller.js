@@ -548,7 +548,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
             if ($scope.simulation.startingNode == nodeID) {
-                nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(0, 100%, 70%, 1)" : "hsla(0, 100%, 40%, 1)")}
+                nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: "var(--infectionRed)"}
                 viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
             }
             else {
@@ -656,7 +656,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             node = $scope.networkGraph.nodes[nodeID]
 
             if ($scope.simulation.startingNode == nodeID) {
-                viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(0, 100%, 70%, 1)" : "hsla(0, 100%, 40%, 1)")})
+                viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: "var(--infectionRed)"})
             }
             else {
                 viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")})
@@ -727,7 +727,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.networkGraph.selectedNode = ""
 
         if ($scope.simulation.startingNode == nodeID) {
-            viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(0, 100%, 70%, 1)" : "hsla(0, 100%, 40%, 1)")})
+            viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: "var(--infectionRed)"})
         }
         else {
             saturationForNode = $scope.networkGraph.nodeColoring()
