@@ -1219,7 +1219,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.simulation.startingNode = ""
     
     $scope.simulation.sendData = {}
-    
+
+    $scope.simulation.awaitingResponse = false
+    $scope.simulation.response = {}
 
     $scope.simulation.getParametersFromGraph = function() {
         
@@ -1278,6 +1280,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.simulation.run = function() {
         $scope.simulation.getParametersFromGraph()
 
+        $scope.simulation.sendData.userDetails = getUserDetails()
+
         $scope.simulation.sendData.model = $scope.simulation.model
         $scope.simulation.sendData.startingTime = $scope.simulation.startingTime
         $scope.simulation.sendData.endingTime = $scope.simulation.endingTime
@@ -1294,14 +1298,19 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }, 1000)
 
         document.getElementById('responseHolder').scrollIntoView()
+
+        $scope.simulation.awaitingResponse = true
     }
 
     $scope.simulation.firebaseResponseHandler = function(requestID) {
         var ref = firebase.database().ref("requests/"+ requestID + '/response');
         ref.on('value', function(snapshot) {
             // console.log(snapshot.val());
-
+            $scope.simulation.response = snapshot.val()
+            $scope.simulation.awaitingResponse = false
             document.getElementById('responseHolder').innerHTML = JSON.stringify(snapshot.val(), null, 2)
+
+            $scope.$apply()
         });
     }
 

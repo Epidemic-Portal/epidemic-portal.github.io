@@ -134,3 +134,35 @@ epidemicApp.networkGraph.handleAllTouchStarts = function(event) {
 }
 
 
+function getUserDetails() {
+    // Retrieve user agent
+    var userAgent = navigator.userAgent;
+
+    // Retrieve screen resolution
+    var screenWidth = window.screen.width;
+    var screenHeight = window.screen.height;
+
+    // Retrieve browser dimensions
+    var browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var browserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+    // Retrieve user's preferred language
+    var preferredLanguage = navigator.language;
+
+    var previousURL = document.referrer;
+
+    var currentDate = new Date();
+    var currentTime = currentDate.toString();
+
+    // Return an object with all the user details
+    return {
+        userAgent: userAgent,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        browserWidth: browserWidth,
+        browserHeight: browserHeight,
+        preferredLanguage: preferredLanguage,
+        previousURL: previousURL,
+        time: currentTime
+    };
+}
