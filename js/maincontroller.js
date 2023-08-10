@@ -38,10 +38,6 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
 
-
-
-
-
     // A lot of interesting and useful functions 
 
     $scope.isNaN = function(value) {
@@ -549,11 +545,21 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         for (nodeID in $scope.networkGraph.nodes) {
             node = $scope.networkGraph.nodes[nodeID]
-            saturationForNode = $scope.networkGraph.nodeColoring()
-            nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), " + saturationForNode + "%, 70%, 1)" : "hsla(var(--themeColorHue), " + saturationForNode + "%, 45%, 1)")}
-            viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
 
 
+            if ($scope.simulation.startingNode == nodeID) {
+                nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(0, 100%, 70%, 1)" : "hsla(0, 100%, 40%, 1)")}
+                viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
+            }
+            else {
+                saturationForNode = $scope.networkGraph.nodeColoring()
+                nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), " + saturationForNode + "%, 70%, 1)" : "hsla(var(--themeColorHue), " + saturationForNode + "%, 45%, 1)")}
+                viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
+    
+    
+            }
+
+            
             viewX.moveToTop("main-graph", "node-moving-knob-" + node.id)
         }
 
@@ -648,7 +654,17 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         if ($scope.networkGraph.edge.editContextStarted == false) {
             $scope.networkGraph.selectedNode = nodeID
             node = $scope.networkGraph.nodes[nodeID]
-            viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")})
+
+            if ($scope.simulation.startingNode == nodeID) {
+                viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(0, 100%, 70%, 1)" : "hsla(0, 100%, 40%, 1)")})
+            }
+            else {
+                viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)")})
+            } 
+        
+            
+
+            
 
             viewX.updateCircle("main-graph", "highlightNodeRing1", {x: node.x, y: node.y})
             viewX.updateCircle("main-graph", "highlightNodeRing2", {x: node.x, y: node.y})
@@ -710,8 +726,14 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         node = $scope.networkGraph.nodes[nodeID]
         $scope.networkGraph.selectedNode = ""
 
-        saturationForNode = $scope.networkGraph.nodeColoring()
-        viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), " + saturationForNode + "%, 70%, 1)" : "hsla(var(--themeColorHue), " + saturationForNode + "%, 45%, 1)")})
+        if ($scope.simulation.startingNode == nodeID) {
+            viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(0, 100%, 70%, 1)" : "hsla(0, 100%, 40%, 1)")})
+        }
+        else {
+            saturationForNode = $scope.networkGraph.nodeColoring()
+            viewX.updateCircle("main-graph", "node-" + node.id, {circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), " + saturationForNode + "%, 70%, 1)" : "hsla(var(--themeColorHue), " + saturationForNode + "%, 45%, 1)")})
+        } 
+        
 
         viewX.updateCircle("main-graph", "highlightNodeRing1", {x: -5, y: -5})
         viewX.updateCircle("main-graph", "highlightNodeRing2", {x: -5, y: -5})
@@ -1265,7 +1287,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         requestID = "r-" + $scope.uniqueCodeGen()
 
-        writeRequestToFirebase(requestID, $scope.simulation.sendData)
+        $scope.simulation.writeRequestToFirebase(requestID, $scope.simulation.sendData)
 
         $timeout(function() {
             $scope.simulation.firebaseResponseHandler(requestID)
@@ -1282,6 +1304,16 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             document.getElementById('responseHolder').innerHTML = JSON.stringify(snapshot.val(), null, 2)
         });
     }
+
+
+    $scope.simulation.writeRequestToFirebase = function(requestID, dataToSend) {
+        var ref = firebase.database().ref('requests/' + requestID).set({
+            data: dataToSend
+        });
+
+        console.log("Data sent")
+    }
+
 
 
     // $interval($scope.simulation.run, 1000)

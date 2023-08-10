@@ -11,7 +11,12 @@
                 <i class="ml-2 fa fa-pencil sub-addition-button" ng-click="networkGraph.nodes[networkGraph.selectedNode].editing.name = !networkGraph.nodes[networkGraph.selectedNode].editing.name" style="font-size: small;"></i>
                 <i class="ml-2 fa fa-trash sub-addition-button" ng-click="networkGraph.removeNode(networkGraph.selectedNode)" style="font-size: small;"></i>
             </div>
-            <div class="text-ignus" style="color: hsla(var(--themeColorHue), 40%, 70%, 1); font-size: small;" ng-show="networkGraph.nodes[networkGraph.selectedNode].displayInfo != ''">{{networkGraph.nodes[networkGraph.selectedNode].displayInfo}}</div>
+            <div class="text-ignus" style="color: hsla(var(--themeColorHue), 40%, 70%, 1); font-size: small;" ng-show="networkGraph.nodes[networkGraph.selectedNode].displayInfo != ''">
+                {{networkGraph.nodes[networkGraph.selectedNode].displayInfo}}
+                <span ng-show="simulation.startingNode == networkGraph.selectedNode">
+                    This is the node at which the infection begins, with <span style="color: var(--infectionRed);">{{simulation.percentageSusceptibleInStartingNode}}%</span> of the population infected.
+                </span>
+            </div>
             <div class="pt-3 pb-5">
                 <div class="pt-3" ng-repeat="(nodeParameterKey, nodeParameter) in networkGraph.nodes[networkGraph.selectedNode].parameters">
                     <span class="parameter-display-text"  ng-click="nodeParameter.editing = !nodeParameter.editing">{{nodeParameter.value}}</span>

@@ -3537,6 +3537,13 @@ viewX.moveToTop = function(graphname, elementname) {
 
 
 
+viewX.charts = {}
+
+viewX.charts.list = {}
+
+
+
+
 viewX.uid = 0
 viewX.graphData = {}
 viewX.graphData.objectType = {}
