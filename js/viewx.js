@@ -3538,8 +3538,20 @@ viewX.moveToTop = function(graphname, elementname) {
 
 
 viewX.charts = {}
-
 viewX.charts.list = {}
+
+viewX.charts.lineChart = function(name, data, options) {
+	if (name == undefined) {
+		name = 'lineChart-' + viewX.uid
+		viewX.uid += 1
+	}
+
+	if (data == undefined) {
+		data = [[0,0], [1,1]]
+	}
+
+	
+}
 
 
 
@@ -3553,3 +3565,4 @@ viewX.animationIntervals = {}
 viewX.reverseGraphElementMap = {}
 
 viewX.darkmode = false;
+

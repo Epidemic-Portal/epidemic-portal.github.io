@@ -14,7 +14,7 @@
             <div class="text-ignus" style="color: hsla(var(--themeColorHue), 40%, 70%, 1); font-size: small;" ng-show="networkGraph.nodes[networkGraph.selectedNode].displayInfo != ''">
                 {{networkGraph.nodes[networkGraph.selectedNode].displayInfo}}
                 <span ng-show="simulation.startingNode == networkGraph.selectedNode">
-                    This is the node at which the infection begins, with <span style="color: var(--infectionRed);">{{simulation.percentageSusceptibleInStartingNode}}%</span> of the population infected.
+                    This is the node at which the infection begins, with <span style="color: var(--infectionRed);">{{simulation.percentageSusceptibleInStartingNode}}%</span> of the population is susceptible.
                 </span>
             </div>
             <div class="pt-3 pb-5">
