@@ -1,5 +1,5 @@
 <div style="font-family: Nunito;" ng-init="view()">
-    <div class="w-100 text-ignus pt-4">
+    <div class="w-100 text-ignus pt-4" style="position: absolute;">
         <div class="pl-4 pr-4 text-md-left d-inline-flex">
             <div class="pr-3">
                 <img src="/assets/images/logo/logo.svg" style="width: 50px;">
@@ -11,13 +11,15 @@
         </div>
     </div>
 
-    <div class="w-100 text-ignus pt-4">
+    <div class="w-100 text-ignus" style="position: fixed;">
         <div id="main-graph-holder" style="min-height: calc(100vh - 200px); position: relative;" ng-click="networkGraph.fullGraphClickEvents($event)" ng-keyup="networkGraph.fullGraphKeyEvents($event)" tabindex="0" ontouchstart="epidemicApp.networkGraph.handleAllTouchStarts(event)" ng-mousemove="networkGraph.mouseMove($event)">
         </div>
     </div>
 
+    <div class="w-100" style="min-height: 70vh;"></div>
+
     
-    <div class="w-100 pl-4 pr-4 pl-sm-5 pr-sm-5" ng-include="'components/additional-parameters.html'">
+    <div class="w-100"  ng-include="'components/additional-parameters.html'">
         
     </div>
     

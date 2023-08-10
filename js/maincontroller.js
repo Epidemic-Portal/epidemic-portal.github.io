@@ -1211,7 +1211,20 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.simulation = {}
     $scope.simulation.model = "SIR Model"
-    $scope.simulation.models = ["SIR Model", "SIS Model", "SEIR Model", "Agent Based Model"]
+    $scope.simulation.models = {
+        "SIR Model": {
+            "enabled": true
+        },
+        "SIS Model": {
+            "enabled": false
+        },
+        "SEIR Model": {
+            "enabled": false
+        },
+        "Agent Based Model": {
+            "enabled": false
+        }
+    }
     $scope.simulation.startingTime = 1
     $scope.simulation.endingTime = 50
     $scope.simulation.percentageSusceptibleInStartingNode = 40
@@ -1326,6 +1339,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     // $interval($scope.simulation.run, 1000)
+
+
+    $scope.ui = {}
+    $scope.ui.additionParameters = {
+        expanded: false
+    }
 
 
 

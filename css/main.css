@@ -24,7 +24,7 @@ body {
 }
 
 #dots-background-gradient {
-    background: linear-gradient(75deg, hsla(0,0%,4%,1) 0%, hsla(0,0%,4%,1) 50%, hsla(0,0%,4%,1) 70%,  hsla(0,0%,4%,0.6) 100%);
+    background: linear-gradient(75deg, var(--generalBackground) 0%, var(--generalBackground) 50%, var(--generalBackground) 70%,  hsla(0,0%,4%,0.6) 100%);
     width: 100%;
     height: 100%;
     position: absolute;
