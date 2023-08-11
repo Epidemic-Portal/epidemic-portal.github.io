@@ -387,6 +387,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         viewX.addCircle("main-graph", "highlightNodeRing1", {x: 1, y: 1, radius: 0.042, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 0.1)" : "hsla(var(--themeColorHue), 100%, 45%, 0.1)")})
         viewX.addCircle("main-graph", "highlightNodeRing2", {x: 1, y: 1, radius: 0.055, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 0.1)" : "hsla(var(--themeColorHue), 100%, 45%, 0.1)")})
+
+
+        viewX.addText("main-graph", "text-label-small-available", {x: -10, y: -10, textcolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)"), fontFamily: 'Nunito'})
+
+        viewX.addText("main-graph", "text-label-small-available-2", {x: -10, y: -10, textcolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), 100%, 90%, 1)" : "hsla(var(--themeColorHue), 100%, 45%, 1)"), fontFamily: 'Nunito'})
     }
 
 
@@ -1145,7 +1150,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.networkGraph.configurations = {}
 
     $scope.networkGraph.configurations.random = function() {
-        for (k = 0; k < 5; k++) {
+        for (k = 0; k < 6; k++) {
             details = {
                 x: Math.random(),
                 y: Math.random(),
@@ -1271,6 +1276,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
 
         $scope.networkGraph.edge.endEditContext()
+
+        viewX.updateText("main-graph", "text-label-small-available", {x: -10, y: -10, text: "Available"})
+
+        viewX.updateText("main-graph", "text-label-small-available-2", {x: -10, y: -10, text: "Available"})
     }
 
 
@@ -1394,71 +1403,75 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         var ref = firebase.database().ref("requests/"+ requestID + '/response');
         ref.on('value', function(snapshot) {
             $scope.simulation.response = snapshot.val()
-            $scope.simulation.awaitingResponse = false
+
+            if ($scope.simulation.response != null) {
+                $scope.simulation.awaitingResponse = false
 
 
-            $scope.chart.series = {}
-            $scope.chart.x = []
-
-            $scope.chart.nodesDisplayed = {}
-
-
-            nodeIDs = Object.keys($scope.networkGraph.nodes)
-
-            for (var nodeID in $scope.networkGraph.nodes) {
-                $scope.chart.nodesDisplayed[nodeID] = false
-            }
-
-            for (ri = 0; ri < 2; ri++) {
-                randomNode = nodeIDs[Math.floor(Math.random() * nodeIDs.length)]
-                $scope.chart.nodesDisplayed[randomNode] = true
-
-            }
-
-
-
-            for (var seriesName in $scope.simulation.response) {
-
-                variableName = $scope.simulation.responseVariableInterpretation[seriesName]
-                
-                if (variableName == "Time") {
-                    $scope.chart.x = $scope.simulation.response[seriesName]
+                $scope.chart.series = {}
+                $scope.chart.x = []
+    
+                $scope.chart.nodesDisplayed = {}
+    
+    
+                nodeIDs = Object.keys($scope.networkGraph.nodes)
+    
+                for (var nodeID in $scope.networkGraph.nodes) {
+                    $scope.chart.nodesDisplayed[nodeID] = false
                 }
-                else {
-                    seriesData = $scope.simulation.response[seriesName]
-                    for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
-                        
-                        valuesString = seriesData[timeIndex]
-                        // parsing [4, 56, 67, 67]
-
-                        valuesString = valuesString.substring(1, valuesString.length - 1)
-                        // parsing 4, 56, 67, 67
-                        values = valuesString.split(", ")
-                        
-                        for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
-                            if ($scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
-                                $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
-                            }
-
-                            $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+    
+                for (ri = 0; ri < 2; ri++) {
+                    randomNode = nodeIDs[Math.floor(Math.random() * nodeIDs.length)]
+                    $scope.chart.nodesDisplayed[randomNode] = true
+    
+                }
+    
+    
+    
+                for (var seriesName in $scope.simulation.response) {
+    
+                    variableName = $scope.simulation.responseVariableInterpretation[seriesName]
+                    
+                    if (variableName == "Time") {
+                        $scope.chart.x = $scope.simulation.response[seriesName]
+                    }
+                    else {
+                        seriesData = $scope.simulation.response[seriesName]
+                        for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
                             
-
+                            valuesString = seriesData[timeIndex]
+                            // parsing [4, 56, 67, 67]
+    
+                            valuesString = valuesString.substring(1, valuesString.length - 1)
+                            // parsing 4, 56, 67, 67
+                            values = valuesString.split(", ")
+                            
+                            for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
+                                if ($scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                    $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                                }
+    
+                                $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+                                
+    
+                            }
+                            
                         }
+    
+    
                         
                     }
-
-
-                    
                 }
+    
+    
+                $scope.simulation.responseAdditionalCalculation()
+    
+    
+                $scope.chart.render()
+    
+                $scope.$apply()
             }
-
-
-            $scope.simulation.responseAdditionalCalculation()
-
-
-            $scope.chart.render()
-
-            $scope.$apply()
+            
         });
     }
 
@@ -1697,6 +1710,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             atDay = parseInt(currentlyAt[0])
             $scope.chart.currentDay = atDay
 
+            $scope.chart.usefulInformation()
+
             if (atDay >= 0 && atDay < $scope.simulation.endingTime) {
                 viewX.updateLine("main-epidemic-graph", "dayLine", {x1: currentlyAt[0], y1: $scope.chart.currentYMax*(-0.1), x2: currentlyAt[0], y2: $scope.chart.currentYMax*1.1})
 
@@ -1716,11 +1731,54 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             viewX.updateLine("main-epidemic-graph", "dayLine", {x1: -100, y1: -100, x2: -200, y2: -200})
             viewX.updateText("main-epidemic-graph", "dayLineLabel", {x: -100, y: -100, text: "Day 0"})
 
+            viewX.updateText("main-graph", "text-label-small-available", {x: -10, y: -10, text: "Available"})
+
+            viewX.updateText("main-graph", "text-label-small-available-2", {x: -10, y: -10, text: "Available"})
+
             $scope.networkGraph.render()
             $scope.chart.currentDay = 0
         }
 
-        
+    }
+
+
+    $scope.chart.usefulInformation = function() {
+        mostInfectedNode = null
+        maxInfection = 0
+        for (var seriesName in $scope.chart.series) {
+            if (seriesName.search("Infected") != -1) {
+                if ($scope.chart.series[seriesName].data[$scope.chart.currentDay] > maxInfection) {
+                    maxInfection = $scope.chart.series[seriesName].data[$scope.chart.currentDay]
+                    mostInfectedNode = $scope.chart.series[seriesName].node
+                }
+            }
+            
+        }
+
+
+        if (mostInfectedNode != null) {
+            viewX.updateText("main-graph", "text-label-small-available", {
+                x: $scope.networkGraph.nodes[mostInfectedNode].x + 0.05, 
+                y: $scope.networkGraph.nodes[mostInfectedNode].y - 0.05, 
+                 text: "Most Infected", textcolor: "hsla(0, 100%, 70%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
+        }
+        else {
+            viewX.updateText("main-graph", "text-label-small-available", {x: -10, y: -10, text: "Available"})
+        }
+
+        if ($scope.simulation.startingNode != "" && $scope.simulation.startingNode != null) {
+            additionShift = 0
+            if (mostInfectedNode != null && mostInfectedNode == $scope.simulation.startingNode) {
+                additionShift = 0.05
+            }
+            viewX.updateText("main-graph", "text-label-small-available-2", {
+                x: $scope.networkGraph.nodes[$scope.simulation.startingNode].x + 0.05, 
+                y: $scope.networkGraph.nodes[$scope.simulation.startingNode].y - 0.05 - additionShift, 
+                 text: "Starting Node", textcolor: "hsla(0, 0%, 30%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
+        }
+        else {
+            viewX.updateText("main-graph", "text-label-small-available-2", {x: -10, y: -10, text: "Available"})
+        }
 
         
     }
@@ -1745,10 +1803,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
                 midPoint = viewX.scalarMultiplyVec(0.5, viewX.addVec([firstNode.x, firstNode.y], [secondNode.x, secondNode.y]))
-                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 60%, 1)", strokewidth: 0.5}
+                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 30%, 1)", strokewidth: 0.5}
                 viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
 
-                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 60%, 1)", strokewidth: 3}
+                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 30%, 1)", strokewidth: 3}
                 lineAdded = viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
 
                 lineAdded[0].style.cursor = "pointer"
@@ -1765,13 +1823,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 $scope.networkGraph.edge.edges[edgeID].loopDirection = loopDirection
                 $scope.networkGraph.edge.edges[edgeID].loopConstructionValues = constructionValues
 
-                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 60%, 1)", circlecolor: "transparent", strokewidth: 3}
+                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 30%, 1)", circlecolor: "transparent", strokewidth: 3}
                 
                 circleAdded = viewX.addCircle("main-graph", "edgeLine-" + edgeID, edgeCircleOptions)
                 circleAdded[0].style.cursor = "pointer"
                 circleAdded[0].style.pointerEvents = "auto"
 
-                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 60%, 1)", strokewidth: 0.5}
+                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 30%, 1)", strokewidth: 0.5}
                 viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
                 
                 // viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)

@@ -2,6 +2,8 @@
     <div style="min-height: 400px;">
         <b class="text-ignus" style="font-family: Raleway; font-size: medium; color: grey;">Results from Simulation</b>
         <div class="pt-1 pb-1 text-ignus" style="color: grey;">Graphs related to the simulation will be displayed here.</div>
+
+        <div class="pt-1 pb-1 text-ignus" style="color: grey;" ng-show="simulation.awaitingResponse">Waiting for a reply from the server. :)</div>
         <div class="mt-2">
             <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(nodeName, nodeDisplayed) in chart.nodesDisplayed" style="{{ nodeDisplayed ? 'background-color: hsla(var(--themeColorHue), 70%, 40%, 1);' : ''}};" ng-click="chart.nodesDisplayed[nodeName] = !nodeDisplayed; chart.render();">
                 {{networkGraph.nodes[nodeName].editableName}}</button>
