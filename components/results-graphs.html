@@ -14,7 +14,7 @@
         </div>
 
         <div class="mt-2 mb-5 text-center w-100" ng-show="length(chart.nodesDisplayed) > 0">
-            <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(seriesPropertyKey, property) in chart.seriesProperties" style="{{ nodeDisplayed ? 'background-color:' + property.color : ''}};" ng-click="chart.seriesProperties[seriesPropertyKey].displayed = !property.displayed; chart.render();">
+            <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(seriesPropertyKey, property) in chart.seriesProperties" style="{{ property.displayed ? 'background-color:' + property.buttonColor : ''}};" ng-click="chart.seriesProperties[seriesPropertyKey].displayed = !property.displayed; chart.render();">
                 {{seriesPropertyKey}}</button>
         </div>
     </div>

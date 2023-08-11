@@ -66,14 +66,18 @@ epidemicApp.defaultChartOptions = {
     xaxislabelvisibility: 'no',
     yaxislabelvisibility: 'no',
 
+    yaxislabelshift: 0,
+
     xaxisvisibility: 'yes',
-    yaxisvisibility: 'yes',
+    yaxisvisibility: 'no',
+
+    gridlinenumberY: 4,
 
     xmajorgridlabelvisibility: 'yes',
     ymajorgridlabelvisibility: 'yes',
-    ymajorgridlabelcolor: 'hsla(0, 0%, 90%, 1)',
 
     xmajorgridlabelshift: 10,
+    ymajorgridlabelshift: -7,
 
     xmajorgridlinesvisibility: 'no',
     ymajorgridlinesvisibility: 'yes',

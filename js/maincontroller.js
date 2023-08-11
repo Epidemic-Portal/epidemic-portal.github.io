@@ -1383,12 +1383,19 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                             }
 
                             $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+                            
 
                         }
                         
                     }
+
+
+                    
                 }
             }
+
+
+            $scope.simulation.responseAdditionalCalculation()
 
 
             $scope.chart.render()
@@ -1404,6 +1411,33 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         });
 
         console.log("Data sent")
+    }
+
+
+
+    $scope.simulation.responseAdditionalCalculation = function() {
+        if ($scope.simulation.response != null) {
+            if ($scope.simulation.model == 'SIR Model') {
+                if ($scope.simulation.response["sArray"] == null) {
+                    for (timeIndex = 0 ; timeIndex < $scope.chart.x.length; timeIndex++) {
+                        nodeIDs = Object.keys($scope.networkGraph.nodes)
+                        for (nodeIndex = 0; nodeIndex < nodeIDs.length; nodeIndex++) {
+                            variableName = $scope.simulation.responseVariableInterpretation['sArray']
+    
+                            if ($scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                            }
+    
+                            infectedName = $scope.simulation.responseVariableInterpretation['iArray']
+                            recoveredName = $scope.simulation.responseVariableInterpretation['rArray']
+    
+                            $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(100 - $scope.chart.series[infectedName + "#" + nodeIDs[nodeIndex]].data[timeIndex] - $scope.chart.series[recoveredName + "#" + nodeIDs[nodeIndex]].data[timeIndex])
+                        }
+                    }
+                }
+            }
+        }
+        
     }
 
 
@@ -1425,14 +1459,17 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.chart.seriesProperties = {
         "Susceptible": {
             "color": "hsla(198, 100%, 80%, 1)",
+            "buttonColor": "hsla(198, 100%, 80%, 0.2)",
             "displayed": true
         },
         "Infected": {
             "color": "hsla(0, 100%, 80%, 1)",
+            "buttonColor": "hsla(0, 100%, 80%, 0.2)",
             "displayed": true
         },
         "Recovered": {
             "color": "hsla(98, 100%, 80%, 1)",
+            "buttonColor": "hsla(98, 100%, 80%, 0.2)",
             "displayed": true
         }
     }
@@ -1458,11 +1495,17 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
 
         epidemicApp.defaultChartOptions['ymax'] = maxYvalue
+        epidemicApp.defaultChartOptions['ymin'] = (-0.04)*maxYvalue
         epidemicApp.defaultChartOptions['unitAspectRatio'] = "no"
         epidemicApp.defaultChartOptions['xaxisthickness'] = 2
         epidemicApp.defaultChartOptions['xaxiscolor'] = "hsla(0, 0%, 30%, 1)"
+        epidemicApp.defaultChartOptions['xaxislabel'] = "TIME"
+        epidemicApp.defaultChartOptions['xaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
 
         
+        epidemicApp.defaultChartOptions['yaxislabel'] = "Percentage of the Population"
+        epidemicApp.defaultChartOptions['yaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
+
 
         viewX.addGraph(graphH, "main-epidemic-graph", epidemicApp.defaultChartOptions)
 
@@ -1497,7 +1540,50 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         // viewX.addLine("main-epidemic-graph", "main-epidemic-graph-timeLine", xAxisLineOptions)
 
-        
+        xAxisLabelOptions = {
+            x: $scope.simulation.endingTime/2,
+            y: (-0.13)*maxYvalue,
+            text: "Time",
+            textcolor: "hsla(0, 0%, 30%, 1)",
+            fontSize: 2.6,
+            fontFamily: "Raleway",
+            fontweight: "bold"
+        }
+
+        viewX.addText("main-epidemic-graph", "main-epidemic-graph-timeLabel", xAxisLabelOptions)
+
+        // yAxisLabelOptions = {
+        //     x: -0.1*$scope.simulation.endingTime,
+        //     y: maxYvalue*1.05,
+        //     text: "Percentage of the Population",
+        //     textcolor: "hsla(0, 0%, 30%, 1)",
+        //     fontSize: 2.6,
+        //     fontFamily: "Raleway",
+        //     fontweight: "bold"
+        // }
+
+        // addedLabel = viewX.addText("main-epidemic-graph", "main-epidemic-graph-yLabel", yAxisLabelOptions)
+
+        // console.log()
+
+        // addedLabel[0].setAttribute("transform", "translate(-50, 50) rotate(-90)")
+
+        var textElement = document.createElement("div")
+        textElement.style.position = "absolute"
+        textElement.style.top = "50%"
+        textElement.style.left = "-50%"
+        textElement.style.id = "yLabel-epidemic-graph"
+        textElement.style.width = "100%"
+        textElement.style.display = "flex"
+        textElement.style.justifyContent = "center"
+        textElement.style.alignItems = "center"
+        textElement.style.fontSize = "20px"
+        textElement.style.fontFamily = "Raleway"
+        // textElement.style.fontWeight = "bold"
+        textElement.style.color = "hsla(0, 0%, 30%, 1)"
+        textElement.innerHTML = "Percentage of the Population"
+        textElement.style.transform = "rotate(-90deg)"
+        document.getElementById("responseHolder").appendChild(textElement)
 
 
 
