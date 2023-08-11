@@ -431,13 +431,15 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.parameterDisplayedOnNode = "recoveryRate"
 
+    $scope.networkGraph.parameterDisplayedOnEdge = "betaParameter"
+
 
     $scope.networkGraph.parameterRandom = function(from='node', parameter='recoveryRate') {
         if (from == 'node') {
             return viewX.linearValue(0, 1, $scope.networkGraph.nodeParameters[parameter].min, $scope.networkGraph.nodeParameters[parameter].max, Math.random())
         }
         else {
-            viewX.linearValue(0, 1, $scope.networkGraph.edgeParameters[parameter].min, $scope.networkGraph.edgeParameters[parameter].max, Math.random())
+            return viewX.linearValue(0, 1, $scope.networkGraph.edgeParameters[parameter].min, $scope.networkGraph.edgeParameters[parameter].max, Math.random())
         }
     }
 
@@ -507,16 +509,18 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         
         for (edgeID in $scope.networkGraph.edge.edges) {
 
+            plottingParameterAsSaturation = $scope.networkGraph.edge.coloring(edgeID)
+
             if ($scope.networkGraph.edge.edges[edgeID].from != $scope.networkGraph.edge.edges[edgeID].to) {
                 firstNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
                 secondNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].to]
 
 
                 midPoint = viewX.scalarMultiplyVec(0.5, viewX.addVec([firstNode.x, firstNode.y], [secondNode.x, secondNode.y]))
-                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5}
+                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 40%, 1)", strokewidth: 0.5}
                 viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
 
-                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 3}
+                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 40%, 1)", strokewidth: 3}
                 lineAdded = viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
 
                 lineAdded[0].style.cursor = "pointer"
@@ -533,13 +537,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 $scope.networkGraph.edge.edges[edgeID].loopDirection = loopDirection
                 $scope.networkGraph.edge.edges[edgeID].loopConstructionValues = constructionValues
 
-                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), 30%, 40%, 1)", circlecolor: "transparent", strokewidth: 3}
+                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 40%, 1)", circlecolor: "transparent", strokewidth: 3}
                 
                 circleAdded = viewX.addCircle("main-graph", "edgeLine-" + edgeID, edgeCircleOptions)
                 circleAdded[0].style.cursor = "pointer"
                 circleAdded[0].style.pointerEvents = "auto"
 
-                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5}
+                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 40%, 1)", strokewidth: 0.5}
                 viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
                 
                 // viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
@@ -855,35 +859,63 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
         else {
             $scope.networkGraph.edge.edgeSecondPointSelected = nodeID
-            $scope.networkGraph.edge.addEdge($scope.networkGraph.edge.edgeFirstPointSelected, $scope.networkGraph.edge.edgeSecondPointSelected)
+            edgeDetails = {
+                fromNode: $scope.networkGraph.edge.edgeFirstPointSelected,
+                toNode: $scope.networkGraph.edge.edgeSecondPointSelected
+            }
+            $scope.networkGraph.edge.addEdge(edgeDetails)
 
             $scope.networkGraph.edge.updateEditContext()
         }
     }
 
 
-    $scope.networkGraph.edge.addEdge = function(fromNode, toNode) {
-        edgeID = "from#" + fromNode + "to#" + toNode
-        reverseEdgeID = "from#" + toNode  + "to#" + fromNode
-        if ($scope.networkGraph.edge.edges[edgeID] == undefined && $scope.networkGraph.edge.edges[reverseEdgeID] == undefined) {
-            $scope.networkGraph.edge.edges[edgeID] = {
-                from: fromNode,
-                to: toNode
-            }
-            $scope.networkGraph.edge.edges[edgeID].displayInfo = "An edge in the graph"
+    $scope.networkGraph.edge.addEdge = function(edgeDetails = null) {
 
-            $scope.networkGraph.edge.edges[edgeID].parameters = {}
-            for (parameter in $scope.networkGraph.edgeParameters) {
-                $scope.networkGraph.edge.edges[edgeID].parameters[parameter] = {}
-                $scope.networkGraph.edge.edges[edgeID].parameters[parameter].value = $scope.networkGraph.edgeParameters[parameter].default
-                $scope.networkGraph.edge.edges[edgeID].parameters[parameter].editing = false
-            }
-
-            $scope.networkGraph.nodes[fromNode].edges.leaving[toNode] = edgeID
-            $scope.networkGraph.nodes[toNode].edges.arriving[fromNode] = edgeID
-            $scope.networkGraph.render()
+        if (edgeDetails == null) {
+            edgeDetails = {}
         }
+        
+        if (edgeDetails.fromNode != null && edgeDetails.toNode != null) {
+            fromNode = edgeDetails.fromNode
+            toNode = edgeDetails.toNode
 
+
+            edgeID = "from#" + fromNode + "to#" + toNode
+            reverseEdgeID = "from#" + toNode  + "to#" + fromNode
+            if ($scope.networkGraph.edge.edges[edgeID] == undefined && $scope.networkGraph.edge.edges[reverseEdgeID] == undefined) {
+                $scope.networkGraph.edge.edges[edgeID] = {
+                    from: fromNode,
+                    to: toNode
+                }
+                $scope.networkGraph.edge.edges[edgeID].displayInfo = "An edge in the graph"
+                $scope.networkGraph.edge.edges[edgeID].parameters = {}
+                
+                
+                if (edgeDetails.parameters == null) {
+                    
+                    for (parameter in $scope.networkGraph.edgeParameters) {
+                        $scope.networkGraph.edge.edges[edgeID].parameters[parameter] = {}
+                        $scope.networkGraph.edge.edges[edgeID].parameters[parameter].value = $scope.networkGraph.edgeParameters[parameter].default
+                        $scope.networkGraph.edge.edges[edgeID].parameters[parameter].editing = false
+                    }
+                }
+                else {
+                    for (parameter in $scope.networkGraph.edgeParameters) {
+                        $scope.networkGraph.edge.edges[edgeID].parameters[parameter] = {}
+                        $scope.networkGraph.edge.edges[edgeID].parameters[parameter].value = (edgeDetails.parameters[parameter] == null) ? $scope.networkGraph.edgeParameters[parameter].default : edgeDetails.parameters[parameter]
+                        $scope.networkGraph.edge.edges[edgeID].parameters[parameter].editing = false
+                    }
+                }
+
+                
+
+                $scope.networkGraph.nodes[fromNode].edges.leaving[toNode] = edgeID
+                $scope.networkGraph.nodes[toNode].edges.arriving[fromNode] = edgeID
+
+                $scope.networkGraph.render()
+            }
+        }
         
     }
 
@@ -891,6 +923,17 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     // $scope.networkGraph.edge.editContentAnimation = function() {
     //     viewX.updateCircle("main-graph", "edgeFirstPointSelected", {strokedasharray: []})
     // }
+
+    $scope.networkGraph.edge.coloring = function(edgeID) {
+        plottingParameterValue = $scope.networkGraph.edge.edges[edgeID].parameters[$scope.networkGraph.parameterDisplayedOnEdge].value
+
+        plottingParameterMin = $scope.networkGraph.edgeParameters[$scope.networkGraph.parameterDisplayedOnEdge].min
+        plottingParameterMax = $scope.networkGraph.edgeParameters[$scope.networkGraph.parameterDisplayedOnEdge].max
+
+        plottingParameterAsSaturation = viewX.linearValue(plottingParameterMin, plottingParameterMax, 0, 70, plottingParameterValue)
+
+        return plottingParameterAsSaturation
+    }
 
     
 
@@ -958,13 +1001,15 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
                 edgeID = $scope.networkGraph.edge.highlighted
 
+                saturation = $scope.networkGraph.edge.coloring(edgeID)
+
                 if ($scope.networkGraph.edge.edges[edgeID].from != $scope.networkGraph.edge.edges[edgeID].to) {
-                    viewX.updateArrow("main-graph", "edgeArrow-" + edgeID, {arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5})
-                    viewX.updateLine("main-graph", "edgeLine-" + edgeID, {linecolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 3})
+                    viewX.updateArrow("main-graph", "edgeArrow-" + edgeID, {arrowcolor: "hsla(var(--themeColorHue), " + saturation + "%, 40%, 1)", strokewidth: 0.5})
+                    viewX.updateLine("main-graph", "edgeLine-" + edgeID, {linecolor: "hsla(var(--themeColorHue), " + saturation + "%, 40%, 1)", strokewidth: 3})
                 }
                 else {
-                    viewX.updateCircle("main-graph", "edgeLine-" + edgeID, {stroke: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 3})
-                    viewX.updateArrow("main-graph", "edgeArrow-" + edgeID, {arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5})
+                    viewX.updateCircle("main-graph", "edgeLine-" + edgeID, {stroke: "hsla(var(--themeColorHue), " + saturation + "%, 40%, 1)", strokewidth: 3})
+                    viewX.updateArrow("main-graph", "edgeArrow-" + edgeID, {arrowcolor: "hsla(var(--themeColorHue), " + saturation + "%, 40%, 1)", strokewidth: 0.5})
                 }
                 
     
@@ -1118,7 +1163,15 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         for (k = 0; k < 16; k++) {
             fromNode = nodeIDList[Math.floor(Math.random() * nodeIDList.length)]
             toNode = nodeIDList[Math.floor(Math.random() * nodeIDList.length)]
-            $scope.networkGraph.edge.addEdge(fromNode, toNode);
+
+            details = {
+                fromNode : fromNode,
+                toNode : toNode,
+                parameters: {
+                    'betaParameter': $scope.networkGraph.parameterRandom(from='edge', parameter='betaParameter')
+                }
+            }
+            $scope.networkGraph.edge.addEdge(details);
         }
     }
 
@@ -1496,6 +1549,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         maxYvalue = 1
 
+        $scope.chart.nodeWithHighestValueForInfected = null
+
         $scope.chart.maxValues = {}
         for (var seriesName in $scope.chart.series) {
             series = $scope.chart.series[seriesName]
@@ -1504,6 +1559,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 maxValue = Math.max(...series.data)
                 if (maxValue > maxYvalue) {
                     maxYvalue = maxValue
+                    $scope.chart.nodeWithHighestValueForInfected = series.node
                 }
             }   
         }
@@ -1680,6 +1736,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         for (edgeID in $scope.networkGraph.edge.edges) {
 
+            plottingParameterAsSaturation = $scope.networkGraph.edge.coloring(edgeID)
+
             if ($scope.networkGraph.edge.edges[edgeID].from != $scope.networkGraph.edge.edges[edgeID].to) {
                 firstNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
                 secondNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].to]
@@ -1687,10 +1745,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
                 midPoint = viewX.scalarMultiplyVec(0.5, viewX.addVec([firstNode.x, firstNode.y], [secondNode.x, secondNode.y]))
-                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(0, 30%, 40%, 1)", strokewidth: 0.5}
+                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 60%, 1)", strokewidth: 0.5}
                 viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
 
-                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(0, 30%, 40%, 1)", strokewidth: 3}
+                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 60%, 1)", strokewidth: 3}
                 lineAdded = viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
 
                 lineAdded[0].style.cursor = "pointer"
@@ -1707,13 +1765,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 $scope.networkGraph.edge.edges[edgeID].loopDirection = loopDirection
                 $scope.networkGraph.edge.edges[edgeID].loopConstructionValues = constructionValues
 
-                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(0, 30%, 40%, 1)", circlecolor: "transparent", strokewidth: 3}
+                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 60%, 1)", circlecolor: "transparent", strokewidth: 3}
                 
                 circleAdded = viewX.addCircle("main-graph", "edgeLine-" + edgeID, edgeCircleOptions)
                 circleAdded[0].style.cursor = "pointer"
                 circleAdded[0].style.pointerEvents = "auto"
 
-                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(0, 30%, 40%, 1)", strokewidth: 0.5}
+                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 60%, 1)", strokewidth: 0.5}
                 viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
                 
                 // viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)

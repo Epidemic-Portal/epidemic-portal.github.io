@@ -3,7 +3,7 @@
 var style = document.createElement("style");
 style.id = "root-styles"
 
-themeColors = [270, 198]
+themeColors = [270]
 themeColor = themeColors[Math.floor(Math.random()*themeColors.length)]
 style.innerHTML = ":root {--themeColorHue: "+  themeColor + ";"
 document.head.appendChild(style);
