@@ -1234,7 +1234,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
     }
     $scope.simulation.startingTime = 1
-    $scope.simulation.endingTime = 50
+    $scope.simulation.endingTime = 40
     $scope.simulation.percentageSusceptibleInStartingNode = 40
 
     $scope.simulation.startingNode = ""
@@ -1477,6 +1477,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.chart.render = function() {
         viewX.removeGraph("main-epidemic-graph")
+
+        if (document.getElementById('yLabel-epidemic-graph') != null) {
+            document.getElementById('yLabel-epidemic-graph').remove()
+        }
+
+        
         graphH = document.getElementById('epidemic-chart-main')
 
         epidemicApp.defaultChartOptions['xmax'] = $scope.simulation.endingTime
@@ -1484,8 +1490,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         epidemicApp.defaultChartOptions['xmajorgridlabelshift'] = 2
 
         maxYvalue = 1
+
+        $scope.chart.maxValues = {}
         for (var seriesName in $scope.chart.series) {
             series = $scope.chart.series[seriesName]
+            $scope.chart.maxValues[series.name] = Math.max(...series.data)
             if ($scope.chart.seriesProperties[series.name].displayed && $scope.chart.nodesDisplayed[series.node]) {
                 maxValue = Math.max(...series.data)
                 if (maxValue > maxYvalue) {
@@ -1493,6 +1502,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 }
             }   
         }
+
+        $scope.chart.currentYMax = maxYvalue
+        $scope.chart.currentXMax = $scope.simulation.endingTime
 
         epidemicApp.defaultChartOptions['ymax'] = maxYvalue
         epidemicApp.defaultChartOptions['ymin'] = (-0.04)*maxYvalue
@@ -1508,6 +1520,30 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
         viewX.addGraph(graphH, "main-epidemic-graph", epidemicApp.defaultChartOptions)
+
+        // Adding Day Line
+        daylineOptions = {
+            x1: -100,
+            y1: -100,
+            x2: -200,
+            y2: -200,
+            strokewidth: 0.5,
+            linecolor: "hsla(0, 0%, 30%, 1)",
+            strokedasharray: "5, 5"
+        }
+
+        viewX.addLine("main-epidemic-graph", "dayLine", daylineOptions)
+
+        // Day Line Label
+        dayLineLabelOptions = {
+            x: -100,
+            y: -100,
+            text: "Day 0",
+            textcolor: "hsla(0, 0%, 30%, 1)",
+            fontSize: 6
+        }
+
+        viewX.addText("main-epidemic-graph", "dayLineLabel", dayLineLabelOptions)
 
         for (var seriesName in $scope.chart.series) {
             series = $scope.chart.series[seriesName]
@@ -1587,7 +1623,120 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
 
+        $scope.chart.currentDay = 0
+
+
     }
+
+
+    $scope.chart.mouseMove = function($event) {
+        if (viewX.graphData["main-epidemic-graph"] != null) {
+            currentlyAt = viewX.cursorToGraph($event.clientX, $event.clientY, "main-epidemic-graph")
+
+            atDay = parseInt(currentlyAt[0])
+            $scope.chart.currentDay = atDay
+
+            if (atDay >= 0 && atDay < $scope.simulation.endingTime) {
+                viewX.updateLine("main-epidemic-graph", "dayLine", {x1: currentlyAt[0], y1: $scope.chart.currentYMax*(-0.1), x2: currentlyAt[0], y2: $scope.chart.currentYMax*1.1})
+
+                textPosition = currentlyAt[0] + ($scope.chart.currentXMax)*0.02
+                viewX.updateText("main-epidemic-graph", "dayLineLabel", {x: textPosition, y: $scope.chart.currentYMax*(1.05), text: "Day " + atDay})
+
+                $scope.chart.renderSimulation()
+            }
+        }
+
+        
+
+    }
+
+    $scope.chart.mouseLeave = function($event) {
+        if (viewX.graphData["main-epidemic-graph"] != null) {
+            viewX.updateLine("main-epidemic-graph", "dayLine", {x1: -100, y1: -100, x2: -200, y2: -200})
+            viewX.updateText("main-epidemic-graph", "dayLineLabel", {x: -100, y: -100, text: "Day 0"})
+
+            $scope.networkGraph.render()
+            $scope.chart.currentDay = 0
+        }
+
+        
+
+        
+    }
+
+
+    $scope.chart.renderSimulation = function() {
+        
+        $scope.networkGraph.clear()
+
+
+        viewX.updateCircle("main-graph", "highlightNodeRing1" , {x: -100, y: -100})
+        viewX.updateCircle("main-graph", "highlightNodeRing2" , {x: -100, y: -100})
+
+        for (edgeID in $scope.networkGraph.edge.edges) {
+
+            if ($scope.networkGraph.edge.edges[edgeID].from != $scope.networkGraph.edge.edges[edgeID].to) {
+                firstNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
+                secondNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].to]
+                
+
+
+                midPoint = viewX.scalarMultiplyVec(0.5, viewX.addVec([firstNode.x, firstNode.y], [secondNode.x, secondNode.y]))
+                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5}
+                viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
+
+                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 3}
+                lineAdded = viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
+
+                lineAdded[0].style.cursor = "pointer"
+                lineAdded[0].style.pointerEvents = "auto"
+            }
+            else {
+                nodeFromTo = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
+
+                loopDirection = $scope.networkGraph.edge.loopCreationDirection($scope.networkGraph.edge.edges[edgeID].from)
+
+                constructionValues = $scope.networkGraph.edge.loopCreation([nodeFromTo.x, nodeFromTo.y], loopDirection)
+
+                
+                $scope.networkGraph.edge.edges[edgeID].loopDirection = loopDirection
+                $scope.networkGraph.edge.edges[edgeID].loopConstructionValues = constructionValues
+
+                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), 30%, 40%, 1)", circlecolor: "transparent", strokewidth: 3}
+                
+                circleAdded = viewX.addCircle("main-graph", "edgeLine-" + edgeID, edgeCircleOptions)
+                circleAdded[0].style.cursor = "pointer"
+                circleAdded[0].style.pointerEvents = "auto"
+
+                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5}
+                viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
+                
+                // viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
+            }
+        }
+
+        for (nodeID in $scope.networkGraph.nodes) {
+            node = $scope.networkGraph.nodes[nodeID]
+
+            
+            if ($scope.chart.series["Infected#" + nodeID] != null) {
+                infectedNumber = $scope.chart.series["Infected#" + nodeID].data[$scope.chart.currentDay]
+
+                saturationForNode = viewX.linearValue(0, 100, 0, $scope.chart.maxValues["Infected"], infectedNumber)
+    
+                nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(0, " + saturationForNode + "%, 70%, 1)" : "hsla(0, " + saturationForNode + "%, 45%, 1)")}
+                viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
+            }
+
+            
+
+            
+            // viewX.moveToTop("main-graph", "node-moving-knob-" + node.id)
+        }
+
+
+    }
+
 
     
 

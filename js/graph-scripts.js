@@ -3,7 +3,7 @@
 var style = document.createElement("style");
 style.id = "root-styles"
 
-themeColors = [270, 198, 40]
+themeColors = [270, 198]
 themeColor = themeColors[Math.floor(Math.random()*themeColors.length)]
 style.innerHTML = ":root {--themeColorHue: "+  themeColor + ";"
 document.head.appendChild(style);
@@ -72,6 +72,7 @@ epidemicApp.defaultChartOptions = {
     yaxisvisibility: 'no',
 
     gridlinenumberY: 4,
+    gridlinenumberX: 7,
 
     xmajorgridlabelvisibility: 'yes',
     ymajorgridlabelvisibility: 'yes',
@@ -83,7 +84,7 @@ epidemicApp.defaultChartOptions = {
     ymajorgridlinesvisibility: 'yes',
     ymajorgridlinesextension: "no",
 
-    fontSize: 1.7,
+    fontSize: 2,
 
 
     unitAspectRatio: 'yes',
