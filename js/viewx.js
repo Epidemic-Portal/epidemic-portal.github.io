@@ -998,6 +998,7 @@ viewX.addGraph = function (parentdiv, name, graphData) {
 		for (m = gdata.ylabelexclusionsstart; m < ymajortickvalues.length - gdata.ylabelexclusionsend; m++) {
 			ticklocation = ymajortickvalues[m]
 			value = ticklocation
+
 			if (eval(gdata.ymajorgridlabelOnlyIf)) {
 				var textElement = document.createElementNS("http://www.w3.org/2000/svg", 'text');
 				
@@ -1005,6 +1006,9 @@ viewX.addGraph = function (parentdiv, name, graphData) {
 				if(viewX.isInt(ticklocation)) {
 					if (gdata.isComplexPlane == 'yes') {
 						textElement.innerHTML = ticklocation + 'i'
+					}
+					else {
+						textElement.innerHTML = ticklocation
 					}
 				}
 				else {

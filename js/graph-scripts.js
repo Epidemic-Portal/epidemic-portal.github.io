@@ -66,16 +66,21 @@ epidemicApp.defaultChartOptions = {
     xaxislabelvisibility: 'no',
     yaxislabelvisibility: 'no',
 
-    xaxisvisibility: 'no',
-    yaxisvisibility: 'no',
+    xaxisvisibility: 'yes',
+    yaxisvisibility: 'yes',
 
-    xmajorgridlabelvisibility: 'no',
-    ymajorgridlabelvisibility: 'no',
+    xmajorgridlabelvisibility: 'yes',
+    ymajorgridlabelvisibility: 'yes',
+    ymajorgridlabelcolor: 'hsla(0, 0%, 90%, 1)',
+
+    xmajorgridlabelshift: 10,
 
     xmajorgridlinesvisibility: 'no',
-    ymajorgridlinesvisibility: 'no',
+    ymajorgridlinesvisibility: 'yes',
+    ymajorgridlinesextension: "no",
 
-    fontSize: 1.6,
+    fontSize: 1.7,
+
 
     unitAspectRatio: 'yes',
     fixAxisStretchCentrally: 'yes',

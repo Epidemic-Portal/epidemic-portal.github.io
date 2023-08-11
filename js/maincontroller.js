@@ -1348,8 +1348,16 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             nodeIDs = Object.keys($scope.networkGraph.nodes)
 
             for (var nodeID in $scope.networkGraph.nodes) {
-                $scope.chart.nodesDisplayed[nodeID] = true
+                $scope.chart.nodesDisplayed[nodeID] = false
             }
+
+            for (ri = 0; ri < 2; ri++) {
+                randomNode = nodeIDs[Math.floor(Math.random() * nodeIDs.length)]
+                $scope.chart.nodesDisplayed[randomNode] = true
+
+            }
+
+
 
             for (var seriesName in $scope.simulation.response) {
 
@@ -1412,9 +1420,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.chart = {}
 
-    // $scope.chart.nodesDisplayed = {
-    //     "first": true
-    // }
+    $scope.chart.nodesDisplayed = {}
 
     $scope.chart.seriesProperties = {
         "Susceptible": {
@@ -1431,34 +1437,14 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
     }
 
-    // $scope.chart.series = {}
-    // $scope.chart.series = {
-    //     "Susceptible#first": {
-    //         data: [23, 25, 77, 33, 22, 33, 44, 55, 66, 77],
-    //         name: "Susceptible",
-    //         node: "first"
-    //     },
-    //     "Infected#first": {
-    //         data: [23, 25, 27, 29, 31, 33, 35, 37, 39, 41],
-    //         name: "Infected",
-    //         node: "first"
-    //     },
-    //     "Recovered#first": {
-    //         data: [23, 25, 27, 29, 31, 33, 35, 37, 39, 41],
-    //         name: "Recovered",
-    //         node: "first"
-    //     }
-    // }
-
-    // $scope.chart.x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
     $scope.chart.render = function() {
-        console.log($scope.chart.nodesDisplayed)
         viewX.removeGraph("main-epidemic-graph")
         graphH = document.getElementById('epidemic-chart-main')
 
         epidemicApp.defaultChartOptions['xmax'] = $scope.simulation.endingTime
         epidemicApp.defaultChartOptions['xmin'] = 0
+        epidemicApp.defaultChartOptions['xmajorgridlabelshift'] = 2
 
         maxYvalue = 1
         for (var seriesName in $scope.chart.series) {
@@ -1472,6 +1458,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
 
         epidemicApp.defaultChartOptions['ymax'] = maxYvalue
+        epidemicApp.defaultChartOptions['unitAspectRatio'] = "no"
+        epidemicApp.defaultChartOptions['xaxisthickness'] = 2
+        epidemicApp.defaultChartOptions['xaxiscolor'] = "hsla(0, 0%, 30%, 1)"
+
+        
 
         viewX.addGraph(graphH, "main-epidemic-graph", epidemicApp.defaultChartOptions)
 
@@ -1494,6 +1485,22 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 viewX.addPath("main-epidemic-graph", "main-epidemic-graph#" + series.node + "#type" + series.name, pathOptions)
             }   
         }
+
+        // xAxisLineOptions = {
+        //     x1: 0,
+        //     y1: (-0.1)*maxYvalue,
+        //     y2: (-0.1)*maxYvalue,
+        //     x2: $scope.simulation.endingTime,
+        //     strokewidth: 0.4,
+        //     linecolor: 'hsla(0, 0%, 30%, 1)'
+        // }
+
+        // viewX.addLine("main-epidemic-graph", "main-epidemic-graph-timeLine", xAxisLineOptions)
+
+        
+
+
+
     }
 
     
