@@ -1366,6 +1366,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     $scope.simulation.run = function() {
+        $scope.chart.remove()
+
         $scope.simulation.getParametersFromGraph()
 
         $scope.simulation.sendData.userDetails = getUserDetails()
@@ -1545,14 +1547,16 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
     }
 
-
-    $scope.chart.render = function() {
+    $scope.chart.remove = function() {
         viewX.removeGraph("main-epidemic-graph")
 
         if (document.getElementById('yLabel-epidemic-graph') != null) {
             document.getElementById('yLabel-epidemic-graph').remove()
         }
 
+    }
+    $scope.chart.render = function() {
+        $scope.chart.remove()
         
         graphH = document.getElementById('epidemic-chart-main')
 
@@ -1774,7 +1778,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             viewX.updateText("main-graph", "text-label-small-available-2", {
                 x: $scope.networkGraph.nodes[$scope.simulation.startingNode].x + 0.05, 
                 y: $scope.networkGraph.nodes[$scope.simulation.startingNode].y - 0.05 - additionShift, 
-                 text: "Starting Node", textcolor: "hsla(0, 0%, 30%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
+                 text: "Starting Node", textcolor: "hsla(0, 0%, 100%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
         }
         else {
             viewX.updateText("main-graph", "text-label-small-available-2", {x: -10, y: -10, text: "Available"})
