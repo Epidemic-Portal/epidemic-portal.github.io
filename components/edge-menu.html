@@ -12,7 +12,7 @@
                     <span class="parameter-display-text"  ng-click="edgeParameter.editing = !edgeParameter.editing">{{edgeParameter.value}}</span>
                     <i class="ml-2 fa fa-pencil sub-addition-button" ng-click="edgeParameter.editing = !edgeParameter.editing"></i>
                     <div class="pb-2" ng-show="edgeParameter.editing">
-                        <input type="range" id="edge-slider-{{edgeParameterKey}}" min="{{networkGraph.edgeParameters[edgeParameterKey].min}}" max="{{networkGraph.edgeParameters[edgeParameterKey].max}}" step="{{networkGraph.edgeParameters[edgeParameterKey].step}}" ng-model="nodeParameter.value" ng-change="networkGraph.changingNodeParameter()">
+                        <input type="range" id="edge-slider-{{edgeParameterKey}}" min="{{networkGraph.edgeParameters[edgeParameterKey].min}}" max="{{networkGraph.edgeParameters[edgeParameterKey].max}}" step="{{networkGraph.edgeParameters[edgeParameterKey].step}}" ng-model="edgeParameter.value" ng-change="networkGraph.changingEdgeParameter()">
                     </div>
                     <div class="text-ignus" style="font-size: normal;">
                         {{networkGraph.edgeParameters[edgeParameterKey].name}}

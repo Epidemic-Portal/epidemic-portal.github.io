@@ -1082,6 +1082,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         
     }
 
+    $scope.networkGraph.changingEdgeParameter = function() {
+        // console.log($scope.networkGraph.edge.edges[$scope.networkGraph.edge.selected])
+        $scope.networkGraph.render()
+    }
+
 
 
 
@@ -1460,7 +1465,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         "Susceptible": {
             "color": "hsla(198, 100%, 80%, 1)",
             "buttonColor": "hsla(198, 100%, 80%, 0.2)",
-            "displayed": true
+            "displayed": false
         },
         "Infected": {
             "color": "hsla(0, 100%, 80%, 1)",
@@ -1470,7 +1475,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         "Recovered": {
             "color": "hsla(98, 100%, 80%, 1)",
             "buttonColor": "hsla(98, 100%, 80%, 0.2)",
-            "displayed": true
+            "displayed": false
         }
     }
 
@@ -1682,10 +1687,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
                 midPoint = viewX.scalarMultiplyVec(0.5, viewX.addVec([firstNode.x, firstNode.y], [secondNode.x, secondNode.y]))
-                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5}
+                edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(0, 30%, 40%, 1)", strokewidth: 0.5}
                 viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
 
-                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 3}
+                edgeLineOptions = {x1: firstNode.x, y1: firstNode.y, x2: secondNode.x, y2: secondNode.y,linecolor: "hsla(var(0, 30%, 40%, 1)", strokewidth: 3}
                 lineAdded = viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
 
                 lineAdded[0].style.cursor = "pointer"
@@ -1702,13 +1707,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 $scope.networkGraph.edge.edges[edgeID].loopDirection = loopDirection
                 $scope.networkGraph.edge.edges[edgeID].loopConstructionValues = constructionValues
 
-                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(--themeColorHue), 30%, 40%, 1)", circlecolor: "transparent", strokewidth: 3}
+                edgeCircleOptions = {x: constructionValues.center[0], y: constructionValues.center[1], radius: $scope.networkGraph.edge.loopRadius, stroke: "hsla(var(0, 30%, 40%, 1)", circlecolor: "transparent", strokewidth: 3}
                 
                 circleAdded = viewX.addCircle("main-graph", "edgeLine-" + edgeID, edgeCircleOptions)
                 circleAdded[0].style.cursor = "pointer"
                 circleAdded[0].style.pointerEvents = "auto"
 
-                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), 30%, 40%, 1)", strokewidth: 0.5}
+                edgeArrowOptions = {from: constructionValues.arrowLocation , to: constructionValues.arrowTo, stroke: "transparent", arrowcolor: "hsla(var(0, 30%, 40%, 1)", strokewidth: 0.5}
                 viewX.addArrow("main-graph", "edgeArrow-" + edgeID, edgeArrowOptions)
                 
                 // viewX.addLine("main-graph", "edgeLine-" + edgeID, edgeLineOptions)
