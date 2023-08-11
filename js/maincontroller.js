@@ -373,6 +373,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         $scope.simulation.startingNode = recentNode
 
+
+        // $scope.chart.render()
+
     }
 
     $scope.networkGraph = {}
@@ -1320,13 +1323,67 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.simulation.awaitingResponse = true
     }
 
+
+    $scope.simulation.responseVariableInterpretation = {
+        "iArray": "Infected",
+        "sArray": "Susceptible",
+        "rArray": "Recovered",
+        "eArray": "Exposed",
+        "tArray": "Time"
+    }
+
     $scope.simulation.firebaseResponseHandler = function(requestID) {
         var ref = firebase.database().ref("requests/"+ requestID + '/response');
         ref.on('value', function(snapshot) {
-            // console.log(snapshot.val());
             $scope.simulation.response = snapshot.val()
             $scope.simulation.awaitingResponse = false
-            document.getElementById('responseHolder').innerHTML = JSON.stringify(snapshot.val(), null, 2)
+
+
+            $scope.chart.series = {}
+            $scope.chart.x = []
+
+            $scope.chart.nodesDisplayed = {}
+
+
+            nodeIDs = Object.keys($scope.networkGraph.nodes)
+
+            for (var nodeID in $scope.networkGraph.nodes) {
+                $scope.chart.nodesDisplayed[nodeID] = true
+            }
+
+            for (var seriesName in $scope.simulation.response) {
+
+                variableName = $scope.simulation.responseVariableInterpretation[seriesName]
+                
+                if (variableName == "Time") {
+                    $scope.chart.x = $scope.simulation.response[seriesName]
+                }
+                else {
+                    seriesData = $scope.simulation.response[seriesName]
+                    for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
+                        
+                        valuesString = seriesData[timeIndex]
+                        // parsing [4, 56, 67, 67]
+
+                        valuesString = valuesString.substring(1, valuesString.length - 1)
+                        // parsing 4, 56, 67, 67
+                        values = valuesString.split(", ")
+                        
+                        for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
+                            if ($scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                            }
+
+                            $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+
+                        }
+                        
+                    }
+                }
+            }
+
+
+            $scope.chart.render()
 
             $scope.$apply()
         });
@@ -1350,6 +1407,96 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.ui.additionParameters = {
         expanded: false
     }
+
+
+
+    $scope.chart = {}
+
+    // $scope.chart.nodesDisplayed = {
+    //     "first": true
+    // }
+
+    $scope.chart.seriesProperties = {
+        "Susceptible": {
+            "color": "hsla(198, 100%, 80%, 1)",
+            "displayed": true
+        },
+        "Infected": {
+            "color": "hsla(0, 100%, 80%, 1)",
+            "displayed": true
+        },
+        "Recovered": {
+            "color": "hsla(98, 100%, 80%, 1)",
+            "displayed": true
+        }
+    }
+
+    // $scope.chart.series = {}
+    // $scope.chart.series = {
+    //     "Susceptible#first": {
+    //         data: [23, 25, 77, 33, 22, 33, 44, 55, 66, 77],
+    //         name: "Susceptible",
+    //         node: "first"
+    //     },
+    //     "Infected#first": {
+    //         data: [23, 25, 27, 29, 31, 33, 35, 37, 39, 41],
+    //         name: "Infected",
+    //         node: "first"
+    //     },
+    //     "Recovered#first": {
+    //         data: [23, 25, 27, 29, 31, 33, 35, 37, 39, 41],
+    //         name: "Recovered",
+    //         node: "first"
+    //     }
+    // }
+
+    // $scope.chart.x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    $scope.chart.render = function() {
+        console.log($scope.chart.nodesDisplayed)
+        viewX.removeGraph("main-epidemic-graph")
+        graphH = document.getElementById('epidemic-chart-main')
+
+        epidemicApp.defaultChartOptions['xmax'] = $scope.simulation.endingTime
+        epidemicApp.defaultChartOptions['xmin'] = 0
+
+        maxYvalue = 1
+        for (var seriesName in $scope.chart.series) {
+            series = $scope.chart.series[seriesName]
+            if ($scope.chart.seriesProperties[series.name].displayed && $scope.chart.nodesDisplayed[series.node]) {
+                maxValue = Math.max(...series.data)
+                if (maxValue > maxYvalue) {
+                    maxYvalue = maxValue
+                }
+            }   
+        }
+
+        epidemicApp.defaultChartOptions['ymax'] = maxYvalue
+
+        viewX.addGraph(graphH, "main-epidemic-graph", epidemicApp.defaultChartOptions)
+
+        for (var seriesName in $scope.chart.series) {
+            series = $scope.chart.series[seriesName]
+            if ($scope.chart.seriesProperties[series.name].displayed && $scope.chart.nodesDisplayed[series.node]) {
+                pathOptions = {
+                    points: [],
+                }
+
+                for (var pointIndex = 0; pointIndex < series.data.length; pointIndex++) {
+                    pathOptions.points.push([$scope.chart.x[pointIndex], series.data[pointIndex]])
+                }
+
+
+
+                pathOptions.pathcolor = $scope.chart.seriesProperties[series.name].color
+                pathOptions.strokewidth = 0.4
+
+                viewX.addPath("main-epidemic-graph", "main-epidemic-graph#" + series.node + "#type" + series.name, pathOptions)
+            }   
+        }
+    }
+
+    
 
 
 

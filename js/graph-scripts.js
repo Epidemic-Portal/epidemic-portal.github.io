@@ -52,6 +52,39 @@ epidemicApp.defaultGraphOptions = {
     scrollZoom: "no"
 }
 
+
+epidemicApp.defaultChartOptions = {
+    xmax: 100,
+    xmin: 0,
+
+    ymax: 100,
+    ymin: 0,
+
+    axislocationX: 0,
+    axislocationY: 0,
+
+    xaxislabelvisibility: 'no',
+    yaxislabelvisibility: 'no',
+
+    xaxisvisibility: 'no',
+    yaxisvisibility: 'no',
+
+    xmajorgridlabelvisibility: 'no',
+    ymajorgridlabelvisibility: 'no',
+
+    xmajorgridlinesvisibility: 'no',
+    ymajorgridlinesvisibility: 'no',
+
+    fontSize: 1.6,
+
+    unitAspectRatio: 'yes',
+    fixAxisStretchCentrally: 'yes',
+
+    scrollZoom: "no"
+}
+
+
+
 epidemicApp.dots = {}
 epidemicApp.addDotsGraph = function() {
     graphH = document.getElementById('dots-background-graph-holder')
