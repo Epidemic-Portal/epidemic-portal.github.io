@@ -1311,6 +1311,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.simulation.awaitingResponse = false
     $scope.simulation.response = {}
 
+    
+
     $scope.simulation.getParametersFromGraph = function() {
         
         nodeArray = Object.keys($scope.networkGraph.nodes)
@@ -1710,6 +1712,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
 
 
+
     $scope.chart.mouseMove = function($event) {
         if (viewX.graphData["main-epidemic-graph"] != null) {
             currentlyAt = viewX.cursorToGraph($event.clientX, $event.clientY, "main-epidemic-graph")
@@ -1849,10 +1852,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             
             if ($scope.chart.series["Infected#" + nodeID] != null) {
                 infectedNumber = $scope.chart.series["Infected#" + nodeID].data[$scope.chart.currentDay]
+                saturationForNode = $scope.linearValue(infectedNumber, [0, $scope.chart.maxValues["Infected"]], [0, 100])
 
-                saturationForNode = viewX.linearValue(0, 100, 0, $scope.chart.maxValues["Infected"], infectedNumber)
+                nodeRadius = $scope.linearValue(infectedNumber, [0, $scope.chart.maxValues["Infected"]], [0.03, 0.05])
     
-                nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(0, " + saturationForNode + "%, 70%, 1)" : "hsla(0, " + saturationForNode + "%, 45%, 1)")}
+                nodeOptions = {x: node.x, y: node.y, radius: nodeRadius, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(0, " + saturationForNode + "%, 70%, 1)" : "hsla(0, " + saturationForNode + "%, 45%, 1)")}
                 viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
             }
 

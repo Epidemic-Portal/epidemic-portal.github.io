@@ -124,8 +124,11 @@ main {
 }
 
 @media (prefers-color-scheme: light) {
-
     :root {
+        --generalBackground: hsla(0, 0%, 6%, 1);
+    }
+
+    /* :root {
         --infectionRed: hsla(0, 80%, 40%, 1);
     }
 
@@ -165,7 +168,7 @@ main {
 
     .blurryBack {
         background-color: hsla(0,0%,98%, 0.2);
-    }
+    } */
 
 
             

@@ -17,9 +17,9 @@ ignusTheme.setUp();
 epidemicApp = {}
 
 epidemicApp.darkmode = true
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-    epidemicApp.darkmode = false
-}
+// if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+//     epidemicApp.darkmode = false
+// }
 
 
 epidemicApp.defaultGraphOptions = {
