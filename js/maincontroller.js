@@ -1311,6 +1311,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.simulation.awaitingResponse = false
     $scope.simulation.response = {}
 
+    $scope.simulation.canPlot = false
+
     
 
     $scope.simulation.getParametersFromGraph = function() {
@@ -1472,6 +1474,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     
     
                 $scope.chart.render()
+
+                $scope.simulation.canPlot = true
     
                 $scope.$apply()
             }
@@ -1767,10 +1771,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
         if (mostInfectedNode != null) {
-            viewX.updateText("main-graph", "text-label-small-available", {
-                x: $scope.networkGraph.nodes[mostInfectedNode].x + 0.05, 
-                y: $scope.networkGraph.nodes[mostInfectedNode].y - 0.05, 
-                 text: "Most Infected", textcolor: "hsla(0, 100%, 70%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
+
+            if ($scope.networkGraph.nodes[mostInfectedNode] != undefined) {
+                viewX.updateText("main-graph", "text-label-small-available", {
+                    x: $scope.networkGraph.nodes[mostInfectedNode].x + 0.05, 
+                    y: $scope.networkGraph.nodes[mostInfectedNode].y - 0.05, 
+                    text: "Most Infected", textcolor: "hsla(0, 100%, 70%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
+                }
         }
         else {
             viewX.updateText("main-graph", "text-label-small-available", {x: -10, y: -10, text: "Available"})
@@ -1781,10 +1788,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             if (mostInfectedNode != null && mostInfectedNode == $scope.simulation.startingNode) {
                 additionShift = 0.05
             }
-            viewX.updateText("main-graph", "text-label-small-available-2", {
-                x: $scope.networkGraph.nodes[$scope.simulation.startingNode].x + 0.05, 
-                y: $scope.networkGraph.nodes[$scope.simulation.startingNode].y - 0.05 - additionShift, 
-                 text: "Starting Node", textcolor: "hsla(0, 0%, 100%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
+            if ($scope.networkGraph.nodes[mostInfectedNode] != undefined) {
+                viewX.updateText("main-graph", "text-label-small-available-2", {
+                    x: $scope.networkGraph.nodes[$scope.simulation.startingNode].x + 0.05, 
+                    y: $scope.networkGraph.nodes[$scope.simulation.startingNode].y - 0.05 - additionShift, 
+                    text: "Starting Node", textcolor: "hsla(0, 0%, 100%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
+                }
         }
         else {
             viewX.updateText("main-graph", "text-label-small-available-2", {x: -10, y: -10, text: "Available"})
@@ -1866,6 +1875,28 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             // viewX.moveToTop("main-graph", "node-moving-knob-" + node.id)
         }
 
+
+    }
+
+    $scope.chart.renderAtDay = function(renderAtDay) {
+        if (viewX.graphData["main-epidemic-graph"] != null) {
+
+            atDay = Math.floor(renderAtDay)
+            $scope.chart.currentDay = renderAtDay
+
+            $scope.chart.usefulInformation()
+
+            if (atDay >= 0 && atDay < $scope.simulation.endingTime) {
+                // viewX.updateLine("main-epidemic-graph", "dayLine", {x1: currentlyAt[0], y1: $scope.chart.currentYMax*(-0.1), x2: currentlyAt[0], y2: $scope.chart.currentYMax*1.1})
+
+                // textPosition = currentlyAt[0] + ($scope.chart.currentXMax)*0.02
+                // viewX.updateText("main-epidemic-graph", "dayLineLabel", {x: textPosition, y: $scope.chart.currentYMax*(1.05), text: "Day " + atDay})
+
+                $scope.chart.renderSimulation()
+            }
+        }
+
+        
 
     }
 

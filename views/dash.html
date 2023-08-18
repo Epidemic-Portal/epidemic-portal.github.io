@@ -18,6 +18,10 @@
 
     <div class="w-100" style="min-height: 70vh;"></div>
 
+    <div class="w-100 d-flex justify-content-center align-items-center" ng-show="simulation.canPlot" >
+        <input id="timeSliderTop" type="range" style="z-index: 2;" step="1" min="{{simulation.startingTime}}" max="{{simulation.endingTime}}" ng-model="chart.currentDay" ng-change="chart.renderAtDay(chart.currentDay)"> <span class="text-ignus ml-4">Day {{chart.currentDay}}</span>
+    </div>
+
     
     <div class="w-100"  ng-include="'components/additional-parameters.html'" style="position: relative;">
         
@@ -38,3 +42,19 @@
         
     </div>
 </div>
+
+<script>
+            var sliderProperties = {
+                minwidth: '200px',
+                width: '50%',
+                height: 5,
+                trackColor: "hsla(var(--themeColorHue), 60%, 70%, 0.7)",
+                trackFillColor: "hsla(var(--themeColorHue), 100%, 70%, 1)",
+                thumbWidth: 15,
+                thumbHeight: 15,
+                thumbColor: "hsla(var(--themeColorHue), 100%, 70%, 1)",
+                opacity: 0.7
+            };
+
+            viewX.generateSliderStyles(sliderProperties, "timeSliderTop" );
+</script>
