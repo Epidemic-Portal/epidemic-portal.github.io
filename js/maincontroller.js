@@ -1887,10 +1887,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             $scope.chart.usefulInformation()
 
             if (atDay >= 0 && atDay < $scope.simulation.endingTime) {
-                // viewX.updateLine("main-epidemic-graph", "dayLine", {x1: currentlyAt[0], y1: $scope.chart.currentYMax*(-0.1), x2: currentlyAt[0], y2: $scope.chart.currentYMax*1.1})
+                viewX.updateLine("main-epidemic-graph", "dayLine", {x1: atDay, y1: $scope.chart.currentYMax*(-0.1), x2: atDay, y2: $scope.chart.currentYMax*1.1})
 
-                // textPosition = currentlyAt[0] + ($scope.chart.currentXMax)*0.02
-                // viewX.updateText("main-epidemic-graph", "dayLineLabel", {x: textPosition, y: $scope.chart.currentYMax*(1.05), text: "Day " + atDay})
+                textPosition = atDay + ($scope.chart.currentXMax)*0.02
+                viewX.updateText("main-epidemic-graph", "dayLineLabel", {x: textPosition, y: $scope.chart.currentYMax*(1.05), text: "Day " + atDay})
 
                 $scope.chart.renderSimulation()
             }
@@ -1898,6 +1898,24 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         
 
+    }
+
+    $scope.chart.timeSlider = {
+        playing: false,
+        playTimeSlider : function() {
+            $scope.chart.timeSlider.playing = true
+            $scope.chart.timeSliderInterval = $interval(function() {
+                $scope.chart.renderAtDay($scope.chart.currentDay + 1)
+                if ($scope.chart.currentDay >= $scope.simulation.endingTime) {
+                    $scope.chart.timeSlider.stopTimeSlider()
+                    $scope.chart.currentDay = $scope.simulation.startingTime
+                }
+            }, 1000/5)
+        },
+        stopTimeSlider : function() {
+            $scope.chart.timeSlider.playing = false
+            $interval.cancel($scope.chart.timeSliderInterval)
+        }
     }
 
 

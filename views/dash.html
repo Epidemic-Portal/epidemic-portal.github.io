@@ -18,7 +18,8 @@
 
     <div class="w-100" style="min-height: 70vh;"></div>
 
-    <div class="w-100 d-flex justify-content-center align-items-center" ng-show="simulation.canPlot" >
+    <div class="w-100 d-flex justify-content-center align-items-center" ng-show="simulation.canPlot" style="z-index: 3; pointer-events: auto;">
+        <span style="font-size: large; color: hsla(var(--themeColorHue), 100%, 80%, 1); pointer-events: auto; z-index: 2;" class="btn-ignus interface-button sub-addition-button mr-3"><i ng-show="!chart.timeSlider.playing" class="fa fa-play" ng-click="chart.timeSlider.playTimeSlider()"></i><i ng-show="chart.timeSlider.playing" class="fa fa-pause" ng-click="chart.timeSlider.stopTimeSlider()"></i></span>
         <input id="timeSliderTop" type="range" style="z-index: 2;" step="1" min="{{simulation.startingTime}}" max="{{simulation.endingTime}}" ng-model="chart.currentDay" ng-change="chart.renderAtDay(chart.currentDay)"> <span class="text-ignus ml-4">Day {{chart.currentDay}}</span>
     </div>
 
