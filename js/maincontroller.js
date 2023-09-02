@@ -98,7 +98,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
 
     $scope.linearValue = function(value, valuesAreBetween=[0, 1], needValuesBetween=[0, 100]) {
-        if (valuesAreBetween[1] - valuesAreBetween[0] > 0) {
+        if (Math.abs(valuesAreBetween[1] - valuesAreBetween[0]) > 0) {
             return ((value - valuesAreBetween[0])*(needValuesBetween[1] - needValuesBetween[0])/(valuesAreBetween[1] - valuesAreBetween[0])) + needValuesBetween[0]
         }
         else {
