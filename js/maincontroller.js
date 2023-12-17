@@ -1382,20 +1382,50 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.simulation.sendData.percentageSusceptibleInStartingNode = $scope.simulation.percentageSusceptibleInStartingNode
         $scope.simulation.sendData.startingNode = $scope.simulation.startingNode
 
-
         requestID = "r-" + $scope.uniqueCodeGen()
 
-        $scope.simulation.writeRequestToFirebase(requestID, $scope.simulation.sendData)
+        
+        $scope.simulation.sendData.requestID = requestID
 
-        $timeout(function() {
-            $scope.simulation.firebaseResponseHandler(requestID)
-        }, 1000)
+        // $scope.simulation.writeRequestToFirebase(requestID, $scope.simulation.sendData)
+
+
+
+
+        // $timeout(function() {
+        //     $scope.simulation.firebaseResponseHandler(requestID)
+        // }, 1000)
+
+        $scope.simulation.sendRequest($scope.simulation.sendData)
+
+
 
         document.getElementById('responseHolder').scrollIntoView()
 
         $scope.simulation.awaitingResponse = true
     }
 
+
+    $scope.simulation.sendRequest = function(dataToSend) {
+        const formData = {
+            a: 1,
+            b: 2,
+        };
+
+        const response = fetch('https://fastapi-production-ad39.up.railway.app/', {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        }).then(function(response) {
+            console.log(response)
+
+            return response.json();
+        }
+        ).then(function(data) {
+            console.log(data);
+        }
+        );
+
+    }
 
     $scope.simulation.responseVariableInterpretation = {
         "iArray": "Infected",
