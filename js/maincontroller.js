@@ -1407,18 +1407,14 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     $scope.simulation.sendRequest = function(dataToSend) {
-        console.log(dataToSend)
-        const formData = {
-            "a": 1,
-            "b": 2,
-        };
+        // console.log(dataToSend)
 
         const response = fetch('https://fastapi-production-ad39.up.railway.app/calculate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(dataToSend)
         }).then(function(response) {
             console.log(response)
 
