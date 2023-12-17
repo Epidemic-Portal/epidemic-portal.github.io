@@ -1425,8 +1425,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         ).then(function(data) {
             $scope.simulation.response = data
 
+            console.log($scope.simulation.response)
+            
             if ($scope.simulation.response != null) {
                 $scope.simulation.awaitingResponse = false
+
+                console.log($scope.simulation.response)
 
 
                 $scope.chart.series = {}
