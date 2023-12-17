@@ -1415,7 +1415,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         const response = fetch('https://fastapi-production-ad39.up.railway.app/calculate', {
             method: 'POST',
-            body: JSON.stringify({"key": "value"})
+            body: {"key": "value"}
         }).then(function(response) {
             console.log(response)
 
