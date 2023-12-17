@@ -1423,7 +1423,77 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             return response.json();
         }
         ).then(function(data) {
-            console.log(data);
+            $scope.simulation.response = data
+
+            if ($scope.simulation.response != null) {
+                $scope.simulation.awaitingResponse = false
+
+
+                $scope.chart.series = {}
+                $scope.chart.x = []
+    
+                $scope.chart.nodesDisplayed = {}
+    
+    
+                nodeIDs = Object.keys($scope.networkGraph.nodes)
+    
+                for (var nodeID in $scope.networkGraph.nodes) {
+                    $scope.chart.nodesDisplayed[nodeID] = false
+                }
+    
+                for (ri = 0; ri < 2; ri++) {
+                    randomNode = nodeIDs[Math.floor(Math.random() * nodeIDs.length)]
+                    $scope.chart.nodesDisplayed[randomNode] = true
+    
+                }
+    
+    
+    
+                for (var seriesName in $scope.simulation.response) {
+    
+                    variableName = $scope.simulation.responseVariableInterpretation[seriesName]
+                    
+                    if (variableName == "Time") {
+                        $scope.chart.x = $scope.simulation.response[seriesName]
+                    }
+                    else {
+                        seriesData = $scope.simulation.response[seriesName]
+                        for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
+                            
+                            valuesString = seriesData[timeIndex]
+                            // parsing [4, 56, 67, 67]
+    
+                            valuesString = valuesString.substring(1, valuesString.length - 1)
+                            // parsing 4, 56, 67, 67
+                            values = valuesString.split(", ")
+                            
+                            for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
+                                if ($scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                    $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                                }
+    
+                                $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+                                
+    
+                            }
+                            
+                        }
+    
+    
+                        
+                    }
+                }
+    
+    
+                $scope.simulation.responseAdditionalCalculation()
+    
+    
+                $scope.chart.render()
+
+                $scope.simulation.canPlot = true
+    
+                $scope.$apply()
+            }
         }
         );
 
