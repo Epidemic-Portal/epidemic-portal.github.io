@@ -1423,7 +1423,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             return response.json();
         }
         ).then(function(data) {
-            $scope.simulation.response = data
+            $scope.simulation.response = data["result"]
 
             console.log($scope.simulation.response)
 
