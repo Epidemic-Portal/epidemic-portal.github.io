@@ -1426,7 +1426,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             $scope.simulation.response = data
 
             console.log($scope.simulation.response)
-            
+
             if ($scope.simulation.response != null) {
                 $scope.simulation.awaitingResponse = false
 
@@ -1464,13 +1464,14 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                         seriesData = $scope.simulation.response[seriesName]
                         for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
                             
-                            valuesString = seriesData[timeIndex]
-                            // parsing [4, 56, 67, 67]
+                            // valuesString = seriesData[timeIndex]
+                            // // parsing [4, 56, 67, 67]
     
-                            valuesString = valuesString.substring(1, valuesString.length - 1)
-                            // parsing 4, 56, 67, 67
-                            values = valuesString.split(", ")
+                            // valuesString = valuesString.substring(1, valuesString.length - 1)
+                            // // parsing 4, 56, 67, 67
+                            // values = valuesString.split(", ")
                             
+                            values = seriesData[timeIndex]
                             for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
                                 if ($scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
                                     $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
