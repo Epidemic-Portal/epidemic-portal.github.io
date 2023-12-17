@@ -1413,7 +1413,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             b: 2,
         };
 
-        const response = fetch('https://fastapi-production-ad39.up.railway.app/', {
+        const response = fetch('https://fastapi-production-ad39.up.railway.app/calculate', {
             method: 'POST',
             body: JSON.stringify(formData)
         }).then(function(response) {
