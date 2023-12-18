@@ -1411,7 +1411,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             'data': dataToSend
         }
         
-
+        // The other working option : https://fastapi-production-ad39.up.railway.app/calculate
+        
+        
         const response = fetch('https://prajwaldsouza.pythonanywhere.com/calculate', {
             method: 'POST',
             headers: {
@@ -1472,7 +1474,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                             // values = valuesString.split(", ")
                             
                             values = seriesData[timeIndex]
-                            console.log(values)
+                            // console.log(values)
                             for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
                                 if ($scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
                                     $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
@@ -1480,7 +1482,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                                 
                                 $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
 
-                                console.log(parseFloat(values[nodeIndex])*100)
+                                // console.log(parseFloat(values[nodeIndex])*100)
                                 
     
                             }
