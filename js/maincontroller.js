@@ -1412,7 +1412,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
         
 
-        const response = fetch('https://fastapi-production-ad39.up.railway.app/calculate', {
+        const response = fetch('https://prajwaldsouza.pythonanywhere.com/calculate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
