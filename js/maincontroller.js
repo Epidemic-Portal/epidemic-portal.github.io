@@ -1414,7 +1414,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         // The other working option : https://fastapi-production-ad39.up.railway.app/calculate
         
         
-        const response = fetch('https://prajwaldsouza.pythonanywhere.com/calculate', {
+        const response = fetch('https://prajwalsouza.pythonanywhere.com/calculate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
