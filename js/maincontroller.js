@@ -284,6 +284,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         height: window.innerHeight
     }
 
+    console.log($scope.dimensions)
+
 
     
 
