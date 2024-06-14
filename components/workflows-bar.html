@@ -1,4 +1,4 @@
-<div ng-show="simulation.response && !simulation.awaitingResponse && !simulation.awaitingResponseFailure">
+<div ng-show="simulation.response != null && length(simulation.response) != 0 && !simulation.awaitingResponse && !simulation.awaitingResponseFailure">
 <!-- <div> -->
     <div class="hs-container-outer-ignus p-5">
         <div class="d-none d-sm-flex hs-container-left-button-ignus" onclick="ignusTheme.hsMoveLeft('#theHS', 70)">
@@ -9,7 +9,7 @@
         </div>
         <div id="theHS" class="hs-container-inner-ignus">
             <div class="hs-container-element-ignus" ng-repeat="(workflowKey, workflowTab) in workflows.tabs">
-                <div class="pl-3 pt-2 text-large-ignus mr-4" style="font-family: Raleway; {{workflowKey == workflows.currentTab ? 'color: hsla(var(--themeColorHue), 100%, 90%, 1);' : 'color: grey;'}}; cursor: pointer;" ng-click="workflows.currentTab = workflowKey">
+                <div class="pl-3 pt-2 text-large-ignus mr-5" style="font-family: Raleway; {{workflowKey == workflows.currentTab ? 'color: hsla(var(--themeColorHue), 100%, 90%, 1);' : 'color: grey;'}}; cursor: pointer; transition: color 0.3s ease; user-select: none;" ng-click="workflows.currentTab = workflowKey">
                     <b>{{workflowTab.name}}</b>
                 </div>
                 

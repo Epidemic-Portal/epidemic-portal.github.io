@@ -3,9 +3,12 @@
     --infectionRed: hsla(0, 100%, 80%, 1);
 }
 
+/* all color transitions take 0.2 seconds */
+
 
 body {
     background: black;
+    
 }
 
 #main-inner-box {
