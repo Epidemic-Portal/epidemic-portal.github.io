@@ -2086,6 +2086,49 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         'randomTestingSlider': 30
     }
 
+    $scope.workflows.testing.testDistributionSliderActive = {
+        'contactTestingSlider': false,
+        'randomTestingSlider': false
+    }
 
+    $scope.workflows.testing.testDistributionSliderEventHandler = function($event) {
+        if ($event.target.id.search('contactTestingSliderKnob') != -1 && $scope.workflows.testing.testDistributionSliderActive['contactTestingSlider']) {
+            console.log("Contact Testing")
+
+            // get bounding rect 
+
+            boundingRect = document.getElementById('testDistributionVisual').getBoundingClientRect()
+
+            // get the x position of the mouse
+            console.log($event.clientX)
+
+            // get the x position of the mouse relative to the bounding rect
+            console.log(($event.clientX - boundingRect.left)/400)
+
+
+            $scope.workflows.testing.testDistribution.contactTestingSlider = (($event.clientX - boundingRect.left)/400)*100 - 10
+        }
+
+        if ($event.target.id.search('randomTestingSliderKnob') != -1 && $scope.workflows.testing.testDistributionSliderActive['randomTestingSlider']) {
+            console.log("Random Testing")
+            console.log($event.clientX/400)
+
+            // $scope.workflows.testing.testDistribution.randomTestingSlider = ($event.clientX/400)*100
+        }
+    }
+
+    $scope.workflows.testing.testDistributionSliderDownEventHandler = function($event) {
+        if ($event.target.id.search('contactTestingSliderKnob') != -1) {
+            $scope.workflows.testing.testDistributionSliderActive['contactTestingSlider'] = true
+        }
+        if ($event.target.id.search('randomTestingSliderKnob') != -1) {
+            $scope.workflows.testing.testDistributionSliderActive['randomTestingSlider'] = true
+        }
+    }
+
+    $scope.workflows.testing.testDistributionSliderUpEventHandler = function($event) {
+        $scope.workflows.testing.testDistributionSliderActive['contactTestingSlider'] = false
+        $scope.workflows.testing.testDistributionSliderActive['randomTestingSlider'] = false
+    }
 
 }]);
