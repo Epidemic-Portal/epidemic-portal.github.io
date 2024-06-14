@@ -2064,6 +2064,28 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
 
 
+    $scope.workflows.testing = {}
+
+    $scope.workflows.testing.policyChosen = "symptomatic-testing"
+
+    $scope.workflows.testing.policy = {
+        "symptomatic-testing": {
+            "name": "Symptomatic",
+        },
+        "risk-testing": {
+            "name": "Risk",
+        },
+        "all-testing": {
+            "name": "All",
+        }
+    }
+
+    $scope.workflows.testing.numberOfTests = 50;
+    $scope.workflows.testing.testDistribution = {
+        'contactTestingSlider': 20,
+        'randomTestingSlider': 30
+    }
+
 
 
 }]);

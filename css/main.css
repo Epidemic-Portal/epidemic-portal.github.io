@@ -52,7 +52,7 @@ main {
 
 .interface-button {
     background-color: hsla(0,0%,10%, 1);
-    color: white;
+    color: hsla(0,0%,80%, 1);
 }
 
 .interface-button-icon {

@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div id="main-graph-holder-outer" class="w-100 text-ignus" style="position: fixed; left: 0px; transition: left 0.3s;">
+    <div id="main-graph-holder-outer" class="w-100 text-ignus" style="position: fixed; left: 0px; transition: left 0.3s; pointer-events: none;">
         <div id="main-graph-holder" style="min-height: calc(100vh - 200px); position: relative;" ng-click="networkGraph.fullGraphClickEvents($event)" ng-keyup="networkGraph.fullGraphKeyEvents($event)" tabindex="0" ontouchstart="epidemicApp.networkGraph.handleAllTouchStarts(event)" ng-mousemove="networkGraph.mouseMove($event);">
         </div>
     </div>
@@ -44,7 +44,7 @@
     </div>
 
 
-    <div ng-include="'components/workflows-bar.html'"></div>
+    <div class="mt-5" ng-include="'components/workflows-bar.html'"></div>
     <div ng-include="'components/workflow.html'"></div>
     
 </div>
