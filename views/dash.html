@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div class="w-100 text-ignus" style="position: fixed;">
+    <div id="main-graph-holder-outer" class="w-100 text-ignus" style="position: fixed; left: 0px; transition: left 0.3s;">
         <div id="main-graph-holder" style="min-height: calc(100vh - 200px); position: relative;" ng-click="networkGraph.fullGraphClickEvents($event)" ng-keyup="networkGraph.fullGraphKeyEvents($event)" tabindex="0" ontouchstart="epidemicApp.networkGraph.handleAllTouchStarts(event)" ng-mousemove="networkGraph.mouseMove($event);">
         </div>
     </div>
@@ -63,4 +63,23 @@
             };
 
             viewX.generateSliderStyles(sliderProperties, "timeSliderTop" );
+
+
+
+            // window scroll event
+            maxWidthForGraphs = 800;
+
+            window.addEventListener('scroll', function() {
+                if (window.innerWidth > maxWidthForGraphs + 200) {
+                    if (window.scrollY > window.innerHeight*0.7) {
+                        // Math.max([window.innerWidth/5, maxWidthForGraphs - 100])
+                        document.getElementById('main-graph-holder-outer').style.left = Math.max(window.innerWidth/5, maxWidthForGraphs - 600) + 'px';
+                    }
+                    else {
+                        document.getElementById('main-graph-holder-outer').style.left = '0px';
+                    }
+                }
+            });
+
+
 </script>

@@ -11,9 +11,9 @@
             <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(nodeName, nodeDisplayed) in chart.nodesDisplayed" style="{{ nodeDisplayed ? 'background-color: hsla(var(--themeColorHue), 70%, 40%, 1);' : ''}};" ng-click="chart.nodesDisplayed[nodeName] = !nodeDisplayed; chart.render();" ng-show="networkGraph.nodes[nodeName] != undefined">
                 {{networkGraph.nodes[nodeName].editableName}}</button>
         </div>
-        <div id="responseHolder" class="text-ignus mt-4" style="position: relative;">
+        <div id="responseHolder" class="text-ignus mt-4" style="position: relative; background-color: hsla(0, 0%, 6%, 0.7); ">
             
-            <div id="epidemic-chart-main" class="w-100" style="min-height: 80vh; background-color: hsla(0, 0%, 6%, 0.7);" ng-mousemove="chart.mouseMove($event)" ng-mouseleave="chart.mouseLeave($event)">
+            <div id="epidemic-chart-main" class="w-100" style="min-height: 80vh; {{dimensions.width < 800 ? '':'max-width: 700px;'}}" ng-mousemove="chart.mouseMove($event)" ng-mouseleave="chart.mouseLeave($event)">
 
             </div>
         </div>

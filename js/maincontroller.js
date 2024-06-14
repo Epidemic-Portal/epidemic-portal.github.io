@@ -279,6 +279,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $location.path(url);
     }
 
+    $scope.dimensions = {
+        width: window.innerWidth,
+        height: window.innerHeight
+    }
+
 
     
 
