@@ -1403,6 +1403,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         document.getElementById('responseHolder').scrollIntoView()
 
         $scope.simulation.awaitingResponse = true
+        $scope.simulation.awaitingResponseFailure = false
     }
 
 
@@ -1431,6 +1432,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
             if ($scope.simulation.response != null) {
                 $scope.simulation.awaitingResponse = false
+                $scope.simulation.awaitingResponseFailure = false
 
                 console.log($scope.simulation.response)
 
@@ -1505,7 +1507,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 $scope.$apply()
             }
         }
-        );
+        ).catch(function(error) {
+            console.error('Error:', error);
+            $scope.simulation.awaitingResponse = false
+            $scope.simulation.awaitingResponseFailure = true
+
+        });
 
     }
 
@@ -1640,6 +1647,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.ui.additionParameters = {
         expanded: false
     }
+
 
 
 
@@ -2032,7 +2040,21 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     
+    $scope.workflows = {}
 
+    $scope.workflows.currentTab = "testing"
+
+    $scope.workflows.tabs = {
+        "testing": {
+            "name": "Testing",
+        },
+        "learning-prediction": {
+            "name": "Learning & Prediction",
+        },
+        "mitigation": {
+            "name": "Mitigation",
+        }
+    }
 
 
 

@@ -1,0 +1,5 @@
+<div ng-show="simulation.response && !simulation.awaitingResponse && !simulation.awaitingResponseFailure">
+    <div ng-repeat="(workflowKey, workflowTab) in workflows.tabs" ng-show="workflows.currentTab == workflowKey">
+        <div ng-include="'components/workflows/' + workflowKey + '.html'"></div>
+    </div>
+</div>
