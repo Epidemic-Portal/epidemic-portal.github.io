@@ -2106,7 +2106,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             console.log(($event.clientX - boundingRect.left)/400)
 
 
-            $scope.workflows.testing.testDistribution.contactTestingSlider = (($event.clientX - boundingRect.left)/400)*100 - 
+            // $scope.workflows.testing.testDistribution.contactTestingSlider = ($event.clientX/400)*100
         }
 
         if ($event.target.id.search('randomTestingSliderKnob') != -1 && $scope.workflows.testing.testDistributionSliderActive['randomTestingSlider']) {
