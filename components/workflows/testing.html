@@ -30,8 +30,8 @@
             </div>
             <div>
                 <div class="d-inline-block" style="font-size: 0;">
-                    <input type="range" id="contactTestingSlider" class="ml-3" min="0" max="100" step="1" ng-model="workflows.testing.testDistribution.contactTestingSlider" style="width: 200px; border-radius: 0px;">
-                    <input type="range" id="randomTestingSlider" class="mr-3" min="0" max="100" step="1" ng-model="workflows.testing.testDistribution.randomTestingSlider" style="width: 200px; border-radius: 0px;">
+                    <input type="range" id="contactTestingSlider" class="ml-3" min="0" max="{{100 - workflows.testing.testDistribution.randomTestingSlider}}" step="1" ng-model="workflows.testing.testDistribution.contactTestingSlider" style="width: 200px; border-radius: 0px;">
+                    <input type="range" id="randomTestingSlider" class="mr-3" min="0" max="{{100 - workflows.testing.testDistribution.contactTestingSlider}}" step="1" ng-model="workflows.testing.testDistribution.randomTestingSlider" style="width: 200px; border-radius: 0px;">
                 </div>
             </div>
 
