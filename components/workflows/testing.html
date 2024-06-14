@@ -1,4 +1,4 @@
-<div style="min-height: 90vh;">
+<div style="min-height: 100vh;">
     <div class="p-5" style="background: hsla(0, 0%, 2%, 1); min-height: 90vh;">
         <div  class="pl-3">
             <span style="color: hsla(0, 0%, 50%, 1); font-size: small;">Policy</span>
@@ -37,11 +37,14 @@
 
             <div>
                 <div class="d-inline-block" style="font-size: 0; position: relative;">
-                    <div style="width: 16px; height: 16px; position: absolute; background: hsla(var(--themeColorHue), 40%, 90%, 1); z-index: 1; border-radius: 50%; cursor: ew-resize;left: {{workflows.testing.testDistribution.contactTestingSlider}}px;"></div>
-                    <div style="width: 16px; height: 16px; position: absolute; background: hsla(var(--themeColorHue), 40%, 90%, 1);; z-index: 1; border-radius: 50%; cursor: ew-resize; left: {{workflows.testing.testDistribution.randomTestingSlider + workflows.testing.testDistribution.contactTestingSlider}}px;"></div>
+                    <div style="width: 16px; height: 16px; position: absolute; background: hsla(var(--themeColorHue), 40%, 90%, 1); z-index: 1; border-radius: 50%; cursor: ew-resize;left: {{(workflows.testing.testDistribution.contactTestingSlider/100)*400}}px;"></div>
+
+                    <div style="width: 16px; height: 16px; position: absolute; background: hsla(var(--themeColorHue), 40%, 90%, 1);; z-index: 1; border-radius: 50%; cursor: ew-resize; left: {{((workflows.testing.testDistribution.randomTestingSlider + workflows.testing.testDistribution.contactTestingSlider)/100)*400}}px;"></div>
 
                     
-                    <div style="width: 400px; height: 4px; background: linear-gradient(to right,hsla(var(--themeColorHue), 60%, 70%, 1) 0%, hsla(var(--themeColorHue), 60%, 70%, 1) {{workflows.testing.testDistribution.contactTestingSlider}}%, hsla(var(--themeColorHue), 30%, 40%, 1) {{workflows.testing.testDistribution.contactTestingSlider}}%, hsla(var(--themeColorHue), 30%, 40%, 1) {{workflows.testing.testDistribution.randomTestingSlider + workflows.testing.testDistribution.contactTestingSlider}}%, hsla(var(--themeColorHue), 30%, 80%, 1) {{workflows.testing.testDistribution.randomTestingSlider + workflows.testing.testDistribution.contactTestingSlider}}%, hsla(var(--themeColorHue), 30%, 80%, 1) 100%); position: absolute;"></div>
+                    <div style="width: 400px; height: 4px; top: 6px; background: linear-gradient(to right,hsla(var(--themeColorHue), 60%, 70%, 1) 0%, hsla(var(--themeColorHue), 60%, 70%, 1) {{workflows.testing.testDistribution.contactTestingSlider}}%, hsla(var(--themeColorHue), 30%, 40%, 1) {{workflows.testing.testDistribution.contactTestingSlider}}%, hsla(var(--themeColorHue), 30%, 40%, 1) {{workflows.testing.testDistribution.randomTestingSlider + workflows.testing.testDistribution.contactTestingSlider}}%, hsla(var(--themeColorHue), 30%, 80%, 1) {{workflows.testing.testDistribution.randomTestingSlider + workflows.testing.testDistribution.contactTestingSlider}}%, hsla(var(--themeColorHue), 30%, 80%, 1) 100%); position: absolute;"></div>
+
+
                 </div>
             </div>
 
