@@ -4,8 +4,12 @@ var style = document.createElement("style");
 style.id = "root-styles"
 
 themeColors = [270, 320, 240]
-themeColor = themeColors[Math.floor(Math.random()*themeColors.length)]
+secondaryColors = [270 + 50, 320 + 50, 240 + 50]
+colorIndex = Math.floor(Math.random()*themeColors.length)
+themeColor = themeColors[colorIndex]
+secondaryColor = secondaryColors[colorIndex]
 style.innerHTML = ":root {--themeColorHue: "+  themeColor + ";"
+style.innerHTML += "--secondaryColorHue: "+  secondaryColor + ";}"
 document.head.appendChild(style);
 
 ignusTheme.baseHue = themeColor;

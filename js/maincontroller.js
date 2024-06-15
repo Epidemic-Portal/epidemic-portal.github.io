@@ -1291,6 +1291,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
 
+
+
+
+
+
+
     $scope.simulation = {}
     $scope.simulation.model = "SIR Model"
     $scope.simulation.models = {
@@ -1822,7 +1828,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         textElement.style.position = "absolute"
         textElement.style.top = "50%"
         textElement.style.left = "-50%"
-        textElement.style.id = "yLabel-epidemic-graph"
+        textElement.id = "yLabel-epidemic-graph"
         textElement.style.width = "100%"
         textElement.style.display = "flex"
         textElement.style.justifyContent = "center"
@@ -2093,27 +2099,17 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.workflows.testing.testDistributionSliderEventHandler = function($event) {
         if ($event.target.id.search('contactTestingSliderKnob') != -1 && $scope.workflows.testing.testDistributionSliderActive['contactTestingSlider']) {
-            console.log("Contact Testing")
-
-            // get bounding rect 
 
             boundingRect = document.getElementById('testDistributionVisual').getBoundingClientRect()
 
-            // get the x position of the mouse
-            console.log($event.clientX)
-
-            // get the x position of the mouse relative to the bounding rect
-            console.log(($event.clientX - boundingRect.left)/400)
-
-
-            // $scope.workflows.testing.testDistribution.contactTestingSlider = ($event.clientX/400)*100
+            $scope.workflows.testing.testDistribution.contactTestingSlider = (($event.clientX - boundingRect.left - 7)/400)*100
         }
 
         if ($event.target.id.search('randomTestingSliderKnob') != -1 && $scope.workflows.testing.testDistributionSliderActive['randomTestingSlider']) {
-            console.log("Random Testing")
-            console.log($event.clientX/400)
 
-            // $scope.workflows.testing.testDistribution.randomTestingSlider = ($event.clientX/400)*100
+            boundingRect = document.getElementById('testDistributionVisual').getBoundingClientRect()
+
+            $scope.workflows.testing.testDistribution.randomTestingSlider = (($event.clientX - boundingRect.left - 7)/400)*100 - $scope.workflows.testing.testDistribution.contactTestingSlider
         }
     }
 
@@ -2130,5 +2126,388 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.workflows.testing.testDistributionSliderActive['contactTestingSlider'] = false
         $scope.workflows.testing.testDistributionSliderActive['randomTestingSlider'] = false
     }
+
+    $scope.workflows.testing.testDistributionSliderClickEventHandler = function($event) {
+        boundingRect = document.getElementById('testDistributionVisual').getBoundingClientRect()
+
+        valueToSet = (($event.clientX - boundingRect.left - 7)/400)*100
+        if (valueToSet < ($scope.workflows.testing.testDistribution.contactTestingSlider)) {
+            $scope.workflows.testing.testDistribution.contactTestingSlider = valueToSet
+        }
+        else {
+            $scope.workflows.testing.testDistribution.randomTestingSlider = valueToSet - $scope.workflows.testing.testDistribution.contactTestingSlider
+        }
+        
+    }
+
+
+
+
+    $scope.workflows.testing.specificity = 25
+
+    $scope.workflows.testing.testingSimulation = {}
+
+    $scope.workflows.testing.testingSimulation.awaitingResponse = false
+    $scope.workflows.testing.testingSimulation.awaitingResponseFailure = false
+
+    $scope.workflows.testing.testingSimulation.response = {}
+
+    $scope.workflows.testing.testingSimulation.responseVariableInterpretation = {
+        "newCaseArray": "New Cases",
+        "activeCaseArray": "Active Cases",
+        "recoveredArray": "New Recovered",
+        "tArray": "Time"
+    }
+
+    $scope.workflows.testing.testingSimulation.run = function() {
+        $scope.workflows.testing.testingSimulation.awaitingResponse = true
+        $scope.workflows.testing.testingSimulation.awaitingResponseFailure = false
+
+        $scope.workflows.testing.testingSimulation.response = {}
+
+        requestID = Math.floor(Math.random() * 1000000000)
+
+        $scope.workflows.testing.testingSimulation.sendData = {
+            "requestID": requestID,
+            "userDetails": getUserDetails(),
+            "policyChosen": $scope.workflows.testing.policyChosen,
+            "numberOfTests": $scope.workflows.testing.numberOfTests,
+            "testDistribution": $scope.workflows.testing.testDistribution,
+            "specificity": $scope.workflows.testing.specificity
+        }
+
+        // dummyData 
+
+        $timeout(function() {
+            // $scope.workflows.testing.testingSimulation.response = {
+            //     "positiveTests": 20,
+            //     "negativeTests": 30,
+            //     "falsePositiveTests": 5,
+            //     "falseNegativeTests": 5
+            // }
+
+            // generate dummy response response var data
+
+            $scope.workflows.testing.testingSimulation.response = {}
+
+            for (var seriesName in $scope.workflows.testing.testingSimulation.responseVariableInterpretation) {
+                $scope.workflows.testing.testingSimulation.response[seriesName] = []
+
+                if (seriesName == "tArray") {
+                    for (var timeIndex = 0; timeIndex < $scope.simulation.endingTime; timeIndex++) {
+                        $scope.workflows.testing.testingSimulation.response[seriesName].push(timeIndex)
+                    }
+                }
+                else {
+                    for (var timeIndex = 0; timeIndex < $scope.simulation.endingTime; timeIndex++) {
+                        dataForNodes = []
+                        for (var nodeIndex = 0; nodeIndex < 4; nodeIndex++) {
+                            dataForNodes.push(Math.random())
+                        }
+                        $scope.workflows.testing.testingSimulation.response[seriesName].push(dataForNodes)
+                    }
+                }
+            }
+
+
+
+            $scope.workflows.testing.testingSimulation.awaitingResponse = false
+
+            $scope.workflows.testing.chart.series = {}
+            $scope.workflows.testing.chart.x = []
+
+
+            $scope.workflows.testing.chart.nodesDisplayed = {}
+
+
+            nodeIDs = Object.keys($scope.networkGraph.nodes)
+
+            for (var nodeID in $scope.networkGraph.nodes) {
+                $scope.workflows.testing.chart.nodesDisplayed[nodeID] = false
+            }
+
+            for (ri = 0; ri < 2; ri++) {
+                randomNode = nodeIDs[Math.floor(Math.random() * nodeIDs.length)]
+                $scope.workflows.testing.chart.nodesDisplayed[randomNode] = true
+            }
+
+
+
+            for (var seriesName in $scope.workflows.testing.testingSimulation.response) {
+
+                variableName = $scope.workflows.testing.testingSimulation.responseVariableInterpretation[seriesName]
+                
+                if (variableName == "Time") {
+                    $scope.workflows.testing.chart.x = $scope.workflows.testing.testingSimulation.response[seriesName]
+                }
+                else {
+                    seriesData = $scope.workflows.testing.testingSimulation.response[seriesName]
+                    for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
+                        
+                        // valuesString = seriesData[timeIndex]
+                        // // parsing [4, 56, 67, 67]
+
+                        // valuesString = valuesString.substring(1, valuesString.length - 1)
+                        // // parsing 4, 56, 67, 67
+                        // values = valuesString.split(", ")
+                        
+                        values = seriesData[timeIndex]
+                        // console.log(values)
+                        for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
+                            if ($scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                            }
+                            
+                            $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+
+                            // console.log(parseFloat(values[nodeIndex])*100)
+                            
+
+                        }
+                        
+                    }
+
+
+                    
+                }
+            }
+
+
+            // $scope.simulation.responseAdditionalCalculation()
+
+
+            $scope.workflows.testing.chart.render()
+
+
+
+        }, 1000)
+
+    
+
+    }
+
+
+    $scope.workflows.testing.chart = {}
+    $scope.workflows.testing.chart.nodesDisplayed = {}
+
+
+    $scope.workflows.testing.chart = {}
+
+    $scope.workflows.testing.chart.nodesDisplayed = {}
+
+    $scope.workflows.testing.chart.seriesProperties = {
+        "New Cases": {
+            "color": "hsla(198, 100%, 80%, 1)",
+            "buttonColor": "hsla(198, 100%, 80%, 0.2)",
+            "displayed": false
+        },
+        "Active Cases": {
+            "color": "hsla(0, 100%, 80%, 1)",
+            "buttonColor": "hsla(0, 100%, 80%, 0.2)",
+            "displayed": true
+        },
+        "New Recovered": {
+            "color": "hsla(98, 100%, 80%, 1)",
+            "buttonColor": "hsla(98, 100%, 80%, 0.2)",
+            "displayed": false
+        }
+    }
+
+    $scope.workflows.testing.chart.remove = function() {
+        viewX.removeGraph("main-testing-graph")
+
+        // console.log("Removed")
+        // console.log(document.getElementById('yLabel-testing-graph'))
+
+        if (document.getElementById('yLabel-testing-graph') != null) {
+            // console.log("removing")
+            document.getElementById('yLabel-testing-graph').remove()
+        }
+
+    }
+
+
+
+    $scope.workflows.testing.chart.render = function() {
+        $scope.workflows.testing.chart.remove()
+        
+        graphH = document.getElementById('testing-chart-main')
+
+        epidemicApp.defaultChartOptions['xmax'] = $scope.simulation.endingTime
+        epidemicApp.defaultChartOptions['xmin'] = 0
+        epidemicApp.defaultChartOptions['xmajorgridlabelshift'] = 2
+
+        maxYvalue = 1
+
+        $scope.workflows.testing.chart.nodeWithHighestValueForInfected = null
+
+        $scope.workflows.testing.chart.maxValues = {}
+        for (var seriesName in $scope.workflows.testing.chart.series) {
+            series = $scope.workflows.testing.chart.series[seriesName]
+            $scope.workflows.testing.chart.maxValues[series.name] = Math.max(...series.data)
+            console.log(series.name)
+            if ($scope.workflows.testing.chart.seriesProperties[series.name].displayed && $scope.workflows.testing.chart.nodesDisplayed[series.node]) {
+                maxValue = Math.max(...series.data)
+                if (maxValue > maxYvalue) {
+                    maxYvalue = maxValue
+                    $scope.workflows.testing.chart.nodeWithHighestValueForInfected = series.node
+                }
+            }   
+        }
+
+        $scope.workflows.testing.chart.currentYMax = maxYvalue
+        $scope.workflows.testing.chart.currentXMax = $scope.simulation.endingTime
+
+        epidemicApp.defaultChartOptions['ymax'] = maxYvalue
+        epidemicApp.defaultChartOptions['ymin'] = (-0.04)*maxYvalue
+        epidemicApp.defaultChartOptions['unitAspectRatio'] = "no"
+        epidemicApp.defaultChartOptions['xaxisthickness'] = 2
+        epidemicApp.defaultChartOptions['xaxiscolor'] = "hsla(0, 0%, 30%, 1)"
+        epidemicApp.defaultChartOptions['xaxislabel'] = "TIME"
+        epidemicApp.defaultChartOptions['xaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
+
+        
+        epidemicApp.defaultChartOptions['yaxislabel'] = "Cases over time"
+        epidemicApp.defaultChartOptions['yaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
+
+
+        viewX.addGraph(graphH, "main-testing-graph", epidemicApp.defaultChartOptions)
+
+        // Adding Day Line
+        daylineOptions = {
+            x1: -100,
+            y1: -100,
+            x2: -200,
+            y2: -200,
+            strokewidth: 0.5,
+            linecolor: "hsla(0, 0%, 30%, 1)",
+            strokedasharray: "5, 5"
+        }
+
+        viewX.addLine("main-testing-graph", "dayLine", daylineOptions)
+
+        // Day Line Label
+        dayLineLabelOptions = {
+            x: -100,
+            y: -100,
+            text: "Day 0",
+            textcolor: "hsla(0, 0%, 30%, 1)",
+            fontSize: 6
+        }
+
+        viewX.addText("main-testing-graph", "dayLineLabel", dayLineLabelOptions)
+
+    
+
+        for (var seriesName in $scope.workflows.testing.chart.series) {
+            series = $scope.workflows.testing.chart.series[seriesName]
+            if ($scope.workflows.testing.chart.seriesProperties[series.name].displayed && $scope.workflows.testing.chart.nodesDisplayed[series.node]) {
+                pathOptions = {
+                    points: [],
+                }
+
+                for (var pointIndex = 0; pointIndex < series.data.length; pointIndex++) {
+                    pathOptions.points.push([$scope.workflows.testing.chart.x[pointIndex], series.data[pointIndex]])
+                }
+
+
+
+                pathOptions.pathcolor = $scope.workflows.testing.chart.seriesProperties[series.name].color
+                pathOptions.strokewidth = 0.4
+                
+
+                viewX.addPath("main-testing-graph", "main-testing-graph#" + series.node + "#type" + series.name, pathOptions)
+            }   
+        }
+
+        // xAxisLineOptions = {
+        //     x1: 0,
+        //     y1: (-0.1)*maxYvalue,
+        //     y2: (-0.1)*maxYvalue,
+        //     x2: $scope.simulation.endingTime,
+        //     strokewidth: 0.4,
+        //     linecolor: 'hsla(0, 0%, 30%, 1)'
+        // }
+
+        // viewX.addLine("main-testing-graph", "main-testing-graph-timeLine", xAxisLineOptions)
+
+        xAxisLabelOptions = {
+            x: $scope.simulation.endingTime/2,
+            y: (-0.13)*maxYvalue,
+            text: "Time",
+            textcolor: "hsla(0, 0%, 30%, 1)",
+            fontSize: 2.6,
+            fontFamily: "Raleway",
+            fontweight: "bold"
+        }
+
+        viewX.addText("main-testing-graph", "main-testing-graph-timeLabel", xAxisLabelOptions)
+
+        // yAxisLabelOptions = {
+        //     x: -0.1*$scope.simulation.endingTime,
+        //     y: maxYvalue*1.05,
+        //     text: "Percentage of the Population",
+        //     textcolor: "hsla(0, 0%, 30%, 1)",
+        //     fontSize: 2.6,
+        //     fontFamily: "Raleway",
+        //     fontweight: "bold"
+        // }
+
+        // addedLabel = viewX.addText("main-testing-graph", "main-testing-graph-yLabel", yAxisLabelOptions)
+
+        // console.log()
+
+        // addedLabel[0].setAttribute("transform", "translate(-50, 50) rotate(-90)")
+
+        var textCasesElement = document.createElement("div")
+        textCasesElement.style.position = "absolute"
+        textCasesElement.style.top = "50%"
+        textCasesElement.style.left = "-50%"
+        textCasesElement.id = "yLabel-testing-graph"
+        textCasesElement.style.width = "100%"
+        textCasesElement.style.display = "flex"
+        textCasesElement.style.justifyContent = "center"
+        textCasesElement.style.alignItems = "center"
+        textCasesElement.style.fontSize = "20px"
+        textCasesElement.style.fontFamily = "Raleway"
+        // textCasesElement.style.fontWeight = "bold"
+        textCasesElement.style.color = "hsla(0, 0%, 30%, 1)"
+        textCasesElement.innerHTML = "Number of Cases"
+        textCasesElement.style.transform = "rotate(-90deg)"
+        document.getElementById("testingResponseHolder").appendChild(textCasesElement)
+
+
+
+        $scope.workflows.testing.chart.currentDay = 0
+
+
+    }
+
+
+    // $scope.workflows.testing.testingSimulation.responseAdditionalCalculation = function() {
+    //     if ($scope.workflows.testing.testingSimulation.response != null) {
+    //         if ($scope.workflows.testing.testingSimulation.model == 'SIR Model') {
+    //             if ($scope.workflows.testing.testingSimulation.response["sArray"] == null) {
+    //                 for (timeIndex = 0 ; timeIndex < $scope.chart.x.length; timeIndex++) {
+    //                     nodeIDs = Object.keys($scope.networkGraph.nodes)
+    //                     for (nodeIndex = 0; nodeIndex < nodeIDs.length; nodeIndex++) {
+    //                         variableName = $scope.workflows.testing.testingSimulation.responseVariableInterpretation['sArray']
+    
+    //                         if ($scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+    //                             $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+    //                         }
+    
+    //                         infectedName = $scope.workflows.testing.testingSimulation.responseVariableInterpretation['iArray']
+    //                         recoveredName = $scope.workflows.testing.testingSimulation.responseVariableInterpretation['rArray']
+    
+    //                         $scope.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(100 - $scope.chart.series[infectedName + "#" + nodeIDs[nodeIndex]].data[timeIndex] - $scope.chart.series[recoveredName + "#" + nodeIDs[nodeIndex]].data[timeIndex])
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+        
+    // }
+    
 
 }]);
