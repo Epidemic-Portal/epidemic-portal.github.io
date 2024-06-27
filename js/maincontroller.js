@@ -2173,7 +2173,15 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             "policyChosen": $scope.workflows.testing.policyChosen,
             "numberOfTests": $scope.workflows.testing.numberOfTests,
             "testDistribution": $scope.workflows.testing.testDistribution,
-            "specificity": $scope.workflows.testing.specificity
+            "specificity": $scope.workflows.testing.specificity,
+            "startingTime": $scope.simulation.startingTime,
+            "endingTime": $scope.simulation.endingTime,
+            "nodeArray": $scope.simulation.sendData.nodeArray,
+            "nodeParameters": $scope.simulation.sendData.nodeParameters,
+            "edgeParameters": $scope.simulation.sendData.edgeParameters,
+            "model": $scope.simulation.model,
+            "startingNode": $scope.simulation.startingNode,
+            "percentageSusceptibleInStartingNode": $scope.simulation.percentageSusceptibleInStartingNode
         }
 
         // dummyData 
