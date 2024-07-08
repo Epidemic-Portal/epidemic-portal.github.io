@@ -1448,9 +1448,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             'data': dataToSend
         }
         
-        // The other working option : https://fastapi-production-ad39.up.railway.app/calculate
+        // The other working option : https://fastapi-production-ad39.up.railway.app/runModel
         
-        const response = fetch('https://epidemicportal.pythonanywhere.com/calculate', {
+        const response = fetch('https://epidemicportal.pythonanywhere.com/runModel', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -2188,9 +2188,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.workflows.testing.testingSimulation.response = {}
 
     $scope.workflows.testing.testingSimulation.responseVariableInterpretation = {
-        "newCaseArray": "New Cases",
-        "activeCaseArray": "Active Cases",
-        "recoveredArray": "New Recovered",
+        "C_Array": "Cumulative Confirmed",
+        "A_array": "Active Cases",
+        "D_array": "Cumulative Removed",
         "tArray": "Time"
     }
 
