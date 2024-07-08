@@ -1469,8 +1469,19 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 $scope.simulation.awaitingResponse = false
                 $scope.simulation.awaitingResponseFailure = false
 
-                console.log($scope.simulation.response)
+                
 
+                function cleanArrays(data) {
+                    data.iArray = data.iArray.map(item => JSON.parse(item));
+                    data.rArray = data.rArray.map(item => JSON.parse(item));
+                    data.tArray = data.tArray.map(item => parseInt(item));
+                
+                    return data;
+                }
+                
+                $scope.simulation.response = cleanArrays($scope.simulation.response);
+                
+                console.log($scope.simulation.response)
 
                 $scope.chart.series = {}
                 $scope.chart.x = []
