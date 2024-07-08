@@ -1,4 +1,61 @@
 <div style="min-height: 100vh;">
     <div class="p-5" style="background: hsla(0, 0%, 2%, 1); min-height: 100vh;">
+
+        <div  class="pl-3">
+            <span style="color: hsla(0, 0%, 50%, 1); font-size: small;">Data Type</span>
+            <span class="ml-4" >
+                <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-4 pr-4 pt-2 pb-2" ng-repeat="(dataTypeName, dataType) in workflows.learningPrediction.dataType" style="{{ workflows.learningPrediction.dataTypeChosen == dataTypeName ? 'background-color: hsla(var(--themeColorHue), 20%, 50%, 0.5);' : ''}};" ng-click="workflows.learningPrediction.dataTypeChosen = dataTypeName">{{dataType.name}}</button>
+            </span>
+        </div>
+
+        <div  class="pl-3 mt-4">
+            <span style="color: hsla(0, 0%, 50%, 1); font-size: small;">Algorithm</span>
+            <span class="ml-4" >
+                <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-4 pr-4 pt-2 pb-2" ng-repeat="(algoName, algo) in workflows.learningPrediction.algo" style="{{ workflows.learningPrediction.algoChosen == algoName ? 'background-color: hsla(var(--themeColorHue), 20%, 50%, 0.5);' : ''}};" ng-click="workflows.learningPrediction.algoChosen = algoName">{{algo.name}}</button>
+            </span>
+        </div>
+        <div  class="pl-3 mt-4">
+            <span style="color: hsla(0, 0%, 50%, 1); font-size: small;">Time Window</span>
+        </div>
+        <div  class="pl-3 mt-1">
+            <div class="d-inline-block">
+                <div class="d-inline-block">
+                    <div class="mr-4" style="color: hsla(0, 0%, 50%, 1); font-size: small;">Start on</div>
+                    <div class="text-ignus mr-4" style="color: hsla(var(--secondaryColorHue), 60%, 80%, 1);"> {{workflows.learningPrediction.timeWindow.timeWindowStartSlider}}{{numberSuffix(workflows.learningPrediction.timeWindow.timeWindowStartSlider)}} day </div>
+                </div>
+                <div class="d-inline-block">
+                    <div class="mr-4" style="color: hsla(0, 0%, 50%, 1); font-size: small;">End on</div>
+                    <div class="text-ignus mr-4" style="color: hsla(var(--secondaryColorHue), 60%, 80%, 1);">{{workflows.learningPrediction.timeWindow.timeWindowEndSlider}}{{numberSuffix(workflows.learningPrediction.timeWindow.timeWindowEndSlider)}} day </div> 
+                </div>
+            </div>
+        </div>
+        <div class="ml-3">
+            <div class="d-inline-block" style="font-size: 0; position: relative;" ng-mouseup="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)" ng-mouseleave="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)">
+                <div style="width: 16px; height: 16px; position: absolute; background: hsla(var(--secondaryColorHue), 40%, 90%, 1); z-index: 1; border-radius: 50%; cursor: ew-resize;left: {{(workflows.learningPrediction.timeWindow.timeWindowStartSlider/100)*400}}px;" id="timeWindowStartSliderKnob" ng-mousemove="workflows.learningPrediction.timeWindowSliderEventHandler($event)" ng-mousedown="workflows.learningPrediction.timeWindowSliderDownEventHandler($event)" ng-mouseup="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)"></div>
+
+                <div style="width: 16px; height: 16px; position: absolute; background: hsla(var(--secondaryColorHue), 40%, 90%, 1);; z-index: 1; border-radius: 50%; cursor: ew-resize; left: {{((workflows.learningPrediction.timeWindow.timeWindowEndSlider + workflows.learningPrediction.timeWindow.timeWindowStartSlider)/100)*400}}px;" id="timeWindowEndSliderKnob" ng-mousemove="workflows.learningPrediction.timeWindowSliderEventHandler($event)" ng-mousedown="workflows.learningPrediction.timeWindowSliderDownEventHandler($event)" ng-mouseup="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)"></div>
+
+                
+                <div id="timeWindowVisual" style="width: 400px; height: 4px; top: 6px; background: linear-gradient(to right,hsla(var(--secondaryColorHue), 10%, 70%, 1) 0%, hsla(var(--secondaryColorHue), 10%, 70%, 1) {{workflows.learningPrediction.timeWindow.timeWindowStartSlider}}%, hsla(var(--secondaryColorHue), 50%, 50%, 1) {{workflows.learningPrediction.timeWindow.timeWindowStartSlider}}%, hsla(var(--secondaryColorHue), 50%, 50%, 1) {{workflows.learningPrediction.timeWindow.timeWindowEndSlider + workflows.learningPrediction.timeWindow.timeWindowStartSlider}}%, hsla(var(--secondaryColorHue), 10%, 80%, 1) {{workflows.learningPrediction.timeWindow.timeWindowEndSlider + workflows.learningPrediction.timeWindow.timeWindowStartSlider}}%, hsla(var(--secondaryColorHue), 10%, 80%, 1) 100%); position: absolute; cursor: pointer;" ng-click="workflows.learningPrediction.timeWindowSliderClickEventHandler($event)"></div>
+
+
+            </div>
+        </div>
+
+        <div>
+            <!-- Run button -->
+            <div class="d-inline-block mt-5 ml-2 pl-2" ng-hide="workflows.testing.testingSimulation.awaitingResponse">
+                <div class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-4 pr-4 pt-2 pb-2" ng-click="workflows.testing.testingSimulation.run()"><i class="fa fa-play mr-3 sub-addition-button-plus" ></i>
+                     {{length(workflows.testing.testingSimulation.response) > 0 ? 'Rerun ':'Run '}} Analysis
+                    
+                    </div>
+            </div>
+        </div>
+
+        <!-- <div  class="pl-3 pt-4 mt-4">
+            <span class="mr-4" style="color: hsla(0, 0%, 50%, 1); font-size: small;">Number of Tests</span>
+            <span class="text-ignus mr-4">{{workflows.learningPrediction.numberOfTests}}</span>
+            <input type="range" id="numberOfTestsSlider" class="mr-3" min="0" max="100" step="1" ng-model="workflows.learningPrediction.numberOfTests" style="max-width: 400px;"><br/>
+        </div> -->
     </div>
 </div>

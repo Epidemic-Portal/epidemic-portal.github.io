@@ -59,5 +59,9 @@ The JSON response typically contains arrays representing different epidemiologic
 - **nodeParameters**: Inherits node-specific parameters from the main simulation setup.
 - **edgeParameters**: Inherits edge-specific parameters from the main simulation setup.
 - **model**: Inherits the epidemic model used in the main simulation.
-- **startingNode**: Inherits the identifier for the starting node from the main simulation.
-- **percentageSusceptibleInStartingNode**: Inherits the initial percentage of susceptible individuals from the main simulation.
+-**Arrays**: 
+- **iArray**: Array of infection counts over time.
+- **sArray**: Array of susceptible counts over time.
+- **rArray**: Array of recovered counts over time.
+- **eArray**: Array of exposed counts over time (if applicable).
+- **tArray**: Array of time steps.

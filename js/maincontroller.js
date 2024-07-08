@@ -65,6 +65,29 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         return parseInt(somevalue)
     }
 
+    $scope.numberSuffix = function(integerValue) {
+        // get last digit
+        lastDigit = integerValue % 10
+
+        // exceptions for 11, 12, 13
+        if (integerValue % 100 == 11 || integerValue % 100 == 12 || integerValue % 100 == 13) {
+            return "th"
+        }
+
+        if (lastDigit == 1) {
+            return "st"
+        }
+        else if (lastDigit == 2) {
+            return "nd"
+        }
+        else if (lastDigit == 3) {
+            return "rd"
+        }
+        else {
+            return "th"
+        }
+    }
+
     $scope.uniqueCodeGen = function() {
         sevenZBit = 78364164096;
         randomString = sevenZBit + parseInt(Math.random() * sevenZBit * 35)
@@ -1427,8 +1450,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         
         // The other working option : https://fastapi-production-ad39.up.railway.app/calculate
         
-        
-        const response = fetch('https://prajwalsouza.pythonanywhere.com/calculate', {
+        const response = fetch('https://epidemicportal.pythonanywhere.com/calculate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -2087,6 +2109,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
 
     $scope.workflows.testing.numberOfTests = 50;
+
+
     $scope.workflows.testing.testDistribution = {
         'contactTestingSlider': 20,
         'randomTestingSlider': 30
@@ -2516,6 +2540,92 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     //     }
         
     // }
+
+
+
+
     
+    $scope.workflows.learningPrediction = {}
+
+    $scope.workflows.learningPrediction.dataTypeChosen = "true-data"
+
+    $scope.workflows.learningPrediction.dataType = {
+        "true-data": {
+            "name": "True Data",
+        },
+        "testing-data": {
+            "name": "Testing Data",
+        }
+    }
+
+
+    
+    $scope.workflows.learningPrediction.algoChosen = "rls"
+
+    $scope.workflows.learningPrediction.algo = {
+        "rls": {
+            "name": "RLS",
+        },
+        "grls": {
+            "name": "GRLS",
+        }
+    }
+
+        
+    $scope.workflows.learningPrediction.timeWindow = {
+        'timeWindowStartSlider': 20,
+        'timeWindowEndSlider': 40
+    }
+
+    $scope.workflows.learningPrediction.timeWindowSliderActive = {
+        'timeWindowStartSlider': false,
+        'timeWindowEndSlider': false
+    }
+
+    $scope.workflows.learningPrediction.timeWindowSliderEventHandler = function($event) {
+        if ($event.target.id.search('timeWindowStartSliderKnob') != -1 && $scope.workflows.learningPrediction.timeWindowSliderActive['timeWindowStartSlider']) {
+
+            boundingRect = document.getElementById('timeWindowVisual').getBoundingClientRect()
+
+            $scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider = parseInt((($event.clientX - boundingRect.left - 7)/400)*100)
+        }
+
+        if ($event.target.id.search('timeWindowEndSliderKnob') != -1 && $scope.workflows.learningPrediction.timeWindowSliderActive['timeWindowEndSlider']) {
+
+            boundingRect = document.getElementById('timeWindowVisual').getBoundingClientRect()
+
+            $scope.workflows.learningPrediction.timeWindow.timeWindowEndSlider = parseInt((($event.clientX - boundingRect.left - 7)/400)*100 - $scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider)
+        }
+    }
+
+    $scope.workflows.learningPrediction.timeWindowSliderDownEventHandler = function($event) {
+        if ($event.target.id.search('timeWindowStartSliderKnob') != -1) {
+            $scope.workflows.learningPrediction.timeWindowSliderActive['timeWindowStartSlider'] = true
+        }
+        if ($event.target.id.search('timeWindowEndSliderKnob') != -1) {
+            $scope.workflows.learningPrediction.timeWindowSliderActive['timeWindowEndSlider'] = true
+        }
+    }
+
+    $scope.workflows.learningPrediction.timeWindowSliderUpEventHandler = function($event) {
+        $scope.workflows.learningPrediction.timeWindowSliderActive['timeWindowStartSlider'] = false
+        $scope.workflows.learningPrediction.timeWindowSliderActive['timeWindowEndSlider'] = false
+    }
+
+    $scope.workflows.learningPrediction.timeWindowSliderClickEventHandler = function($event) {
+        boundingRect = document.getElementById('timeWindowVisual').getBoundingClientRect()
+
+        valueToSet = (($event.clientX - boundingRect.left - 7)/400)*100
+        if (valueToSet < ($scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider)) {
+            $scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider = parseInt(valueToSet)
+        }
+        else {
+            $scope.workflows.learningPrediction.timeWindow.timeWindowEndSlider = parseInt(valueToSet - $scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider)
+        }
+        
+    }
+
+
+
 
 }]);
