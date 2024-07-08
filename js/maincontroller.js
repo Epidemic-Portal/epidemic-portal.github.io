@@ -2206,9 +2206,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             "requestID": requestID,
             "userDetails": getUserDetails(),
             "policyChosen": $scope.workflows.testing.policyChosen,
-            "numberOfTests": $scope.workflows.testing.numberOfTests,
-            "testDistribution": $scope.workflows.testing.testDistribution,
-            "specificity": $scope.workflows.testing.specificity,
+            "z": $scope.workflows.testing.numberOfTests,
+            "z_c": $scope.workflows.testing.testDistribution.contactTestingSlider,
+            "z_r": $scope.workflows.testing.testDistribution.randomTestingSlider,
+            "z_s": 100 - $scope.workflows.testing.testDistribution.contactTestingSlider - $scope.workflows.testing.testDistribution.randomTestingSlider,
+            "alpha": $scope.workflows.testing.specificity,
             "startingTime": $scope.simulation.startingTime,
             "endingTime": $scope.simulation.endingTime,
             "nodeArray": $scope.simulation.sendData.nodeArray,
@@ -2221,7 +2223,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         // dummyData 
 
-        $timeout(function() {
+        // $timeout(function() {
             // $scope.workflows.testing.testingSimulation.response = {
             //     "positiveTests": 20,
             //     "negativeTests": 30,
@@ -2231,99 +2233,134 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
             // generate dummy response response var data
 
-            $scope.workflows.testing.testingSimulation.response = {}
 
-            for (var seriesName in $scope.workflows.testing.testingSimulation.responseVariableInterpretation) {
-                $scope.workflows.testing.testingSimulation.response[seriesName] = []
-
-                if (seriesName == "tArray") {
-                    for (var timeIndex = 0; timeIndex < $scope.simulation.endingTime; timeIndex++) {
-                        $scope.workflows.testing.testingSimulation.response[seriesName].push(timeIndex)
-                    }
-                }
-                else {
-                    for (var timeIndex = 0; timeIndex < $scope.simulation.endingTime; timeIndex++) {
-                        dataForNodes = []
-                        for (var nodeIndex = 0; nodeIndex < 4; nodeIndex++) {
-                            dataForNodes.push(Math.random())
-                        }
-                        $scope.workflows.testing.testingSimulation.response[seriesName].push(dataForNodes)
-                    }
-                }
+            sendingInfo = {
+                'data': $scope.workflows.testing.testingSimulation.sendData
             }
-
-
-
-            $scope.workflows.testing.testingSimulation.awaitingResponse = false
-
-            $scope.workflows.testing.chart.series = {}
-            $scope.workflows.testing.chart.x = []
-
-
-            $scope.workflows.testing.chart.nodesDisplayed = {}
-
-
-            nodeIDs = Object.keys($scope.networkGraph.nodes)
-
-            for (var nodeID in $scope.networkGraph.nodes) {
-                $scope.workflows.testing.chart.nodesDisplayed[nodeID] = false
+            
+            
+            const response = fetch('https://epidemicportal.pythonanywhere.com/testing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(sendingInfo)
+            }).then(function(response) {
+                console.log(response)
+                return response.json();
             }
+            ).then(function(data) {
+                $scope.workflows.testing.testingSimulation.response = data["result"]
 
-            for (ri = 0; ri < 2; ri++) {
-                randomNode = nodeIDs[Math.floor(Math.random() * nodeIDs.length)]
-                $scope.workflows.testing.chart.nodesDisplayed[randomNode] = true
-            }
-
-
-
-            for (var seriesName in $scope.workflows.testing.testingSimulation.response) {
-
-                variableName = $scope.workflows.testing.testingSimulation.responseVariableInterpretation[seriesName]
+                function cleanArrays(data) {
+                    data.C_array = data.C_array.map(item => JSON.parse(item));
+                    data.D_array = data.D_array.map(item => JSON.parse(item));
+                    data.A_array = data.A_array.map(item => JSON.parse(item));
+                    data.tArray = data.tArray.map(item => parseInt(item));
                 
-                if (variableName == "Time") {
-                    $scope.workflows.testing.chart.x = $scope.workflows.testing.testingSimulation.response[seriesName]
+                    return data;
                 }
-                else {
-                    seriesData = $scope.workflows.testing.testingSimulation.response[seriesName]
-                    for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
-                        
-                        // valuesString = seriesData[timeIndex]
-                        // // parsing [4, 56, 67, 67]
+                
+                $scope.workflows.testing.testingSimulation.response = cleanArrays($scope.workflows.testing.testingSimulation.response);
 
-                        // valuesString = valuesString.substring(1, valuesString.length - 1)
-                        // // parsing 4, 56, 67, 67
-                        // values = valuesString.split(", ")
-                        
-                        values = seriesData[timeIndex]
-                        // console.log(values)
-                        for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
-                            if ($scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
-                                $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+
+                // for (var seriesName in $scope.workflows.testing.testingSimulation.responseVariableInterpretation) {
+                //     $scope.workflows.testing.testingSimulation.response[seriesName] = []
+
+                //     if (seriesName == "tArray") {
+                //         for (var timeIndex = 0; timeIndex < $scope.simulation.endingTime; timeIndex++) {
+                //             $scope.workflows.testing.testingSimulation.response[seriesName].push(timeIndex)
+                //         }
+                //     }
+                //     else {
+                //         for (var timeIndex = 0; timeIndex < $scope.simulation.endingTime; timeIndex++) {
+                //             dataForNodes = []
+                //             for (var nodeIndex = 0; nodeIndex < 4; nodeIndex++) {
+                //                 dataForNodes.push(Math.random())
+                //             }
+                //             $scope.workflows.testing.testingSimulation.response[seriesName].push(dataForNodes)
+                //         }
+                //     }
+                // }
+
+
+                
+
+
+                $scope.workflows.testing.testingSimulation.awaitingResponse = false
+
+                $scope.workflows.testing.chart.series = {}
+                $scope.workflows.testing.chart.x = []
+
+
+                $scope.workflows.testing.chart.nodesDisplayed = {}
+
+
+                nodeIDs = Object.keys($scope.networkGraph.nodes)
+
+                for (var nodeID in $scope.networkGraph.nodes) {
+                    $scope.workflows.testing.chart.nodesDisplayed[nodeID] = false
+                }
+
+                for (ri = 0; ri < 2; ri++) {
+                    randomNode = nodeIDs[Math.floor(Math.random() * nodeIDs.length)]
+                    $scope.workflows.testing.chart.nodesDisplayed[randomNode] = true
+                }
+
+
+
+                for (var seriesName in $scope.workflows.testing.testingSimulation.response) {
+
+                    variableName = $scope.workflows.testing.testingSimulation.responseVariableInterpretation[seriesName]
+                    
+                    if (variableName == "Time") {
+                        $scope.workflows.testing.chart.x = $scope.workflows.testing.testingSimulation.response[seriesName]
+                    }
+                    else {
+                        seriesData = $scope.workflows.testing.testingSimulation.response[seriesName]
+                        for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
+                            
+                            // valuesString = seriesData[timeIndex]
+                            // // parsing [4, 56, 67, 67]
+
+                            // valuesString = valuesString.substring(1, valuesString.length - 1)
+                            // // parsing 4, 56, 67, 67
+                            // values = valuesString.split(", ")
+                            
+                            values = seriesData[timeIndex]
+                            // console.log(values)
+                            for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
+                                if ($scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                    $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                                }
+                                
+                                $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+
+                                // console.log(parseFloat(values[nodeIndex])*100)
+                                
+
                             }
                             
-                            $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
-
-                            // console.log(parseFloat(values[nodeIndex])*100)
-                            
-
                         }
+
+
                         
                     }
-
-
-                    
                 }
-            }
 
 
-            // $scope.simulation.responseAdditionalCalculation()
+                // $scope.simulation.responseAdditionalCalculation()
 
 
-            $scope.workflows.testing.chart.render()
+                $scope.workflows.testing.chart.render()
 
+            }).catch(function(error) {
+                console.log(error)
+                $scope.workflows.testing.testingSimulation.awaitingResponse = false
+                $scope.workflows.testing.testingSimulation.awaitingResponseFailure = true
+            })
 
-
-        }, 1000)
+        // }, 1000)
 
     
 
