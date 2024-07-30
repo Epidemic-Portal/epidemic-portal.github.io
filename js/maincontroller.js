@@ -1443,6 +1443,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
 
 
+    $scope.serverURL = "'https://epidemicportal.pythonanywhere.com"
+
+    // for testing
+    // $scope.serverURL = "http://127.0.0.1:5000"
+
     $scope.simulation.sendRequest = function(dataToSend) {
         sendingInfo = {
             'data': dataToSend
@@ -1450,7 +1455,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         
         // The other working option : https://fastapi-production-ad39.up.railway.app/runModel
         
-        const response = fetch('https://epidemicportal.pythonanywhere.com/runModel', {
+        const response = fetch($scope.serverURL + '/runModel', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -2188,7 +2193,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.workflows.testing.testingSimulation.response = {}
 
     $scope.workflows.testing.testingSimulation.responseVariableInterpretation = {
-        "C_Array": "Cumulative Confirmed",
+        "C_array": "Cumulative Confirmed",
         "A_array": "Active Cases",
         "D_array": "Cumulative Removed",
         "tArray": "Time"
@@ -2206,7 +2211,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             "requestID": requestID,
             "userDetails": getUserDetails(),
             "policyChosen": $scope.workflows.testing.policyChosen,
-            "z": $scope.workflows.testing.numberOfTests,
+            "z": $scope.workflows.testing.numberOfTests * 100,
             "z_c": $scope.workflows.testing.testDistribution.contactTestingSlider,
             "z_r": $scope.workflows.testing.testDistribution.randomTestingSlider,
             "z_s": 100 - $scope.workflows.testing.testDistribution.contactTestingSlider - $scope.workflows.testing.testDistribution.randomTestingSlider,
@@ -2239,7 +2244,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             }
             
             
-            const response = fetch('https://epidemicportal.pythonanywhere.com/testing', {
+            const response = fetch($scope.serverURL + '/testing', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -2263,7 +2268,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 
                 $scope.workflows.testing.testingSimulation.response = cleanArrays($scope.workflows.testing.testingSimulation.response);
 
-
+                console.log($scope.workflows.testing.testingSimulation.response)
                 // for (var seriesName in $scope.workflows.testing.testingSimulation.responseVariableInterpretation) {
                 //     $scope.workflows.testing.testingSimulation.response[seriesName] = []
 
@@ -2312,6 +2317,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 for (var seriesName in $scope.workflows.testing.testingSimulation.response) {
 
                     variableName = $scope.workflows.testing.testingSimulation.responseVariableInterpretation[seriesName]
+
+                    console.log(variableName)
                     
                     if (variableName == "Time") {
                         $scope.workflows.testing.chart.x = $scope.workflows.testing.testingSimulation.response[seriesName]
@@ -2351,11 +2358,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
                 // $scope.simulation.responseAdditionalCalculation()
 
+                console.log($scope.workflows.testing.chart.series)
 
                 $scope.workflows.testing.chart.render()
 
             }).catch(function(error) {
                 console.log(error)
+
                 $scope.workflows.testing.testingSimulation.awaitingResponse = false
                 $scope.workflows.testing.testingSimulation.awaitingResponseFailure = true
             })
@@ -2376,7 +2385,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.workflows.testing.chart.nodesDisplayed = {}
 
     $scope.workflows.testing.chart.seriesProperties = {
-        "New Cases": {
+        "Cumulative Confirmed": {
             "color": "hsla(198, 100%, 80%, 1)",
             "buttonColor": "hsla(198, 100%, 80%, 0.2)",
             "displayed": false
@@ -2386,7 +2395,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             "buttonColor": "hsla(0, 100%, 80%, 0.2)",
             "displayed": true
         },
-        "New Recovered": {
+        "Cumulative Removed": {
             "color": "hsla(98, 100%, 80%, 1)",
             "buttonColor": "hsla(98, 100%, 80%, 0.2)",
             "displayed": false
