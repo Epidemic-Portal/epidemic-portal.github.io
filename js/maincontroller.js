@@ -1443,10 +1443,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
 
 
-    $scope.serverURL = "https://portalepidemic.pythonanywhere.com"
+    // $scope.serverURL = "https://portalepidemic.pythonanywhere.com"
 
     // for testing
-    // $scope.serverURL = "http://127.0.0.1:5000"
+    $scope.serverURL = "http://127.0.0.1:5000"
 
     $scope.simulation.sendRequest = function(dataToSend) {
         sendingInfo = {
@@ -2604,13 +2604,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     
     $scope.workflows.learningPrediction = {}
 
-    $scope.workflows.learningPrediction.dataTypeChosen = "true-data"
+    $scope.workflows.learningPrediction.dataTypeChosen = "true"
 
     $scope.workflows.learningPrediction.dataType = {
-        "true-data": {
+        "true": {
             "name": "True Data",
         },
-        "testing-data": {
+        "testing": {
             "name": "Testing Data",
         }
     }
