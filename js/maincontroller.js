@@ -630,8 +630,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         node.x = (nodeDetails.x == null ?  Math.random() : nodeDetails.x)
         node.y = (nodeDetails.y == null ?Math.random() : nodeDetails.y)
 
+        funCityNames = ['Gotham City', 'Metropolis', 'London', 'New York', 'Paris', 'Tokyo', 'Moscow', 'Berlin', 'Rome', 'Athens', 'Cairo', 'Mumbai', 'Beijing', 'Sydney', 'Rio de Janeiro', 'Cape Town', 'Lagos', 'Mexico City', 'Los Angeles', 'Toronto', 'Chicago', 'Houston', 'Miami', 'Seattle', 'San Francisco', 'Las Vegas', 'Dubai', 'Istanbul', 'Bangkok', 'Singapore', 'Hong Kong', 'Shanghai', 'Seoul', 'Mumbai', 'Delhi', 'Karachi', 'Lahore', 'Dhaka', 'Jakarta', 'Manila', 'Kuala Lumpur', 'Hanoi', 'Ho Chi Minh City', 'Taipei', 'Tehran', 'Baghdad', 'Tel Aviv', 'Jerusalem', 'Amman', 'Cairo', 'Nairobi', 'Johannesburg', 'Cape Town', 'Lagos', 'Accra', 'Abuja', 'Kinshasa', 'Luanda']
+
+        funCityPick = funCityNames[Math.floor(Math.random() * funCityNames.length)]
+
         node.name = (nodeDetails.name == null ?  "Node " + $scope.networkGraph.nodesAdded : nodeDetails.name)
-        node.editableName = (nodeDetails.editableName == null ?  "Gotham City "  + $scope.networkGraph.nodesAdded : nodeDetails.editableName)
+        node.editableName = (nodeDetails.editableName == null ?  funCityPick + " "  + $scope.networkGraph.nodesAdded : nodeDetails.editableName)
 
         node.displayInfo = (nodeDetails.displayInfo == null ?  "A Node in the graph" : nodeDetails.displayInfo)
         
