@@ -1242,6 +1242,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.mouseMove = function($event) {
         if ($scope.networkGraph.edge.editContextStarted) {
+            $scope.networkGraph.edge.unhighlight()
             if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected == "") {
 
                 currentlyAt = viewX.cursorToGraph($event.clientX, $event.clientY, "main-graph")
@@ -1262,13 +1263,17 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 
             }
         }
-
-        if ($event.target.id.search('edgeLine') != -1) {
-            $scope.networkGraph.edge.highlight($event.target.id.split("edgeLine-")[1])
-        }
         else {
-            $scope.networkGraph.edge.unhighlight()
+            if ($event.target.id.search('edgeLine') != -1) {
+                $scope.networkGraph.edge.unhighlight()
+                $scope.networkGraph.edge.highlight($event.target.id.split("edgeLine-")[1])
+            }
+            else {
+                $scope.networkGraph.edge.unhighlight()
+            }
         }
+
+       
     }
 
     // $scope.networkGraph.fullGraphMouseDownEvents = function($event) {
