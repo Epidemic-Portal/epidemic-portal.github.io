@@ -1443,7 +1443,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
 
 
-    $scope.serverURL = "'https://epidemicportal.pythonanywhere.com"
+    $scope.serverURL = "https://epidemicportal.pythonanywhere.com"
 
     // for testing
     // $scope.serverURL = "http://127.0.0.1:5000"
