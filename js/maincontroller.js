@@ -1452,10 +1452,10 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
 
 
-    // $scope.serverURL = "https://portalepidemic.pythonanywhere.com"
+    $scope.serverURL = "https://portalepidemic.pythonanywhere.com"
 
     // for testing
-    $scope.serverURL = "http://127.0.0.1:5000"
+    // $scope.serverURL = "http://127.0.0.1:5000"
 
     $scope.simulation.sendRequest = function(dataToSend) {
         sendingInfo = {
