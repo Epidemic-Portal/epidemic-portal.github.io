@@ -44,9 +44,9 @@
 
         <div>
             <!-- Run button -->
-            <div class="d-inline-block mt-5 ml-2 pl-2" ng-hide="workflows.testing.testingSimulation.awaitingResponse">
-                <div class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-4 pr-4 pt-2 pb-2" ng-click="workflows.testing.testingSimulation.run()"><i class="fa fa-play mr-3 sub-addition-button-plus" ></i>
-                     {{length(workflows.testing.testingSimulation.response) > 0 ? 'Rerun ':'Run '}} Analysis
+            <div class="d-inline-block mt-5 ml-2 pl-2" ng-hide="workflows.learningPrediction.learningPredictionSimulation.awaitingResponse">
+                <div class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-4 pr-4 pt-2 pb-2" ng-click="workflows.learningPrediction.learningPredictionSimulation.run()"><i class="fa fa-play mr-3 sub-addition-button-plus" ></i>
+                     {{length(workflows.learningPrediction.learningPredictionSimulation.response) > 0 ? 'Rerun ':'Run '}} Analysis
                     
                     </div>
             </div>
@@ -57,5 +57,52 @@
             <span class="text-ignus mr-4">{{workflows.learningPrediction.numberOfTests}}</span>
             <input type="range" id="numberOfTestsSlider" class="mr-3" min="0" max="100" step="1" ng-model="workflows.learningPrediction.numberOfTests" style="max-width: 400px;"><br/>
         </div> -->
+
+        <div class="w-100 pr-4 pl-sm-5 pr-sm-5 pt-5 mt-5">
+            <div style="min-height: 400px; ">
+                <div class="pt-1 pb-1 text-ignus" style="color: grey;">Cases over time</div>
+        
+                <div class="pt-1 pb-1 text-ignus d-flex justify-content-center align-items-center " style="color: grey; width: 100%; height: 300px; font-weight: bold;" ng-show="workflows.learningPrediction.learningPredictionSimulation.awaitingResponse"><b class="moving-gradient-text">Waiting for a reply from the server. :)</b></div>
+        
+                <div class="pt-1 pb-1 text-ignus d-flex justify-content-center align-items-center " style="color: grey; width: 100%; height: 300px; font-weight: bold;" ng-show="workflows.learningPrediction.learningPredictionSimulation.awaitingResponseFailure"><b class="moving-gradient-text">Sorry, there was a problem getting a response from the server.</b></div>
+                
+                <div class="mt-2">
+                    <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(nodeName, nodeDisplayed) in workflows.learningPrediction.chart.nodesDisplayed" style="{{ nodeDisplayed ? 'background-color: hsla(var(--themeColorHue), 70%, 40%, 1);' : ''}};" ng-click="workflows.learningPrediction.chart.nodesDisplayed[nodeName] = !nodeDisplayed; workflows.learningPrediction.chart.render(); workflows.learningPrediction.chartForStates.render();" ng-show="networkGraph.nodes[nodeName] != undefined">
+                        {{networkGraph.nodes[nodeName].editableName}}</button>
+                </div>
+                <div id="learningPredictionResponseHolder" class="text-ignus mt-4" style="position: relative; {{dimensions.width < 800 ? '':'max-width: 1100px;'}}">
+                    
+                    <div id="learningPred-chart-main" class="w-100" style="min-height: 80vh; " ng-mousemove="workflows.learningPrediction.chart.mouseMove($event)" ng-mouseleave="workflows.learningPrediction.chart.mouseLeave($event)">
+        
+                    </div>
+
+                    
+                </div>
+
+                <div class="mt-2 mb-5 text-center w-100" ng-show="length(workflows.learningPrediction.chart.nodesDisplayed) > 0">
+                    <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(seriesPropertyKey, property) in workflows.learningPrediction.chart.seriesProperties" style="{{ property.displayed ? 'background-color:' + property.buttonColor : ''}};" ng-click="workflows.learningPrediction.chart.seriesProperties[seriesPropertyKey].displayed = !property.displayed; workflows.learningPrediction.chart.render();">
+                        {{seriesPropertyKey}}</button>
+                </div>
+
+                <!-- <div id="testingResponseHolder2" class="text-ignus mt-4" style="position: relative; {{dimensions.width < 800 ? '':'max-width: 1100px;'}}">
+                    
+                    <div id="testingStates-chart-main" class="w-100" style="min-height: 80vh; " ng-mousemove="workflows.learningPrediction.chartForStates.mouseMove($event)" ng-mouseleave="workflows.learningPrediction.chartForStates.mouseLeave($event)">
+        
+                    </div>
+
+                    
+                </div>
+
+                <div class="mt-2 mb-5 text-center w-100" ng-show="length(workflows.learningPrediction.chartForStates.nodesDisplayed) > 0">
+                    <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(seriesPropertyKey, property) in workflows.learningPrediction.chartForStates.seriesProperties" style="{{ property.displayed ? 'background-color:' + property.buttonColor : ''}};" ng-click="workflows.learningPrediction.chartForStates.seriesProperties[seriesPropertyKey].displayed = !property.displayed; workflows.learningPrediction.chartForStates.render();">
+                        {{seriesPropertyKey}}</button>
+                </div> -->
+
+                
+        
+        
+                
+            </div>
+        </div>
     </div>
 </div>
