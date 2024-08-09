@@ -2864,8 +2864,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         "RLS": {
             "name": "RLS",
         },
-        "GRLS": {
-            "name": "GRLS",
+        "GWRLS": {
+            "name": "GWRLS",
         }
     }
 
@@ -2934,8 +2934,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.workflows.learningPrediction.learningPredictionSimulation.response = {}
 
     $scope.workflows.learningPrediction.learningPredictionSimulation.responseVariableInterpretation = {
-        "beta_hats": "Beta Values",
-        "gamma_hats": "Gamma Values",
+        "beta_hats": "Beta",
+        "gamma_hats": "Gamma",
         "tArray_pred": "Time Predicted",
         "x_pred": "Infected Predicted States",
         "r_pred": "Recovered Predicted States",
@@ -3033,12 +3033,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 $scope.workflows.learningPrediction.chart.series = {}
                 $scope.workflows.learningPrediction.chart.x = []
 
-                $scope.workflows.learningPrediction.chartForStates.series = {}
-                $scope.workflows.learningPrediction.chartForStates.x = []
+                // $scope.workflows.learningPrediction.chartForStates.series = {}
+                // $scope.workflows.learningPrediction.chartForStates.x = []
 
 
                 $scope.workflows.learningPrediction.chart.nodesDisplayed = {}
-                $scope.workflows.learningPrediction.chartForStates.nodesDisplayed = {}
+                // $scope.workflows.learningPrediction.chartForStates.nodesDisplayed = {}
 
 
                 nodeIDs = Object.keys($scope.networkGraph.nodes)
@@ -3047,9 +3047,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     $scope.workflows.learningPrediction.chart.nodesDisplayed[nodeID] = false
                 }
 
-                for (var nodeID in $scope.networkGraph.nodes) {
-                    $scope.workflows.learningPrediction.chartForStates.nodesDisplayed[nodeID] = false
-                }
+                // for (var nodeID in $scope.networkGraph.nodes) {
+                //     $scope.workflows.learningPrediction.chartForStates.nodesDisplayed[nodeID] = false
+                // }
 
                 for (ri = 0; ri < 2; ri++) {
                     randomNode = nodeIDs[Math.floor(Math.random() * nodeIDs.length)]
@@ -3066,13 +3066,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     
                     if (variableName == "Time") {
                         $scope.workflows.learningPrediction.chart.x = $scope.workflows.learningPrediction.learningPredictionSimulation.response[seriesName]
-                        $scope.workflows.learningPrediction.chartForStates.x = $scope.workflows.learningPrediction.learningPredictionSimulation.response[seriesName]
+                        // $scope.workflows.learningPrediction.chartForStates.x = $scope.workflows.learningPrediction.learningPredictionSimulation.response[seriesName]
                     }
                     else {
                         seriesData = $scope.workflows.learningPrediction.learningPredictionSimulation.response[seriesName]
 
                         
-                        if (variableName.search("Values") != -1) {
+                        if (variableName.search("Gamma") != -1 || variableName.search("Beta") != -1) {
                             for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
                             
                                 // valuesString = seriesData[timeIndex]
@@ -3085,11 +3085,11 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                                 values = seriesData[timeIndex]
                                 // console.log(values)
                                 for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
-                                    if ($scope.workflows.learningPrediction.chartForStates.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
-                                        $scope.workflows.learningPrediction.chartForStates.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                                    if ($scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                        $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
                                     }
                                     
-                                    $scope.workflows.learningPrediction.chartForStates.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+                                    $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
     
                                     // console.log(parseFloat(values[nodeIndex])*100)
                                     
@@ -3164,12 +3164,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.workflows.learningPrediction.chart.nodesDisplayed = {}
 
     $scope.workflows.learningPrediction.chart.seriesProperties = {
-        "Gamma Values": {
+        "Gamma": {
             "color": "hsla(198, 100%, 80%, 1)",
             "buttonColor": "hsla(198, 100%, 80%, 0.2)",
             "displayed": false
         },
-        "Beta Values": {
+        "Beta": {
             "color": "hsla(0, 100%, 80%, 1)",
             "buttonColor": "hsla(0, 100%, 80%, 0.2)",
             "displayed": true
