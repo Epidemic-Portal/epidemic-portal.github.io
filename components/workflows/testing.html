@@ -1,4 +1,4 @@
-<div style="min-height: 100vh;">
+<div style="min-height: 100vh;" ng-show="simulation.canPlot">
     <div class="p-5" style="background: hsla(0, 0%, 2%, 1); min-height: 100vh;">
         <div  class="pl-3">
             <span style="color: hsla(0, 0%, 50%, 1); font-size: small;">Policy</span>
@@ -94,12 +94,33 @@
                     <div id="testing-chart-main" class="w-100" style="min-height: 80vh; " ng-mousemove="workflows.testing.chart.mouseMove($event)" ng-mouseleave="workflows.testing.chart.mouseLeave($event)">
         
                     </div>
+
+                    
                 </div>
-        
+
                 <div class="mt-2 mb-5 text-center w-100" ng-show="length(workflows.testing.chart.nodesDisplayed) > 0">
                     <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(seriesPropertyKey, property) in workflows.testing.chart.seriesProperties" style="{{ property.displayed ? 'background-color:' + property.buttonColor : ''}};" ng-click="workflows.testing.chart.seriesProperties[seriesPropertyKey].displayed = !property.displayed; workflows.testing.chart.render();">
                         {{seriesPropertyKey}}</button>
                 </div>
+
+                <div id="testingResponseHolder2" class="text-ignus mt-4" style="position: relative; {{dimensions.width < 800 ? '':'max-width: 1100px;'}}">
+                    
+                    <div id="testingStates-chart-main" class="w-100" style="min-height: 80vh; " ng-mousemove="workflows.testing.chartForStates.mouseMove($event)" ng-mouseleave="workflows.testing.chartForStates.mouseLeave($event)">
+        
+                    </div>
+
+                    
+                </div>
+
+                <div class="mt-2 mb-5 text-center w-100" ng-show="length(workflows.testing.chartForStates.nodesDisplayed) > 0">
+                    <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(seriesPropertyKey, property) in workflows.testing.chartForStates.seriesProperties" style="{{ property.displayed ? 'background-color:' + property.buttonColor : ''}};" ng-click="workflows.testing.chartForStates.seriesProperties[seriesPropertyKey].displayed = !property.displayed; workflows.testing.chartForStates.render();">
+                        {{seriesPropertyKey}}</button>
+                </div>
+
+                
+        
+        
+                
             </div>
         </div>
 

@@ -1451,11 +1451,16 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.simulation.awaitingResponseFailure = false
     }
 
+    // check if url contains 'epidemic-portal.github.io 
 
-    $scope.serverURL = "https://portalepidemic.pythonanywhere.com"
-
-    // for testing
-    // $scope.serverURL = "http://127.0.0.1:5000"
+    if (window.location.href.search('epidemic-portal.github.io') != -1) {
+        $scope.serverURL = "https://portalepidemic.pythonanywhere.com"
+    }
+    else {
+        // for testing
+        $scope.serverURL = "http://127.0.0.1:5000"
+    }
+    
 
     $scope.simulation.sendRequest = function(dataToSend) {
         sendingInfo = {
@@ -2111,9 +2116,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         "learning-prediction": {
             "name": "Learning & Prediction",
         },
-        "mitigation": {
-            "name": "Mitigation",
-        }
+        // "mitigation": {
+        //     "name": "Mitigation",
+        // }
     }
 
 
@@ -2205,6 +2210,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         "C_array": "Cumulative Confirmed",
         "A_array": "Active Cases",
         "D_array": "Cumulative Removed",
+        "sArray_infer": "Susceptible States",
+        "iArray_infer": "Infected States",
+        "rArray_infer": "Recovered States",
         "tArray": "Time"
     }
 
@@ -2271,33 +2279,16 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     data.D_array = data.D_array.map(item => JSON.parse(item));
                     data.A_array = data.A_array.map(item => JSON.parse(item));
                     data.tArray = data.tArray.map(item => parseInt(item));
-                
+                    data.sArray_infer = data.sArray_infer.map(item => JSON.parse(item));
+                    data.iArray_infer = data.iArray_infer.map(item => JSON.parse(item));
+                    data.rArray_infer = data.rArray_infer.map(item => JSON.parse(item));
+
                     return data;
                 }
                 
                 $scope.workflows.testing.testingSimulation.response = cleanArrays($scope.workflows.testing.testingSimulation.response);
 
                 console.log($scope.workflows.testing.testingSimulation.response)
-                // for (var seriesName in $scope.workflows.testing.testingSimulation.responseVariableInterpretation) {
-                //     $scope.workflows.testing.testingSimulation.response[seriesName] = []
-
-                //     if (seriesName == "tArray") {
-                //         for (var timeIndex = 0; timeIndex < $scope.simulation.endingTime; timeIndex++) {
-                //             $scope.workflows.testing.testingSimulation.response[seriesName].push(timeIndex)
-                //         }
-                //     }
-                //     else {
-                //         for (var timeIndex = 0; timeIndex < $scope.simulation.endingTime; timeIndex++) {
-                //             dataForNodes = []
-                //             for (var nodeIndex = 0; nodeIndex < 4; nodeIndex++) {
-                //                 dataForNodes.push(Math.random())
-                //             }
-                //             $scope.workflows.testing.testingSimulation.response[seriesName].push(dataForNodes)
-                //         }
-                //     }
-                // }
-
-
                 
 
 
@@ -2306,14 +2297,22 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 $scope.workflows.testing.chart.series = {}
                 $scope.workflows.testing.chart.x = []
 
+                $scope.workflows.testing.chartForStates.series = {}
+                $scope.workflows.testing.chartForStates.x = []
+
 
                 $scope.workflows.testing.chart.nodesDisplayed = {}
+                $scope.workflows.testing.chartForStates.nodesDisplayed = {}
 
 
                 nodeIDs = Object.keys($scope.networkGraph.nodes)
 
                 for (var nodeID in $scope.networkGraph.nodes) {
                     $scope.workflows.testing.chart.nodesDisplayed[nodeID] = false
+                }
+
+                for (var nodeID in $scope.networkGraph.nodes) {
+                    $scope.workflows.testing.chartForStates.nodesDisplayed[nodeID] = false
                 }
 
                 for (ri = 0; ri < 2; ri++) {
@@ -2331,33 +2330,65 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     
                     if (variableName == "Time") {
                         $scope.workflows.testing.chart.x = $scope.workflows.testing.testingSimulation.response[seriesName]
+                        $scope.workflows.testing.chartForStates.x = $scope.workflows.testing.testingSimulation.response[seriesName]
                     }
                     else {
                         seriesData = $scope.workflows.testing.testingSimulation.response[seriesName]
-                        for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
-                            
-                            // valuesString = seriesData[timeIndex]
-                            // // parsing [4, 56, 67, 67]
 
-                            // valuesString = valuesString.substring(1, valuesString.length - 1)
-                            // // parsing 4, 56, 67, 67
-                            // values = valuesString.split(", ")
+                        
+                        if (variableName.search("States") != -1) {
+                            for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
                             
-                            values = seriesData[timeIndex]
-                            // console.log(values)
-                            for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
-                                if ($scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
-                                    $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                                // valuesString = seriesData[timeIndex]
+                                // // parsing [4, 56, 67, 67]
+    
+                                // valuesString = valuesString.substring(1, valuesString.length - 1)
+                                // // parsing 4, 56, 67, 67
+                                // values = valuesString.split(", ")
+                                
+                                values = seriesData[timeIndex]
+                                // console.log(values)
+                                for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
+                                    if ($scope.workflows.testing.chartForStates.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                        $scope.workflows.testing.chartForStates.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                                    }
+                                    
+                                    $scope.workflows.testing.chartForStates.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+    
+                                    // console.log(parseFloat(values[nodeIndex])*100)
+                                    
+    
                                 }
                                 
-                                $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
-
-                                // console.log(parseFloat(values[nodeIndex])*100)
-                                
-
                             }
-                            
                         }
+                        else {
+                            for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
+                            
+                                // valuesString = seriesData[timeIndex]
+                                // // parsing [4, 56, 67, 67]
+    
+                                // valuesString = valuesString.substring(1, valuesString.length - 1)
+                                // // parsing 4, 56, 67, 67
+                                // values = valuesString.split(", ")
+                                
+                                values = seriesData[timeIndex]
+                                // console.log(values)
+                                for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
+                                    if ($scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                        $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                                    }
+                                    
+                                    $scope.workflows.testing.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+    
+                                    // console.log(parseFloat(values[nodeIndex])*100)
+                                    
+    
+                                }
+                                
+                            }
+                        }
+                        
 
 
                         
@@ -2368,8 +2399,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 // $scope.simulation.responseAdditionalCalculation()
 
                 console.log($scope.workflows.testing.chart.series)
-
                 $scope.workflows.testing.chart.render()
+                $scope.workflows.testing.chartForStates.render()
 
             }).catch(function(error) {
                 console.log(error)
@@ -2580,6 +2611,207 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     }
+
+
+    $scope.workflows.testing.chartForStates = {}
+    $scope.workflows.testing.chartForStates.nodesDisplayed = {}
+
+
+    $scope.workflows.testing.chartForStates = {}
+
+    $scope.workflows.testing.chartForStates.nodesDisplayed = {}
+
+    $scope.workflows.testing.chartForStates.seriesProperties = {
+        "Susceptible States": {
+            "color": "hsla(198, 100%, 80%, 1)",
+            "buttonColor": "hsla(198, 100%, 80%, 0.2)",
+            "displayed": false
+        },
+        "Infected States": {
+            "color": "hsla(0, 100%, 80%, 1)",
+            "buttonColor": "hsla(0, 100%, 80%, 0.2)",
+            "displayed": true
+        },
+        "Recovered States": {
+            "color": "hsla(98, 100%, 80%, 1)",
+            "buttonColor": "hsla(98, 100%, 80%, 0.2)",
+            "displayed": false
+        }
+    }
+
+    $scope.workflows.testing.chartForStates.remove = function() {
+        viewX.removeGraph("main-testingStates-graph")
+
+        // console.log("Removed")
+        // console.log(document.getElementById('yLabel-testingStates-graph'))
+
+        if (document.getElementById('yLabel-testingStates-graph') != null) {
+            // console.log("removing")
+            document.getElementById('yLabel-testingStates-graph').remove()
+        }
+
+    }
+
+
+
+    $scope.workflows.testing.chartForStates.render = function() {
+        $scope.workflows.testing.chartForStates.remove()
+        
+        graphH = document.getElementById('testingStates-chart-main')
+
+        epidemicApp.defaultChartOptions['xmax'] = $scope.simulation.endingTime
+        epidemicApp.defaultChartOptions['xmin'] = 0
+        epidemicApp.defaultChartOptions['xmajorgridlabelshift'] = 2
+
+        maxYvalue = 1
+
+        $scope.workflows.testing.chartForStates.nodeWithHighestValueForInfected = null
+
+        $scope.workflows.testing.chartForStates.maxValues = {}
+        for (var seriesName in $scope.workflows.testing.chartForStates.series) {
+            series = $scope.workflows.testing.chartForStates.series[seriesName]
+            $scope.workflows.testing.chartForStates.maxValues[series.name] = Math.max(...series.data)
+
+            if ($scope.workflows.testing.chartForStates.seriesProperties[series.name].displayed && $scope.workflows.testing.chart.nodesDisplayed[series.node]) {
+                maxValue = Math.max(...series.data)
+                if (maxValue > maxYvalue) {
+                    maxYvalue = maxValue
+                    $scope.workflows.testing.chartForStates.nodeWithHighestValueForInfected = series.node
+                }
+            }   
+        }
+
+        $scope.workflows.testing.chartForStates.currentYMax = maxYvalue
+        $scope.workflows.testing.chartForStates.currentXMax = $scope.simulation.endingTime
+
+        epidemicApp.defaultChartOptions['ymax'] = maxYvalue
+        epidemicApp.defaultChartOptions['ymin'] = (-0.04)*maxYvalue
+        epidemicApp.defaultChartOptions['unitAspectRatio'] = "no"
+        epidemicApp.defaultChartOptions['xaxisthickness'] = 2
+        epidemicApp.defaultChartOptions['xaxiscolor'] = "hsla(0, 0%, 30%, 1)"
+        epidemicApp.defaultChartOptions['xaxislabel'] = "TIME"
+        epidemicApp.defaultChartOptions['xaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
+
+        
+        epidemicApp.defaultChartOptions['yaxislabel'] = "States"
+        epidemicApp.defaultChartOptions['yaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
+
+
+        viewX.addGraph(graphH, "main-testingStates-graph", epidemicApp.defaultChartOptions)
+
+        // Adding Day Line
+        daylineOptions = {
+            x1: -100,
+            y1: -100,
+            x2: -200,
+            y2: -200,
+            strokewidth: 0.5,
+            linecolor: "hsla(0, 0%, 30%, 1)",
+            strokedasharray: "5, 5"
+        }
+
+        viewX.addLine("main-testingStates-graph", "dayLine", daylineOptions)
+
+        // Day Line Label
+        dayLineLabelOptions = {
+            x: -100,
+            y: -100,
+            text: "Day 0",
+            textcolor: "hsla(0, 0%, 30%, 1)",
+            fontSize: 6
+        }
+
+        viewX.addText("main-testingStates-graph", "dayLineLabel", dayLineLabelOptions)
+
+    
+
+        for (var seriesName in $scope.workflows.testing.chartForStates.series) {
+            series = $scope.workflows.testing.chartForStates.series[seriesName]
+
+            if ($scope.workflows.testing.chartForStates.seriesProperties[series.name].displayed && $scope.workflows.testing.chart.nodesDisplayed[series.node]) {
+                pathOptions = {
+                    points: [],
+                }
+
+                for (var pointIndex = 0; pointIndex < series.data.length; pointIndex++) {
+                    pathOptions.points.push([$scope.workflows.testing.chartForStates.x[pointIndex], series.data[pointIndex]])
+                }
+
+                
+
+
+
+                pathOptions.pathcolor = $scope.workflows.testing.chartForStates.seriesProperties[series.name].color
+                pathOptions.strokewidth = 0.4
+                
+
+                viewX.addPath("main-testingStates-graph", "main-testingStates-graph#" + series.node + "#type" + series.name, pathOptions)
+            }   
+        }
+
+        // xAxisLineOptions = {
+        //     x1: 0,
+        //     y1: (-0.1)*maxYvalue,
+        //     y2: (-0.1)*maxYvalue,
+        //     x2: $scope.simulation.endingTime,
+        //     strokewidth: 0.4,
+        //     linecolor: 'hsla(0, 0%, 30%, 1)'
+        // }
+
+        // viewX.addLine("main-testingStates-graph", "main-testingStates-graph-timeLine", xAxisLineOptions)
+
+        xAxisLabelOptions = {
+            x: $scope.simulation.endingTime/2,
+            y: (-0.13)*maxYvalue,
+            text: "Time",
+            textcolor: "hsla(0, 0%, 30%, 1)",
+            fontSize: 2.6,
+            fontFamily: "Raleway",
+            fontweight: "bold"
+        }
+
+        viewX.addText("main-testingStates-graph", "main-testingStates-graph-timeLabel", xAxisLabelOptions)
+
+        // yAxisLabelOptions = {
+        //     x: -0.1*$scope.simulation.endingTime,
+        //     y: maxYvalue*1.05,
+        //     text: "Percentage of the Population",
+        //     textcolor: "hsla(0, 0%, 30%, 1)",
+        //     fontSize: 2.6,
+        //     fontFamily: "Raleway",
+        //     fontweight: "bold"
+        // }
+
+        // addedLabel = viewX.addText("main-testingStates-graph", "main-testingStates-graph-yLabel", yAxisLabelOptions)
+
+        // console.log()
+
+        // addedLabel[0].setAttribute("transform", "translate(-50, 50) rotate(-90)")
+
+        var textCasesElement = document.createElement("div")
+        textCasesElement.style.position = "absolute"
+        textCasesElement.style.top = "50%"
+        textCasesElement.style.left = "-50%"
+        textCasesElement.id = "yLabel-testingStates-graph"
+        textCasesElement.style.width = "100%"
+        textCasesElement.style.display = "flex"
+        textCasesElement.style.justifyContent = "center"
+        textCasesElement.style.alignItems = "center"
+        textCasesElement.style.fontSize = "20px"
+        textCasesElement.style.fontFamily = "Raleway"
+        // textCasesElement.style.fontWeight = "bold"
+        textCasesElement.style.color = "hsla(0, 0%, 30%, 1)"
+        textCasesElement.innerHTML = "States"
+        textCasesElement.style.transform = "rotate(-90deg)"
+        document.getElementById("testingResponseHolder2").appendChild(textCasesElement)
+
+
+
+        $scope.workflows.testing.chartForStates.currentDay = 0
+
+
+    }
+
 
 
     // $scope.workflows.testing.testingSimulation.responseAdditionalCalculation = function() {
