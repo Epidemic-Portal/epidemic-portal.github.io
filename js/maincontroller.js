@@ -1228,7 +1228,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.fullGraphClickEvents = function($event) {
 
-        if (window.scrollY < window.innerHeight - 100) {
+        if (window.scrollY < window.innerHeight*0.6) {
             if ($event.target.id.search('knob') == -1 && $event.target.id.search('edgeLine') == -1) {
                 $scope.networkGraph.escapeEvent()
             }
@@ -1255,7 +1255,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.networkGraph.mouseMove = function($event) {
 
         // console.log(window.scrollY)
-        if (window.scrollY < window.innerHeight - 100) {
+        if (window.scrollY < window.innerHeight*0.6) {
             if ($scope.networkGraph.edge.editContextStarted) {
                 $scope.networkGraph.edge.unhighlight()
                 if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected == "") {
@@ -1363,7 +1363,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     }
     $scope.simulation.startingTime = 1
     $scope.simulation.endingTime = 120
-    $scope.simulation.percentageSusceptibleInStartingNode = 40
+    $scope.simulation.percentageSusceptibleInStartingNode = 90
 
     $scope.simulation.startingNode = ""
     
@@ -1977,7 +1977,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 viewX.updateText("main-graph", "text-label-small-available", {
                     x: $scope.networkGraph.nodes[mostInfectedNode].x + 0.05, 
                     y: $scope.networkGraph.nodes[mostInfectedNode].y - 0.05, 
-                    text: "Most Infected", textcolor: "hsla(0, 100%, 70%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
+                    text: "Most Infected", textcolor: "hsla(0, 100%, 70%, 0.8)", fontSize: 1.9, fontFamily: "Raleway", fontweight: 'bold'})
                 }
         }
         else {
@@ -1992,8 +1992,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             if ($scope.networkGraph.nodes[mostInfectedNode] != undefined) {
                 viewX.updateText("main-graph", "text-label-small-available-2", {
                     x: $scope.networkGraph.nodes[$scope.simulation.startingNode].x + 0.05, 
-                    y: $scope.networkGraph.nodes[$scope.simulation.startingNode].y - 0.05 - additionShift, 
-                    text: "Starting Node", textcolor: "hsla(0, 0%, 100%, 1)", fontSize: 2.6, fontFamily: "Raleway", fontweight: 'bold'})
+                    y: $scope.networkGraph.nodes[$scope.simulation.startingNode].y - 0.04 - additionShift, 
+                    text: "Starting Node", textcolor: "hsla(0, 0%, 100%, 0.8)", fontSize: 1.9, fontFamily: "Raleway", fontweight: 'bold'})
                 }
         }
         else {
@@ -2064,7 +2064,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 infectedNumber = $scope.chart.series["Infected#" + nodeID].data[$scope.chart.currentDay]
                 saturationForNode = $scope.linearValue(infectedNumber, [0, $scope.chart.maxValues["Infected"]], [0, 100])
 
-                nodeRadius = $scope.linearValue(infectedNumber, [0, $scope.chart.maxValues["Infected"]], [0.03, 0.05])
+                nodeRadius = $scope.linearValue(infectedNumber, [0, $scope.chart.maxValues["Infected"]], [0.03, 0.043])
     
                 nodeOptions = {x: node.x, y: node.y, radius: nodeRadius, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(0, " + saturationForNode + "%, 70%, 1)" : "hsla(0, " + saturationForNode + "%, 45%, 1)")}
                 viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
@@ -2493,7 +2493,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         for (var seriesName in $scope.workflows.testing.chart.series) {
             series = $scope.workflows.testing.chart.series[seriesName]
             $scope.workflows.testing.chart.maxValues[series.name] = Math.max(...series.data)
-            console.log(series.name)
+            // console.log(series.name)
             if ($scope.workflows.testing.chart.seriesProperties[series.name].displayed && $scope.workflows.testing.chart.nodesDisplayed[series.node]) {
                 maxValue = Math.max(...series.data)
                 if (maxValue > maxYvalue) {
@@ -2550,6 +2550,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         for (var seriesName in $scope.workflows.testing.chart.series) {
             series = $scope.workflows.testing.chart.series[seriesName]
             if ($scope.workflows.testing.chart.seriesProperties[series.name].displayed && $scope.workflows.testing.chart.nodesDisplayed[series.node]) {
+                
+                
                 pathOptions = {
                     points: [],
                 }
@@ -2686,13 +2688,30 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         $scope.workflows.testing.chartForStates.nodeWithHighestValueForInfected = null
 
+        var seriesNameToDotMaps = {
+            "Infected States": "Infected",
+            "Recovered States": "Recovered",
+            "Susceptible States": "Susceptible"
+        }
+
         $scope.workflows.testing.chartForStates.maxValues = {}
         for (var seriesName in $scope.workflows.testing.chartForStates.series) {
             series = $scope.workflows.testing.chartForStates.series[seriesName]
-            $scope.workflows.testing.chartForStates.maxValues[series.name] = Math.max(...series.data)
+
+            seriesNameForDotsPrefix = seriesName.split("#")[0]
+            seriesNameForDots = seriesName.split("#")[1]
+            fullSeriesNameForDots = seriesNameToDotMaps[seriesNameForDotsPrefix] + "#" + seriesNameForDots
+
+            seriesForDots = $scope.chart.series[fullSeriesNameForDots]
+
+            var fullSeries = [...series.data, ...seriesForDots.data]
+
+            $scope.workflows.testing.chartForStates.maxValues[series.name] = Math.max(...fullSeries)
+
+            // console.log("Max Value",  $scope.workflows.testing.chartForStates.maxValues[series.name])
 
             if ($scope.workflows.testing.chartForStates.seriesProperties[series.name].displayed && $scope.workflows.testing.chart.nodesDisplayed[series.node]) {
-                maxValue = Math.max(...series.data)
+                maxValue = Math.max(...fullSeries)
                 if (maxValue > maxYvalue) {
                     maxYvalue = maxValue
                     $scope.workflows.testing.chartForStates.nodeWithHighestValueForInfected = series.node
@@ -2742,12 +2761,18 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         viewX.addText("main-testingStates-graph", "dayLineLabel", dayLineLabelOptions)
 
-    
+
 
         for (var seriesName in $scope.workflows.testing.chartForStates.series) {
             series = $scope.workflows.testing.chartForStates.series[seriesName]
+            seriesNameForDotsPrefix = seriesName.split("#")[0]
+            seriesNameForDots = seriesName.split("#")[1]
+            fullSeriesNameForDots = seriesNameToDotMaps[seriesNameForDotsPrefix] + "#" + seriesNameForDots
+            seriesForDots = $scope.chart.series[fullSeriesNameForDots]
 
             if ($scope.workflows.testing.chartForStates.seriesProperties[series.name].displayed && $scope.workflows.testing.chart.nodesDisplayed[series.node]) {
+
+
                 pathOptions = {
                     points: [],
                 }
@@ -2756,15 +2781,37 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     pathOptions.points.push([$scope.workflows.testing.chartForStates.x[pointIndex], series.data[pointIndex]])
                 }
 
-                
-
-
-
                 pathOptions.pathcolor = $scope.workflows.testing.chartForStates.seriesProperties[series.name].color
                 pathOptions.strokewidth = 0.4
                 
 
                 viewX.addPath("main-testingStates-graph", "main-testingStates-graph#" + series.node + "#type" + series.name, pathOptions)
+
+
+
+
+                // dotted lines for true states
+                console.log(seriesForDots)
+
+                pathOptions = {
+                    points: [],
+                }
+
+                for (var pointIndex = 0; pointIndex < seriesForDots.data.length; pointIndex++) {
+                    pathOptions.points.push([$scope.chart.x[pointIndex], seriesForDots.data[pointIndex]])
+                }
+
+
+
+                pathOptions.pathcolor = $scope.chart.seriesProperties[seriesNameToDotMaps[seriesNameForDotsPrefix]].color
+                pathOptions.strokewidth = 0.2
+                pathOptions.strokedasharray = "2, 1"
+                pathOptions.opacity = 0.4
+                
+
+                viewX.addPath("main-testingStates-graph", "main-testingStatesDottedTrue-graph#" + series.node + "#type" + seriesNameForDotsPrefix, pathOptions)
+
+
             }   
         }
 

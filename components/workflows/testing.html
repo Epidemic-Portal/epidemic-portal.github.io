@@ -79,7 +79,7 @@
 
         <div class="w-100 pr-4 pl-sm-5 pr-sm-5 pt-5 mt-5">
             <div style="min-height: 400px; ">
-                <div class="pt-1 pb-1 text-ignus" style="color: grey;">Cases over time</div>
+                <div  ng-show="length(workflows.testing.chart.nodesDisplayed) > 0" class="pt-1 pb-1 text-ignus" style="color: grey; font-size: large;">Cases over time in</div>
         
                 <div class="pt-1 pb-1 text-ignus d-flex justify-content-center align-items-center " style="color: grey; width: 100%; height: 300px; font-weight: bold;" ng-show="workflows.testing.testingSimulation.awaitingResponse"><b class="moving-gradient-text">Waiting for a reply from the server. :)</b></div>
         
@@ -105,7 +105,10 @@
                         {{seriesPropertyKey}}</button>
                 </div>
 
-                <div id="testingResponseHolder2" class="text-ignus mt-4" style="position: relative; {{dimensions.width < 800 ? '':'max-width: 1100px;'}}">
+
+                <div  ng-show="length(workflows.testing.chart.nodesDisplayed) > 0" class=" mt-4 pt-1 pb-1 text-ignus" style="color: grey; font-size: large;">Inferred percentage of the population for the nodes selected above</div>
+
+                <div id="testingResponseHolder2" class="text-ignus mt-1" style="position: relative; {{dimensions.width < 800 ? '':'max-width: 1100px;'}}">
                     
                     <div id="testingStates-chart-main" class="w-100" style="min-height: 80vh; " ng-mousemove="workflows.testing.chartForStates.mouseMove($event)" ng-mouseleave="workflows.testing.chartForStates.mouseLeave($event)">
         
@@ -114,10 +117,14 @@
                     
                 </div>
 
-                <div class="mt-2 mb-5 text-center w-100" ng-show="length(workflows.testing.chartForStates.nodesDisplayed) > 0">
+                <div class="mt-2 mb-2 text-center w-100" ng-show="length(workflows.testing.chartForStates.nodesDisplayed) > 0">
                     <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(seriesPropertyKey, property) in workflows.testing.chartForStates.seriesProperties" style="{{ property.displayed ? 'background-color:' + property.buttonColor : ''}};" ng-click="workflows.testing.chartForStates.seriesProperties[seriesPropertyKey].displayed = !property.displayed; workflows.testing.chartForStates.render();">
                         {{seriesPropertyKey}}</button>
                 </div>
+
+                <div class="mt-2 mb-5 text-center w-100" ng-show="length(workflows.testing.chartForStates.nodesDisplayed) > 0" style="color: grey; font-size: small;">
+                    Dotted lines represent the true states compared to the inferred states.
+                 </div>
 
                 
         
