@@ -1,18 +1,18 @@
 <div style="min-height: 100vh;" ng-show="simulation.canPlot">
     <div class="p-5" style="background: hsla(0, 0%, 2%, 1); min-height: 100vh;">
-        <div  class="pl-3">
+        <div  class="pl-3" ng-show="0">
             <span style="color: hsla(0, 0%, 50%, 1); font-size: small;">Policy</span>
             <span class="ml-4" >
                 <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-4 pr-4 pt-2 pb-2" ng-repeat="(policyName, policy) in workflows.testing.policy" style="{{ workflows.testing.policyChosen == policyName ? 'background-color: hsla(var(--themeColorHue), 20%, 50%, 0.5);' : ''}};" ng-click="workflows.testing.policyChosen = policyName">{{policy.name}}</button>
             </span>
         </div>
-        <div  class="pl-3 pt-4 mt-4">
+        <div  class="pl-3 pt-1 mt-4">
             <span class="mr-4" style="color: hsla(0, 0%, 50%, 1); font-size: small;">Number of Tests</span>
             <span class="text-ignus mr-4">{{workflows.testing.numberOfTests}} k</span>
             <input type="range" id="numberOfTestsSlider" class="mr-3" min="0" max="100" step="1" ng-model="workflows.testing.numberOfTests" style="max-width: 400px;"><br/>
         </div>
 
-        <div  class="pl-5 pt-4">
+        <div  class="pl-5 pt-4" ng-show="0">
             <div class="d-inline-block">
                 <div class="d-inline-block">
                     <div class="mr-4" style="color: hsla(0, 0%, 50%, 1); font-size: small;">Contact Testing</div>
@@ -50,7 +50,7 @@
 
             
         </div>
-        <div  class="pl-3 pt-5 mt-4">
+        <div  class="pl-3 pt-1 mt-4">
             <span class="mr-4" style="color: hsla(0, 0%, 50%, 1); font-size: small;">Specificity</span>
             <span class="text-ignus mr-4">{{workflows.testing.specificity}}</span>
             <input type="range" id="specificitySlider" class="mr-3" min="0" max="100" step="1" ng-model="workflows.testing.specificity" style="max-width: 400px;"><br/>
@@ -87,7 +87,9 @@
                 
                 <div class="mt-2">
                     <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(nodeName, nodeDisplayed) in workflows.testing.chart.nodesDisplayed" style="{{ nodeDisplayed ? 'background-color: hsla(var(--themeColorHue), 70%, 40%, 1);' : ''}};" ng-click="workflows.testing.chart.nodesDisplayed[nodeName] = !nodeDisplayed; workflows.testing.chart.render(); workflows.testing.chartForStates.render();" ng-show="networkGraph.nodes[nodeName] != undefined">
-                        {{networkGraph.nodes[nodeName].editableName}}</button>
+                        {{networkGraph.nodes[nodeName].editableName}} 
+                        <font class="ml-2" style="color: hsla(0, 0%, 100%, 0.3); font-size: smaller;">#{{networkGraph.nodes[nodeName].nodeNumber}}</font>
+                    </button>
                 </div>
                 <div id="testingResponseHolder" class="text-ignus mt-4" style="position: relative; {{dimensions.width < 800 ? '':'max-width: 1100px;'}}">
                     

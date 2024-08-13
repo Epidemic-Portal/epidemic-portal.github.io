@@ -68,7 +68,9 @@
                 
                 <div class="mt-2">
                     <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(nodeName, nodeDisplayed) in workflows.learningPrediction.chart.nodesDisplayed" style="{{ nodeDisplayed ? 'background-color: hsla(var(--themeColorHue), 70%, 40%, 1);' : ''}};" ng-click="workflows.learningPrediction.chart.nodesDisplayed[nodeName] = !nodeDisplayed; workflows.learningPrediction.chart.render(); workflows.learningPrediction.chartForStates.render();" ng-show="networkGraph.nodes[nodeName] != undefined">
-                        {{networkGraph.nodes[nodeName].editableName}}</button>
+                        {{networkGraph.nodes[nodeName].editableName}} 
+                        <font class="ml-2" style="color: hsla(0, 0%, 100%, 0.3); font-size: smaller;">#{{networkGraph.nodes[nodeName].nodeNumber}}</font>
+                    </button>
                 </div>
                 <div id="learningPredictionResponseHolder" class="text-ignus mt-4" style="position: relative; {{dimensions.width < 800 ? '':'max-width: 1100px;'}}">
                     

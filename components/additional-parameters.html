@@ -17,9 +17,11 @@
 
         <div class="mt-4">
             <!-- <b class="text-ignus" style="color: grey;">Starting Node</b> -->
-            <span class="form-label-ignus mr-4">Starting Node</span>
-            <select class="select-underlined-ignus mr-3 select-dropdowns" ng-model="simulation.startingNode" ng-options="nodeKey as node.editableName for (nodeKey, node) in networkGraph.nodes" ng-change="networkGraph.render()">
-                <option ng-repeat="(nodeKey, node) in networkGraph.nodes" value="{{nodeKey}}">{{node.editableName}}</option>
+            <span class="form-label-ignus mr-4">Starting Node 23</span>
+            <select class="select-underlined-ignus mr-3 select-dropdowns" ng-model="simulation.startingNode" ng-options="nodeKey as (node.editableName + ' #' +  node.nodeNumber) for (nodeKey, node) in networkGraph.nodes" ng-change="networkGraph.render()">
+                <option ng-repeat="(nodeKey, node) in networkGraph.nodes" value="{{nodeKey}}">
+                    {{node.editableName }}
+                </option>
             </select>
             <span class="text-ignus" style="color: grey;">
                 The node at which the <span style="color: var(--infectionRed);">infection</span> begins.
@@ -38,7 +40,7 @@
             <div class="mt-2"></div>
             <span class="form-label-ignus mr-4">Ending Time</span>
             <span class="text-ignus mr-4">{{simulation.endingTime}}</span>
-            <input type="range" id="endingTimeSlider" class="mr-3" min="{{simulation.startingTime + 1}}" max="100" step="1" ng-model="simulation.endingTime"><br/>
+            <input type="range" id="endingTimeSlider" class="mr-3" min="{{simulation.startingTime > 80 ? simulation.startingTime + 1:80}}" max="200" step="1" ng-model="simulation.endingTime"><br/>
         </div>
     </div>
 

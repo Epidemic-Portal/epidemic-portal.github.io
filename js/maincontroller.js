@@ -315,7 +315,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     
-    $scope.appName = "Epidemic Portal";
+    $scope.appName = "Interactive Epidemic Portal";
 
 
 
@@ -338,8 +338,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.loadApp = function() {
 
         $scope.text = {
-            heading: "Epidemic Simulation",
-            subheading: "By IITK and Purdue University, and some more information that good if it's two lines.",
+            heading: "Interactive Epidemic Portal",
+            subheading: "By IIT Kharagpur, India and Purdue University, USA, supported by National Science Foundation, USA and Department of Science and Technology, India via IDEAS Technology Innovation Hub.",
     
         }
         
@@ -520,6 +520,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         for (nodeID in $scope.networkGraph.nodes) {
             node = $scope.networkGraph.nodes[nodeID]
             viewX.removeCircle("main-graph", "node-" + nodeID)
+            viewX.removeText("main-graph", "nodeNumber-" + nodeID)
         }
 
         for (edgeID in $scope.networkGraph.edge.edges) {
@@ -597,12 +598,15 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 saturationForNode = $scope.networkGraph.nodeColoring()
                 nodeOptions = {x: node.x, y: node.y, radius: 0.03, stroke: "transparent", circlecolor: (epidemicApp.darkmode ? "hsla(var(--themeColorHue), " + saturationForNode + "%, 70%, 1)" : "hsla(var(--themeColorHue), " + saturationForNode + "%, 45%, 1)")}
                 viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
-    
-    
             }
+
+            nodeTextOptions = {x: node.x - 0.01, y: node.y - 0.01, textcolor: "hsla(100, 100%, 100%, 0.5)", text: " " + node.nodeNumber, fontSize: 2, fontFamily: 'Nunito', fontWeight: 'bold'}
+            viewX.addText("main-graph", "nodeNumber-" + node.id, nodeTextOptions)
 
             
             viewX.moveToTop("main-graph", "node-moving-knob-" + node.id)
+
+
         }
 
 
@@ -635,7 +639,12 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         funCityPick = funCityNames[Math.floor(Math.random() * funCityNames.length)]
 
         node.name = (nodeDetails.name == null ?  "Node " + $scope.networkGraph.nodesAdded : nodeDetails.name)
-        node.editableName = (nodeDetails.editableName == null ?  funCityPick + " "  + $scope.networkGraph.nodesAdded : nodeDetails.editableName)
+        
+        node.editableName = (nodeDetails.editableName == null ?  funCityPick : nodeDetails.editableName)
+
+        node.nodeNumber = $scope.networkGraph.nodesAdded
+
+        // node.editableName = (nodeDetails.editableName == null ?  funCityPick + " "  + $scope.networkGraph.nodesAdded : nodeDetails.editableName)
 
         node.displayInfo = (nodeDetails.displayInfo == null ?  "A Node in the graph" : nodeDetails.displayInfo)
         
@@ -1346,7 +1355,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
     }
     $scope.simulation.startingTime = 1
-    $scope.simulation.endingTime = 40
+    $scope.simulation.endingTime = 120
     $scope.simulation.percentageSusceptibleInStartingNode = 40
 
     $scope.simulation.startingNode = ""
@@ -2054,6 +2063,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 viewX.addCircle("main-graph", "node-" + node.id, nodeOptions)
             }
 
+            nodeTextOptions = {x: node.x - 0.01, y: node.y - 0.01, textcolor: "hsla(100, 100%, 100%, 0.8)", text: " " + node.nodeNumber, fontSize: 2, fontFamily: 'Nunito', fontWeight: 'bold'}
+            viewX.addText("main-graph", "nodeNumber-" + node.id, nodeTextOptions)
+
             
 
             
@@ -2693,7 +2705,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         epidemicApp.defaultChartOptions['xaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
 
         
-        epidemicApp.defaultChartOptions['yaxislabel'] = "States"
+        epidemicApp.defaultChartOptions['yaxislabel'] = "Inferred percentage of population."
         epidemicApp.defaultChartOptions['yaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
 
 
@@ -2801,7 +2813,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         textCasesElement.style.fontFamily = "Raleway"
         // textCasesElement.style.fontWeight = "bold"
         textCasesElement.style.color = "hsla(0, 0%, 30%, 1)"
-        textCasesElement.innerHTML = "States"
+        textCasesElement.innerHTML = "Inferred percentage of population."
         textCasesElement.style.transform = "rotate(-90deg)"
         document.getElementById("testingResponseHolder2").appendChild(textCasesElement)
 
@@ -2871,8 +2883,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         
     $scope.workflows.learningPrediction.timeWindow = {
-        'timeWindowStartSlider': 20,
-        'timeWindowEndSlider': 40
+        'timeWindowStartSlider': 10,
+        'timeWindowEndSlider': 30
     }
 
     $scope.workflows.learningPrediction.timeWindowSliderActive = {
@@ -2975,7 +2987,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             "percentageSusceptibleInStartingNode": $scope.simulation.percentageSusceptibleInStartingNode
         }
 
-        console.log($scope.workflows.learningPrediction.learningPredictionSimulation.sendData)
+        // console.log($scope.workflows.learningPrediction.learningPredictionSimulation.sendData)
 
         // dummyData 
 
@@ -3089,7 +3101,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                                         $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
                                     }
                                     
-                                    $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex])*100)
+                                    $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex]))
     
                                     // console.log(parseFloat(values[nodeIndex])*100)
                                     
@@ -3235,7 +3247,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         epidemicApp.defaultChartOptions['xaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
 
         
-        epidemicApp.defaultChartOptions['yaxislabel'] = "Cases over time"
+        epidemicApp.defaultChartOptions['yaxislabel'] = "Parameter Estimate "
         epidemicApp.defaultChartOptions['yaxislabelcolor'] = "hsla(0, 0%, 30%, 1)"
 
 
@@ -3285,6 +3297,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 
 
                 viewX.addPath("main-learningPred-graph", "main-learningPred-graph#" + series.node + "#type" + series.name, pathOptions)
+
+                console.log(series.name, $scope.networkGraph.nodes[series.node].parameters)
             }   
         }
 
@@ -3340,7 +3354,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         textCasesElement.style.fontFamily = "Raleway"
         // textCasesElement.style.fontWeight = "bold"
         textCasesElement.style.color = "hsla(0, 0%, 30%, 1)"
-        textCasesElement.innerHTML = "Number of Cases"
+        textCasesElement.innerHTML = "Parameter Estimate"
         textCasesElement.style.transform = "rotate(-90deg)"
         document.getElementById("learningPredictionResponseHolder").appendChild(textCasesElement)
 

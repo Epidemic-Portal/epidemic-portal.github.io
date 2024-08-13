@@ -91,6 +91,7 @@ main {
 
 .select-dropdowns {
     background: var(--generalBackground);
+    color: white;
 }
 
 .blurryBack {

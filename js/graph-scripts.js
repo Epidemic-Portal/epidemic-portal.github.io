@@ -213,3 +213,12 @@ function getUserDetails() {
         time: currentTime
     };
 }
+
+
+window.addEventListener("scroll", function() {
+    if (window.scrollY > window.innerHeight) {
+        document.getElementById('main-graph-holder').style.pointerEvents = "none"
+    } else {
+        document.getElementById('main-graph-holder').style.pointerEvents = "auto"
+    }
+})
