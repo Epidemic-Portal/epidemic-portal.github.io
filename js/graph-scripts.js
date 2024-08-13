@@ -154,7 +154,7 @@ epidemicApp.networkGraph.nodeMove = function() {
 
     console.log(currentPointDetails.x, currentPointDetails.y)
 
-    if (currentPointDetails.x < 1.1 && currentPointDetails.x > -0.2 && currentPointDetails.y < 1.02 && currentPointDetails.y > -0.04) {
+    if (currentPointDetails.x < 1.1 && currentPointDetails.x > -0.2 && currentPointDetails.y < 1.03 && currentPointDetails.y > -0.04) {
 
         angularScope = angular.element(document.getElementById('main-graph-holder')).scope()
         angularScope.networkGraph.nodes[pointKey].x = currentPointDetails.x
