@@ -1325,8 +1325,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         $scope.networkGraph.additionMenu.available = false;
 
         $scope.text = {
-            heading: "Epidemic Simulation",
-            subheading: "By IITK and Purdue University, and some more information that good if it's two lines.",
+            heading: "Interactive Epidemic Portal",
+            subheading: "By IIT Kharagpur, India and Purdue University, USA, supported by National Science Foundation, USA and Department of Science and Technology, India via IDEAS Technology Innovation Hub.",
     
         }
 
@@ -3074,6 +3074,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             ).then(function(data) {
                 $scope.workflows.learningPrediction.learningPredictionSimulation.response = data["result"]
 
+                // console.log($scope.workflows.learningPrediction.learningPredictionSimulation.response)
+
                 function cleanArrays(data) {
                     data.beta_hats = data.beta_hats.map(item => JSON.parse(item));
                     data.gamma_hats = data.gamma_hats.map(item => JSON.parse(item));
@@ -3129,7 +3131,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
                     variableName = $scope.workflows.learningPrediction.learningPredictionSimulation.responseVariableInterpretation[seriesName]
 
-                    console.log(variableName)
+                    // console.log(variableName)
                     
                     if (variableName == "Time") {
                         $scope.workflows.learningPrediction.chart.x = $scope.workflows.learningPrediction.learningPredictionSimulation.response[seriesName]
@@ -3419,7 +3421,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 fromNode = series.node
                 toNode = series.toNode
 
-                if ($scope.workflows.learningPrediction.chart.seriesProperties[series.name].displayed && $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeFrom == fromNode && $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeTo == toNode && $scope.networkGraph.edge.edges["from#" + fromNode + "to#" + toNode]) {
+                if ($scope.workflows.learningPrediction.chart.seriesProperties[series.name].displayed && $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeFrom == fromNode && $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeTo == toNode) {
                     pathOptions = {
                         points: [],
                     }
@@ -3442,8 +3444,15 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     // console.log($scope.networkGraph.edge.edges)
                     // console.log("from#" + fromNode + "to#" + toNode)
                     // console.log($scope.networkGraph.edge.edges["from#" + fromNode + "to#" + toNode])
+                    
+                    if ($scope.networkGraph.edge.edges["from#" + fromNode + "to#" + toNode] == undefined) {
+                        var edgeParameterBetaInCurrentNetwork = 0
+                    }
+                    else {
+                        var edgeParameterBetaInCurrentNetwork = $scope.networkGraph.edge.edges["from#" + fromNode + "to#" + toNode].parameters["betaParameter"].value
+                    }
 
-                    var edgeParameterBetaInCurrentNetwork = $scope.networkGraph.edge.edges["from#" + fromNode + "to#" + toNode].parameters["betaParameter"].value
+                    
 
 
                     // console.log(edgeParameterBetaInCurrentNetwork)
