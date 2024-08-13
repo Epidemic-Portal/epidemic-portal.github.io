@@ -1227,58 +1227,65 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
     $scope.networkGraph.fullGraphClickEvents = function($event) {
-        if ($event.target.id.search('knob') == -1 && $event.target.id.search('edgeLine') == -1) {
-            $scope.networkGraph.escapeEvent()
-        }
 
-        if ($event.target.id.search('edgeLine') != -1) {
-            $scope.networkGraph.edge.selectEdge($event.target.id.split("edgeLine-")[1])
-        }
-
-
-        if ($event.target.id.search('knob') != -1) {
-            if ($scope.networkGraph.edge.editContextStarted == false) {
+        if (window.scrollY < window.innerHeight - 100) {
+            if ($event.target.id.search('knob') == -1 && $event.target.id.search('edgeLine') == -1) {
                 $scope.networkGraph.escapeEvent()
-                $scope.networkGraph.selectNode($event.target.id.split("knob-")[1])
             }
-            else {
-                $scope.networkGraph.edge.selectNodeForEdgeCreation($event.target.id.split("knob-")[1])
+
+            if ($event.target.id.search('edgeLine') != -1) {
+                $scope.networkGraph.edge.selectEdge($event.target.id.split("edgeLine-")[1])
             }
-            
-            
+
+
+            if ($event.target.id.search('knob') != -1) {
+                if ($scope.networkGraph.edge.editContextStarted == false) {
+                    $scope.networkGraph.escapeEvent()
+                    $scope.networkGraph.selectNode($event.target.id.split("knob-")[1])
+                }
+                else {
+                    $scope.networkGraph.edge.selectNodeForEdgeCreation($event.target.id.split("knob-")[1])
+                }
+                
+                
+            }
         }
     }
 
     $scope.networkGraph.mouseMove = function($event) {
-        if ($scope.networkGraph.edge.editContextStarted) {
-            $scope.networkGraph.edge.unhighlight()
-            if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected == "") {
 
-                currentlyAt = viewX.cursorToGraph($event.clientX, $event.clientY, "main-graph")
-
-                if (viewX.distF([$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], currentlyAt) > 0.04) {
-                    viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], to: currentlyAt})
-
-                    viewX.updateCircle("main-graph", "addingEdgeLoop", {x: -10, y: -10, radius: 0.1})
-                }
-                else {
-                    viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20]})
-
-                    loopCreationDirection = [1, 1]
-                    constructionValues = $scope.networkGraph.edge.loopCreation([$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], loopCreationDirection)
-
-                    viewX.updateCircle("main-graph", "addingEdgeLoop", {x: constructionValues.center[0], y: constructionValues.center[1], radius: 0.1})
-                }
-                
-            }
-        }
-        else {
-            if ($event.target.id.search('edgeLine') != -1) {
+        // console.log(window.scrollY)
+        if (window.scrollY < window.innerHeight - 100) {
+            if ($scope.networkGraph.edge.editContextStarted) {
                 $scope.networkGraph.edge.unhighlight()
-                $scope.networkGraph.edge.highlight($event.target.id.split("edgeLine-")[1])
+                if ($scope.networkGraph.edge.edgeFirstPointSelected != "" && $scope.networkGraph.edge.edgeSecondPointSelected == "") {
+
+                    currentlyAt = viewX.cursorToGraph($event.clientX, $event.clientY, "main-graph")
+
+                    if (viewX.distF([$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], currentlyAt) > 0.04) {
+                        viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], to: currentlyAt})
+
+                        viewX.updateCircle("main-graph", "addingEdgeLoop", {x: -10, y: -10, radius: 0.1})
+                    }
+                    else {
+                        viewX.updateArrow("main-graph", "addingEdgeArrow", {from: [-10, -10], to: [-20, -20]})
+
+                        loopCreationDirection = [1, 1]
+                        constructionValues = $scope.networkGraph.edge.loopCreation([$scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].x, $scope.networkGraph.nodes[$scope.networkGraph.edge.edgeFirstPointSelected].y], loopCreationDirection)
+
+                        viewX.updateCircle("main-graph", "addingEdgeLoop", {x: constructionValues.center[0], y: constructionValues.center[1], radius: 0.1})
+                    }
+                    
+                }
             }
             else {
-                $scope.networkGraph.edge.unhighlight()
+                if ($event.target.id.search('edgeLine') != -1) {
+                    $scope.networkGraph.edge.unhighlight()
+                    $scope.networkGraph.edge.highlight($event.target.id.split("edgeLine-")[1])
+                }
+                else {
+                    $scope.networkGraph.edge.unhighlight()
+                }
             }
         }
 
@@ -1363,7 +1370,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.simulation.sendData = {}
 
     $scope.simulation.awaitingResponse = false
-    $scope.simulation.response = {}
+    $scope.simulation.response = null
 
     $scope.simulation.canPlot = false
 
