@@ -105,16 +105,46 @@
                     
                 </div>
 
-                <div class="mt-2 mb-5 text-center w-100" ng-show="length(workflows.learningPrediction.chart.nodesDisplayed) > 0" ng-init="workflows.learningPrediction.chart.selectProperty('Gamma')">
+                <div class="mt-2 mb-1 text-center w-100" ng-show="length(workflows.learningPrediction.chart.nodesDisplayed) > 0" ng-init="workflows.learningPrediction.chart.selectProperty('Gamma')">
                     <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(seriesPropertyKey, property) in workflows.learningPrediction.chart.seriesProperties" style="{{ property.displayed ? 'background-color:' + property.buttonColor : ''}};" ng-click="workflows.learningPrediction.chart.selectProperty(seriesPropertyKey); workflows.learningPrediction.chart.render();">
                         {{workflows.learningPrediction.chart.propertyToActualName[seriesPropertyKey]}}</button>
                 </div>
 
-                <div class="mt-2 mb-5 text-center w-100" ng-show="length(workflows.learningPrediction.chart.nodesDisplayed) > 0" style="color: grey; font-size: small;">
+                <div class="mt-1 mb-5 text-center w-100" ng-show="length(workflows.learningPrediction.chart.nodesDisplayed) > 0" style="color: grey; font-size: small;">
                     Dotted lines represent the value that given as input in the graph above.
                  </div>
 
 
+
+
+                 
+                 <div class="mt-5">
+
+                    <div class="pt-1 pb-1 text-ignus" style="color: grey;" ng-show="length(workflows.learningPrediction.chart.nodesDisplayed) > 0">The predicted states for nodes </div>
+
+
+                    <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(nodeName, nodeDisplayed) in workflows.learningPrediction.chart.nodesDisplayed" style="{{ nodeDisplayed ? 'background-color: hsla(var(--themeColorHue), 70%, 40%, 1);' : ''}};" ng-click="workflows.learningPrediction.chart.nodesDisplayed[nodeName] = !nodeDisplayed; workflows.learningPrediction.chart.render(); workflows.learningPrediction.chartForStates.render();" ng-show="networkGraph.nodes[nodeName] != undefined">
+                        {{networkGraph.nodes[nodeName].editableName}} 
+                        <font class="ml-2" style="color: hsla(0, 0%, 100%, 0.3); font-size: smaller;">#{{networkGraph.nodes[nodeName].nodeNumber}}</font>
+                    </button>
+                </div>
+                <div id="learningPredictionResponseHolder2" class="text-ignus mt-4" style="position: relative; {{dimensions.width < 800 ? '':'max-width: 1100px;'}}">
+                    
+                    <div id="learningPredictionStates-chart-main" class="w-100" style="min-height: 80vh; " ng-mousemove="workflows.learningPrediction.chartForStates.mouseMove($event)" ng-mouseleave="workflows.learningPrediction.chartForStates.mouseLeave($event)">
+        
+                    </div>
+
+                    
+                </div>
+
+                <div class="mt-2 mb-1 text-center w-100" ng-show="length(workflows.learningPrediction.chart.nodesDisplayed) > 0">
+                    <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-3 pr-3 pt-2 pb-2" ng-repeat="(seriesPropertyKey, property) in workflows.learningPrediction.chartForStates.seriesProperties" style="{{ property.displayed ? 'background-color:' + property.buttonColor : ''}};" ng-click="workflows.learningPrediction.chartForStates.seriesProperties[seriesPropertyKey].displayed = !property.displayed; workflows.learningPrediction.chartForStates.render();">
+                        {{seriesPropertyKey}}</button>
+                </div>
+
+                <!-- <div class="mt-1 mb-5 text-center w-100" ng-show="length(workflows.learningPrediction.chartForStates.nodesDisplayed) > 0" style="color: grey; font-size: small;">
+                    Dotted lines represent the value that given as input in the graph above.
+                 </div> -->
 
                 <!-- <div id="testingResponseHolder2" class="text-ignus mt-4" style="position: relative; {{dimensions.width < 800 ? '':'max-width: 1100px;'}}">
                     
