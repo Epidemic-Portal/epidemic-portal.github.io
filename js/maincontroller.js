@@ -3090,7 +3090,6 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 
                 $scope.workflows.learningPrediction.learningPredictionSimulation.response = cleanArrays($scope.workflows.learningPrediction.learningPredictionSimulation.response);
 
-                console.log($scope.workflows.learningPrediction.learningPredictionSimulation.response)
                 
 
 
@@ -3108,6 +3107,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
                 nodeIDs = Object.keys($scope.networkGraph.nodes)
+                edgeIDs = Object.keys($scope.networkGraph.edge.edges)
+                // console.log($scope.networkGraph)
 
                 for (var nodeID in $scope.networkGraph.nodes) {
                     $scope.workflows.learningPrediction.chart.nodesDisplayed[nodeID] = false
@@ -3139,29 +3140,56 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
                         
                         if (variableName.search("Gamma") != -1 || variableName.search("Beta") != -1) {
-                            for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
-                            
-                                // valuesString = seriesData[timeIndex]
-                                // // parsing [4, 56, 67, 67]
-    
-                                // valuesString = valuesString.substring(1, valuesString.length - 1)
-                                // // parsing 4, 56, 67, 67
-                                // values = valuesString.split(", ")
+
+                            if (variableName.search("Beta") != -1) {
+                                for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
                                 
-                                values = seriesData[timeIndex]
-                                // console.log(values)
-                                for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
-                                    if ($scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
-                                        $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                                    
+                                    values = seriesData[timeIndex]
+                                    // console.log(values)
+                                    for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
+                                        var nodeConnections = values[nodeIndex]
+                                        for (toNodeIndex = 0; toNodeIndex < nodeConnections.length; toNodeIndex++) {
+                                            toNodeID = nodeIDs[toNodeIndex]
+                                            if ($scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex] + "#" + toNodeID] == undefined) {
+                                                $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex] + "#" + toNodeID] = {name: variableName, data: [], node: nodeIDs[nodeIndex], toNode: toNodeID}
+                                            }
+                                            
+                                            $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex] + "#" + toNodeID].data.push(parseFloat(nodeConnections[toNodeIndex]))
+                                        }
+        
+                                        // console.log(parseFloat(values[nodeIndex])*100)
+                                        
+        
                                     }
                                     
-                                    $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex]))
-    
-                                    // console.log(parseFloat(values[nodeIndex])*100)
-                                    
-    
                                 }
+                            }
+                            else {
+                                for (timeIndex = 0 ; timeIndex < seriesData.length; timeIndex++) {
                                 
+                                    // valuesString = seriesData[timeIndex]
+                                    // // parsing [4, 56, 67, 67]
+        
+                                    // valuesString = valuesString.substring(1, valuesString.length - 1)
+                                    // // parsing 4, 56, 67, 67
+                                    // values = valuesString.split(", ")
+                                    
+                                    values = seriesData[timeIndex]
+                                    // console.log(values)
+                                    for (nodeIndex = 0; nodeIndex < values.length; nodeIndex++) {
+                                        if ($scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]] == undefined) {
+                                            $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]] = {name: variableName, data: [], node: nodeIDs[nodeIndex]}
+                                        }
+                                        
+                                        $scope.workflows.learningPrediction.chart.series[variableName +"#" + nodeIDs[nodeIndex]].data.push(parseFloat(values[nodeIndex]))
+        
+                                        // console.log(parseFloat(values[nodeIndex])*100)
+                                        
+        
+                                    }
+                                    
+                                }
                             }
                         }
                         else {
@@ -3231,13 +3259,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.workflows.learningPrediction.chart.seriesProperties = {
         "Gamma": {
-            "color": "hsla(198, 100%, 80%, 1)",
-            "buttonColor": "hsla(198, 100%, 80%, 0.2)",
+            "color": "hsla(0, 100%, 80%, 1)",
+            "buttonColor": "hsla(0, 100%, 80%, 0.2)",
             "displayed": false
         },
         "Beta": {
-            "color": "hsla(0, 100%, 80%, 1)",
-            "buttonColor": "hsla(0, 100%, 80%, 0.2)",
+            "color": "hsla(198, 100%, 80%, 1)",
+            "buttonColor": "hsla(198, 100%, 80%, 0.2)",
             "displayed": true
         },
         // "Cumulative Removed": {
@@ -3246,6 +3274,29 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         //     "displayed": false
         // }
     }
+
+    $scope.workflows.learningPrediction.chart.currentlyDisplayedProperty = "Gamma"
+
+    $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeFrom = null
+    $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeTo = null
+
+    $scope.workflows.learningPrediction.chart.selectProperty = function(property) {
+        $scope.workflows.learningPrediction.chart.currentlyDisplayedProperty = property
+
+        // iterate through workflows.learningPrediction.chart.seriesProperties[seriesPropertyKey]
+
+        for (var seriesPropertyKey in $scope.workflows.learningPrediction.chart.seriesProperties) {
+            $scope.workflows.learningPrediction.chart.seriesProperties[seriesPropertyKey].displayed = false
+        }
+
+        $scope.workflows.learningPrediction.chart.seriesProperties[property].displayed = true
+    }
+
+    $scope.workflows.learningPrediction.chart.propertyToActualName = {
+        "Beta": "Infection Rates (Beta)",
+        "Gamma": "Recovery Rates (Gamma)",
+    }
+
 
     $scope.workflows.learningPrediction.chart.remove = function() {
         viewX.removeGraph("main-learningPred-graph")
@@ -3279,18 +3330,45 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         for (var seriesName in $scope.workflows.learningPrediction.chart.series) {
             series = $scope.workflows.learningPrediction.chart.series[seriesName]
             $scope.workflows.learningPrediction.chart.maxValues[series.name] = Math.max(...series.data)
-            console.log(series.name)
-            if ($scope.workflows.learningPrediction.chart.seriesProperties[series.name].displayed && $scope.workflows.learningPrediction.chart.nodesDisplayed[series.node]) {
-                maxValue = Math.max(...series.data)
-                if (maxValue > maxYvalue) {
-                    maxYvalue = maxValue
-                    $scope.workflows.learningPrediction.chart.nodeWithHighestValueForInfected = series.node
+            // console.log(series.name)
+
+            if (seriesName.search("Beta") != -1) {
+
+                fromNode = series.node
+                toNode = series.toNode
+                
+
+                if ($scope.workflows.learningPrediction.chart.seriesProperties[series.name].displayed && $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeFrom == fromNode && $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeTo == toNode) {
+                    maxValue = Math.max(...series.data)
+                    if (maxValue > maxYvalue) {
+                        maxYvalue = maxValue
+                        $scope.workflows.learningPrediction.chart.nodeWithHighestValueForInfected = series.toNode
+                    }
                 }
-            }   
+            }
+            else {
+                if ($scope.workflows.learningPrediction.chart.seriesProperties[series.name].displayed && $scope.workflows.learningPrediction.chart.nodesDisplayed[series.node]) {
+                    maxValue = Math.max(...series.data)
+                    if (maxValue > maxYvalue) {
+                        maxYvalue = maxValue
+                        $scope.workflows.learningPrediction.chart.nodeWithHighestValueForInfected = series.node
+                    }
+                }   
+            }
+            
         }
 
         $scope.workflows.learningPrediction.chart.currentYMax = maxYvalue
         $scope.workflows.learningPrediction.chart.currentXMax = $scope.simulation.endingTime
+
+        // random pick 1 node 
+        if ($scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeFrom == null) {
+            $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeFrom = Object.keys($scope.networkGraph.nodes)[Math.floor(Math.random() * Object.keys($scope.networkGraph.nodes).length)]
+        }
+
+        if ($scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeTo == null) {
+            $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeTo = Object.keys($scope.networkGraph.nodes)[Math.floor(Math.random() * Object.keys($scope.networkGraph.nodes).length)]
+        }
 
         epidemicApp.defaultChartOptions['ymax'] = maxYvalue
         epidemicApp.defaultChartOptions['ymin'] = (-0.04)*maxYvalue
@@ -3335,25 +3413,78 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         for (var seriesName in $scope.workflows.learningPrediction.chart.series) {
             series = $scope.workflows.learningPrediction.chart.series[seriesName]
-            if ($scope.workflows.learningPrediction.chart.seriesProperties[series.name].displayed && $scope.workflows.learningPrediction.chart.nodesDisplayed[series.node]) {
-                pathOptions = {
-                    points: [],
+
+            if (seriesName.search("Beta") != -1) {
+
+                fromNode = series.node
+                toNode = series.toNode
+
+                if ($scope.workflows.learningPrediction.chart.seriesProperties[series.name].displayed && $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeFrom == fromNode && $scope.workflows.learningPrediction.chart.currentlySelectedDisplayEdgeTo == toNode && $scope.networkGraph.edge.edges["from#" + fromNode + "to#" + toNode]) {
+                    pathOptions = {
+                        points: [],
+                    }
+    
+                    for (var pointIndex = 0; pointIndex < series.data.length; pointIndex++) {
+                        pathOptions.points.push([$scope.workflows.learningPrediction.chart.x[pointIndex], series.data[pointIndex]])
+                    }
+    
+                    pathOptions.pathcolor = $scope.workflows.learningPrediction.chart.seriesProperties[series.name].color
+                    pathOptions.strokewidth = 0.4
+                    
+    
+                    viewX.addPath("main-learningPred-graph", "main-learningPred-graph#" + series.node + "#" + series.toNode + "#type" + series.name, pathOptions)
+
+
+                    pathOptions = {
+                        points: [],
+                    }
+
+                    // console.log($scope.networkGraph.edge.edges)
+                    // console.log("from#" + fromNode + "to#" + toNode)
+                    // console.log($scope.networkGraph.edge.edges["from#" + fromNode + "to#" + toNode])
+
+                    var edgeParameterBetaInCurrentNetwork = $scope.networkGraph.edge.edges["from#" + fromNode + "to#" + toNode].parameters["betaParameter"].value
+
+
+                    // console.log(edgeParameterBetaInCurrentNetwork)
+                    for (var pointIndex = 0; pointIndex < series.data.length; pointIndex++) {
+                        pathOptions.points.push([$scope.workflows.learningPrediction.chart.x[pointIndex], edgeParameterBetaInCurrentNetwork])
+                    }
+
+                    pathOptions.pathcolor = $scope.workflows.learningPrediction.chart.seriesProperties[series.name].color
+                    pathOptions.strokewidth = 0.2
+                    pathOptions.strokedasharray = "2, 1"
+                    pathOptions.opacity = 0.4
+
+                    viewX.addPath("main-learningPred-graph", "main-learningPredDotted-graph#" + series.node + "#" + series.toNode + "#type" + series.name + "EdgeParameter", pathOptions)
+    
+                    // console.log(series.name, $scope.networkGraph.nodes[series.node].parameters)
                 }
+            }
 
-                for (var pointIndex = 0; pointIndex < series.data.length; pointIndex++) {
-                    pathOptions.points.push([$scope.workflows.learningPrediction.chart.x[pointIndex], series.data[pointIndex]])
-                }
+            else {
+                if ($scope.workflows.learningPrediction.chart.seriesProperties[series.name].displayed && $scope.workflows.learningPrediction.chart.nodesDisplayed[series.node]) {
+                    pathOptions = {
+                        points: [],
+                    }
+    
+                    for (var pointIndex = 0; pointIndex < series.data.length; pointIndex++) {
+                        pathOptions.points.push([$scope.workflows.learningPrediction.chart.x[pointIndex], series.data[pointIndex]])
+                    }
+    
+    
+    
+                    pathOptions.pathcolor = $scope.workflows.learningPrediction.chart.seriesProperties[series.name].color
+                    pathOptions.strokewidth = 0.4
+                    
+    
+                    viewX.addPath("main-learningPred-graph", "main-learningPred-graph#" + series.node + "#type" + series.name, pathOptions)
+    
+                    // console.log(series.name, $scope.networkGraph.nodes[series.node].parameters)
+                }   
+            }
 
-
-
-                pathOptions.pathcolor = $scope.workflows.learningPrediction.chart.seriesProperties[series.name].color
-                pathOptions.strokewidth = 0.4
-                
-
-                viewX.addPath("main-learningPred-graph", "main-learningPred-graph#" + series.node + "#type" + series.name, pathOptions)
-
-                console.log(series.name, $scope.networkGraph.nodes[series.node].parameters)
-            }   
+           
         }
 
         // xAxisLineOptions = {
