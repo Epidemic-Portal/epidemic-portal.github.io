@@ -29,8 +29,8 @@
                 </div>
             </div>
         </div>
-        <div class="ml-3">
-            <div class="d-inline-block" style="font-size: 0; position: relative;" ng-mouseup="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)" ng-mouseleave="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)">
+        <div class="ml-3 p-4" ng-mousemove="workflows.learningPrediction.timeWindowSliderEventHandler($event)" >
+            <div class="d-inline-block" style="font-size: 0; position: relative;" ng-mouseup="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)" >
                 <div style="width: 16px; height: 16px; position: absolute; background: hsla(var(--secondaryColorHue), 40%, 90%, 1); z-index: 1; border-radius: 50%; cursor: ew-resize;left: {{(workflows.learningPrediction.timeWindow.timeWindowStartSlider/100)*400}}px;" id="timeWindowStartSliderKnob" ng-mousemove="workflows.learningPrediction.timeWindowSliderEventHandler($event)" ng-mousedown="workflows.learningPrediction.timeWindowSliderDownEventHandler($event)" ng-mouseup="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)"></div>
 
                 <div style="width: 16px; height: 16px; position: absolute; background: hsla(var(--secondaryColorHue), 40%, 90%, 1);; z-index: 1; border-radius: 50%; cursor: ew-resize; left: {{((workflows.learningPrediction.timeWindow.timeWindowEndSlider + workflows.learningPrediction.timeWindow.timeWindowStartSlider)/100)*400}}px;" id="timeWindowEndSliderKnob" ng-mousemove="workflows.learningPrediction.timeWindowSliderEventHandler($event)" ng-mousedown="workflows.learningPrediction.timeWindowSliderDownEventHandler($event)" ng-mouseup="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)"></div>

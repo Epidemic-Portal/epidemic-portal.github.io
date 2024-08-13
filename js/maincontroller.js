@@ -3481,6 +3481,28 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     viewX.addPath("main-learningPred-graph", "main-learningPred-graph#" + series.node + "#type" + series.name, pathOptions)
     
                     // console.log(series.name, $scope.networkGraph.nodes[series.node].parameters)
+
+
+                    pathOptions = {
+                        points: [],
+                    }
+
+                    // console.log($scope.networkGraph.nodes[series.node])
+
+                    var nodeParameterGammaInCurrentNetwork = $scope.networkGraph.nodes[series.node].parameters["recoveryRate"].value
+                    
+
+                    for (var pointIndex = 0; pointIndex < series.data.length; pointIndex++) {
+                        pathOptions.points.push([$scope.workflows.learningPrediction.chart.x[pointIndex], nodeParameterGammaInCurrentNetwork])
+                    }
+
+                    pathOptions.pathcolor = $scope.workflows.learningPrediction.chart.seriesProperties[series.name].color
+                    pathOptions.strokewidth = 0.2
+                    pathOptions.strokedasharray = "2, 1"
+                    pathOptions.opacity = 0.4
+
+                    viewX.addPath("main-learningPred-graph", "main-learningPredDotted-graph#" + series.node + "#type" + series.name + "NodeParameter", pathOptions)
+
                 }   
             }
 
