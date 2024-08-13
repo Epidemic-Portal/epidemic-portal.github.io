@@ -142,6 +142,7 @@ setInterval(epidemicApp.updateDotsGraph, 50)
 
 epidemicApp.networkGraph = {}
 epidemicApp.networkGraph.nodeMove = function() {
+
     currentPointIdentity = viewX.reverseGraphElementMap[viewX.currentMovingPoint.id]
 
     graphName = currentPointIdentity[0]
@@ -151,15 +152,20 @@ epidemicApp.networkGraph.nodeMove = function() {
 
     pointKey = currentPointDetails.name.split("knob-")[1]
 
-    angularScope = angular.element(document.getElementById('main-graph-holder')).scope()
-    angularScope.networkGraph.nodes[pointKey].x = currentPointDetails.x
-    angularScope.networkGraph.nodes[pointKey].y = currentPointDetails.y
-    angularScope.networkGraph.unselectNode(pointKey)
-    // angularScope.networkGraph.selectedNode = ""
-    
-    angularScope.networkGraph.render()
-    // viewX.graphData["main-graph"]
-    angularScope.$apply()
+    console.log(currentPointDetails.x, currentPointDetails.y)
+
+    if (currentPointDetails.x < 1.1 && currentPointDetails.x > -0.2 && currentPointDetails.y < 1.02 && currentPointDetails.y > -0.04) {
+
+        angularScope = angular.element(document.getElementById('main-graph-holder')).scope()
+        angularScope.networkGraph.nodes[pointKey].x = currentPointDetails.x
+        angularScope.networkGraph.nodes[pointKey].y = currentPointDetails.y
+        angularScope.networkGraph.unselectNode(pointKey)
+        // angularScope.networkGraph.selectedNode = ""
+        
+        angularScope.networkGraph.render()
+        // viewX.graphData["main-graph"]
+        angularScope.$apply()
+    }
 }
 
 
