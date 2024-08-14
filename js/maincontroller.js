@@ -3122,8 +3122,22 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     data.beta_hats = data.beta_hats.map(item => JSON.parse(item));
                     data.gamma_hats = data.gamma_hats.map(item => JSON.parse(item));
                     data.tArray_pred = data.tArray_pred.map(item => parseInt(item));
-                    data.x_pred = data.x_pred.map(item => JSON.parse(item));
-                    data.r_pred = data.r_pred.map(item => JSON.parse(item));
+
+                    // handle if "[nan, nan, nan, nan, nan, nan]" for xpred and rpred
+                    data.x_pred = data.x_pred.map(item => {
+                        if (item.includes('nan')) {
+                            return item.replace(/nan/g, '0');
+                        }
+                        return JSON.parse(item);
+                    });
+                
+                    data.r_pred = data.r_pred.map(item => {
+                        if (item.includes('nan')) {
+                            return item.replace(/nan/g, '0');
+                        }
+                        return JSON.parse(item);
+                    });
+                
                     data.x_true = data.x_true.map(item => JSON.parse(item));
                     data.r_true = data.r_true.map(item => JSON.parse(item));
                     data.tArray = data.tArray.map(item => parseInt(item));
