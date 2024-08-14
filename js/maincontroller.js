@@ -2912,9 +2912,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
     $scope.workflows.learningPrediction.dataTypeChosen = "true"
 
     $scope.workflows.learningPrediction.dataType = {
-        "trueWithDx": {
-            "name": "True Data with Derivatives",
-        },
+        // "trueWithDx": {
+        //     "name": "True Data with Derivatives",
+        // },
         "true": {
             "name": "True Data",
         },
@@ -2939,7 +2939,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         
     $scope.workflows.learningPrediction.timeWindow = {
         'timeWindowStartSlider': 10,
-        'timeWindowEndSlider': 30
+        'timeWindowEndSlider': Math.min(60, $scope.simulation.endingTime - 2),
+        'timeWindowMax': $scope.simulation.endingTime
     }
 
     $scope.workflows.learningPrediction.timeWindowSliderActive = {
@@ -2988,6 +2989,37 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
             $scope.workflows.learningPrediction.timeWindow.timeWindowEndSlider = parseInt(valueToSet - $scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider)
         }
         
+    }
+
+
+    $scope.workflows.learningPrediction.timeWindowClickEventHandler = function($event) {
+        // console.log($event.target.id)
+        boundingRect = document.getElementById($event.target.id).getBoundingClientRect()
+
+        var xValue = ($event.clientX - boundingRect.left)/boundingRect.width
+
+        currentMidPointOfWindow = $scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider + $scope.workflows.learningPrediction.timeWindow.timeWindowEndSlider/2
+
+        midPointPercent = currentMidPointOfWindow/$scope.workflows.learningPrediction.timeWindow.timeWindowMax
+
+        if (xValue < midPointPercent) {
+            // we move the left side
+
+            $scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider = parseInt(xValue*$scope.workflows.learningPrediction.timeWindow.timeWindowMax)
+
+            if ($scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider < 0) {
+                $scope.workflows.learningPrediction.timeWindow.timeWindowStartSlider = 0
+            }
+        }
+        else {
+            // we move the right side
+
+            $scope.workflows.learningPrediction.timeWindow.timeWindowEndSlider = parseInt(xValue*$scope.workflows.learningPrediction.timeWindow.timeWindowMax)
+
+            if ($scope.workflows.learningPrediction.timeWindow.timeWindowEndSlider > $scope.workflows.learningPrediction.timeWindow.timeWindowMax) {
+                $scope.workflows.learningPrediction.timeWindow.timeWindowEndSlider = $scope.workflows.learningPrediction.timeWindow.timeWindowMax
+            }
+        }
     }
 
 

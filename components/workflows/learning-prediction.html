@@ -14,10 +14,10 @@
                 <button class="btn-ignus sub-addition-button interface-button ml-0 mr-3 pl-4 pr-4 pt-2 pb-2" ng-repeat="(algoName, algo) in workflows.learningPrediction.algo" style="{{ workflows.learningPrediction.algoChosen == algoName ? 'background-color: hsla(var(--themeColorHue), 20%, 50%, 0.5);' : ''}};" ng-click="workflows.learningPrediction.algoChosen = algoName">{{algo.name}}</button>
             </span>
         </div>
-        <div  class="pl-3 mt-4">
+        <div  class="pl-3 mt-4" ng-show="0">
             <span style="color: hsla(0, 0%, 50%, 1); font-size: small;">Prediction Time Window</span>
         </div>
-        <div  class="pl-3 mt-1">
+        <div  class="pl-3 mt-1"  ng-show="0">
             <div class="d-inline-block">
                 <div class="d-inline-block">
                     <div class="mr-4" style="color: hsla(0, 0%, 50%, 1); font-size: small;">Start on</div>
@@ -29,7 +29,31 @@
                 </div>
             </div>
         </div>
-        <div class="ml-3 p-4" ng-mousemove="workflows.learningPrediction.timeWindowSliderEventHandler($event)" >
+
+        <!-- Google Home inspired slider test -->
+        <div  class="pl-3 mt-4">
+            <div class="d-inline-block position-relative">
+                <div class="position-absolute pl-4 pr-4 pt-2 pb-2" style="width: 100%; height: 100%; background: hsla(var(--secondaryColorHue), 30%, 70%, 0.3); border-radius: 20px; cursor: pointer;" ng-click="workflows.learningPrediction.timeWindowClickEventHandler($event)" id="timeWindow-learningPrediction-sliderBackground-part">
+                    
+                </div>
+                <div class="position-absolute" style="left: {{workflows.learningPrediction.timeWindow.timeWindowStartSlider*100/workflows.learningPrediction.timeWindow.timeWindowMax}}%; width: {{(workflows.learningPrediction.timeWindow.timeWindowEndSlider - workflows.learningPrediction.timeWindow.timeWindowStartSlider)*100/workflows.learningPrediction.timeWindow.timeWindowMax}}%; height: 100%; background: hsla(var(--secondaryColorHue), 30%, 50%, 0.8); pointer-events: none;  border-radius: 20px; cursor: ew-resize;"  ng-click="workflows.learningPrediction.timeWindowClickEventHandler($event)" id="timeWindow-learningPrediction-slider-part"></div>
+                <div class="pl-4 pr-4 pt-2 pb-2" style="z-index: 5; position: relative; pointer-events: none;">
+                    <span style="color: hsla(0, 0%, 100%, 1); font-size: small;">Prediction Time Window</span>
+                    <div class="d-flex justify-content-center">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <div class="mr-2" style="color: hsla(0, 0%, 70%, 1); font-size: small;">Start on</div>
+                            <div class="text-ignus mr-4" style="color: hsla(var(--secondaryColorHue), 60%, 80%, 1);"> {{workflows.learningPrediction.timeWindow.timeWindowStartSlider}}{{numberSuffix(workflows.learningPrediction.timeWindow.timeWindowStartSlider)}} day </div>
+                        </div>
+                        <div class="d-flex justify-content-end align-items-center ml-5 pl-5">
+                            <div class="mr-2 text-right" style="color: hsla(0, 0%, 70%, 1); font-size: small;">End on</div>
+                            <div class="text-ignus mr-4 text-right" style="color: hsla(var(--secondaryColorHue), 60%, 80%, 1);">{{workflows.learningPrediction.timeWindow.timeWindowEndSlider}}{{numberSuffix(workflows.learningPrediction.timeWindow.timeWindowEndSlider)}} day </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ml-3 p-4" ng-mousemove="workflows.learningPrediction.timeWindowSliderEventHandler($event)"   ng-show="0">
             <div class="d-inline-block" style="font-size: 0; position: relative;" ng-mouseup="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)" >
                 <div style="width: 16px; height: 16px; position: absolute; background: hsla(var(--secondaryColorHue), 40%, 90%, 1); z-index: 1; border-radius: 50%; cursor: ew-resize;left: {{(workflows.learningPrediction.timeWindow.timeWindowStartSlider/100)*400}}px;" id="timeWindowStartSliderKnob" ng-mousemove="workflows.learningPrediction.timeWindowSliderEventHandler($event)" ng-mousedown="workflows.learningPrediction.timeWindowSliderDownEventHandler($event)" ng-mouseup="workflows.learningPrediction.timeWindowSliderUpEventHandler($event)"></div>
 
