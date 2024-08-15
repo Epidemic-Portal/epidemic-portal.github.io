@@ -930,8 +930,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
 
             edgeID = "from#" + fromNode + "to#" + toNode
-            reverseEdgeID = "from#" + toNode  + "to#" + fromNode
-            if ($scope.networkGraph.edge.edges[edgeID] == undefined && $scope.networkGraph.edge.edges[reverseEdgeID] == undefined) {
+            // reverseEdgeID = "from#" + toNode  + "to#" + fromNode
+            if ($scope.networkGraph.edge.edges[edgeID] == undefined) {
                 $scope.networkGraph.edge.edges[edgeID] = {
                     from: fromNode,
                     to: toNode
@@ -959,7 +959,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 
 
                 $scope.networkGraph.nodes[fromNode].edges.leaving[toNode] = edgeID
-                $scope.networkGraph.nodes[toNode].edges.arriving[fromNode] = edgeID
+                // $scope.networkGraph.nodes[toNode].edges.arriving[fromNode] = edgeID
 
                 $scope.networkGraph.render()
             }
@@ -1414,13 +1414,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     }
 
                     edgeID = "from#" + node1 + "to#" + node2
-                    reverseEdgeID = "from#" + node2 + "to#" + node1
+                    // reverseEdgeID = "from#" + node2 + "to#" + node1
 
                     edge = $scope.networkGraph.edge.edges[edgeID]
 
                     if (edge != undefined) {
                         $scope.simulation.sendData.edgeParameters[parameterName][otherNodeIndex + "-" + nodeIndex] = edge.parameters[parameter].value
-                        $scope.simulation.sendData.edgeParameters[parameterName][nodeIndex + "-" + otherNodeIndex] = edge.parameters[parameter].value
+                        // $scope.simulation.sendData.edgeParameters[parameterName][nodeIndex + "-" + otherNodeIndex] = edge.parameters[parameter].value
                     }
                     else {
                         $scope.simulation.sendData.edgeParameters[parameterName][otherNodeIndex + "-" + nodeIndex] = 0
