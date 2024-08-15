@@ -454,7 +454,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
     $scope.networkGraph.edgeParameters = {
         "betaParameter": {
-            default: 0.8,
+            default: 0.2,
             min: 0,
             max: 1,
             step: 0.01,
