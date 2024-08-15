@@ -1362,7 +1362,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         }
     }
     $scope.simulation.startingTime = 1
-    $scope.simulation.endingTime = 120
+    $scope.simulation.endingTime = 250
     $scope.simulation.percentageSusceptibleInStartingNode = 90
 
     $scope.simulation.startingNode = ""
