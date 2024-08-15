@@ -2938,8 +2938,8 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
 
         
     $scope.workflows.learningPrediction.timeWindow = {
-        'timeWindowStartSlider': 10,
-        'timeWindowEndSlider': Math.min(60, $scope.simulation.endingTime - 2),
+        'timeWindowStartSlider': 70,
+        'timeWindowEndSlider': Math.min(150, $scope.simulation.endingTime - 2),
         'timeWindowMax': $scope.simulation.endingTime
     }
 
