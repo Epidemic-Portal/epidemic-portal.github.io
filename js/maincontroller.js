@@ -1414,9 +1414,13 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                     }
 
                     edgeID = "from#" + node1 + "to#" + node2
+                    reverseEdgeID = "from#" + node2 + "to#" + node1
+
                     edge = $scope.networkGraph.edge.edges[edgeID]
+
                     if (edge != undefined) {
                         $scope.simulation.sendData.edgeParameters[parameterName][otherNodeIndex + "-" + nodeIndex] = edge.parameters[parameter].value
+                        $scope.simulation.sendData.edgeParameters[parameterName][nodeIndex + "-" + otherNodeIndex] = edge.parameters[parameter].value
                     }
                     else {
                         $scope.simulation.sendData.edgeParameters[parameterName][otherNodeIndex + "-" + nodeIndex] = 0
@@ -1426,6 +1430,9 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 
             }
         }
+
+
+        console.log($scope.simulation.sendData.edgeParameters)
 
     }
 
