@@ -551,6 +551,30 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
                 firstNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].from]
                 secondNode = $scope.networkGraph.nodes[$scope.networkGraph.edge.edges[edgeID].to]
 
+                // newFirstNodeLocation = [firstNode.x, firstNode.y]
+                // newSecondNodeLocation = [secondNode.x, secondNode.y]
+
+                // directionVec = viewX.subtractVec(newSecondNodeLocation, newFirstNodeLocation)
+                // // rotation matrix for 90 deg 
+                // rotationMatrix = [[0, -1], [1, 0]]
+
+                // // rotate the direction vector by 90 deg
+                // rotatedDirectionVec = [directionVec[0]*rotationMatrix[0][0] + directionVec[1]*rotationMatrix[0][1], directionVec[0]*rotationMatrix[1][0] + directionVec[1]*rotationMatrix[1][1]]
+
+                // // unit vector the rotated direction vector
+
+                // unitRotatedDirectionVec = viewX.unitVec(rotatedDirectionVec)
+
+                // smallDelta = 0.013
+
+                // smallVector = viewX.scalarMultiplyVec(smallDelta, unitRotatedDirectionVec)
+
+                // firstNode.x = firstNode.x + smallVector[0]
+                // firstNode.y = firstNode.y + smallVector[1]
+
+                // secondNode.x = secondNode.x + smallVector[0]
+                // secondNode.y = secondNode.y + smallVector[1]
+
 
                 midPoint = viewX.scalarMultiplyVec(0.5, viewX.addVec([firstNode.x, firstNode.y], [secondNode.x, secondNode.y]))
                 edgeArrowOptions = {from: [firstNode.x, firstNode.y], to: midPoint, stroke: "transparent", arrowcolor: "hsla(var(--themeColorHue), " + plottingParameterAsSaturation + "%, 40%, 1)", strokewidth: 0.5}
@@ -634,7 +658,7 @@ app.controller('theMainController', ['$scope','$routeParams', '$timeout', '$inte
         node.x = (nodeDetails.x == null ?  Math.random() : nodeDetails.x)
         node.y = (nodeDetails.y == null ?Math.random() : nodeDetails.y)
 
-        funCityNames = ['Gotham City', 'Metropolis', 'London', 'New York', 'Paris', 'Tokyo', 'Moscow', 'Berlin', 'Rome', 'Athens', 'Cairo', 'Mumbai', 'Beijing', 'Sydney', 'Rio de Janeiro', 'Cape Town', 'Lagos', 'Mexico City', 'Los Angeles', 'Toronto', 'Chicago', 'Houston', 'Miami', 'Seattle', 'San Francisco', 'Las Vegas', 'Dubai', 'Istanbul', 'Bangkok', 'Singapore', 'Hong Kong', 'Shanghai', 'Seoul', 'Mumbai', 'Delhi', 'Karachi', 'Lahore', 'Dhaka', 'Jakarta', 'Manila', 'Kuala Lumpur', 'Hanoi', 'Ho Chi Minh City', 'Taipei', 'Tehran', 'Baghdad', 'Tel Aviv', 'Jerusalem', 'Amman', 'Cairo', 'Nairobi', 'Johannesburg', 'Cape Town', 'Lagos', 'Accra', 'Abuja', 'Kinshasa', 'Luanda']
+        funCityNames = ['Gotham City', 'Metropolis', 'London', 'New York', 'Paris', 'Tokyo', 'Moscow', 'Berlin', 'Rome', 'Athens', 'Cairo', 'Mumbai', 'Beijing', 'Sydney', 'Rio de Janeiro', 'Cape Town', 'Lagos', 'Mexico City', 'Los Angeles', 'Toronto', 'Chicago', 'Houston', 'Miami', 'Seattle', 'San Francisco', 'Las Vegas', 'Dubai', 'Istanbul', 'Bangkok', 'Singapore', 'Hong Kong', 'Shanghai', 'Seoul', 'Mumbai', 'Delhi', 'Karachi', 'Lahore', 'Dhaka', 'Jakarta', 'Manila', 'Kuala Lumpur', 'Hanoi', 'Ho Chi Minh City', 'Taipei', 'Tehran', 'Baghdad', 'Tel Aviv', 'Jerusalem', 'Amman', 'Cairo', 'Nairobi', 'Johannesburg', 'Cape Town', 'Lagos', 'Accra', 'Abuja', 'Kinshasa']
 
         funCityPick = funCityNames[Math.floor(Math.random() * funCityNames.length)]
 
