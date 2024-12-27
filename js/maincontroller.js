@@ -1501,7 +1501,7 @@ app.controller('theMainController', ['$scope', '$routeParams', '$timeout', '$int
     // check if url contains 'epidemic-portal.github.io 
 
     if (window.location.href.search('epidemic-portal.github.io') != -1) {
-        $scope.serverURL = "http://52.14.135.229:5000"
+        $scope.serverURL = "http://52.14.135.229:5001"
     }
     else {
         // for testing
